@@ -1,0 +1,92 @@
+<!--
+  icones-ui.svg — Sprite de ícones do sistema SRS Bus
+  ─────────────────────────────────────────────────────
+  Um "sprite SVG" é um arquivo com vários ícones dentro de <symbol>.
+  Cada símbolo tem um id único e pode ser reutilizado em qualquer HTML
+  com a tag <use href="../assets/svg/icones-ui.svg#nome-do-icone">.
+
+  VANTAGENS sobre SVG inline no HTML:
+  - O HTML fica limpo e legível
+  - Um ícone mudado aqui atualiza em todos os lugares
+  - O browser faz cache do arquivo (carrega uma vez, usa várias)
+
+  COMO USAR no HTML:
+    <svg class="campo__icone" aria-hidden="true">
+      <use href="../assets/svg/icones-ui.svg#icone-email"/>
+    </svg>
+
+  LISTA DE ÍCONES:
+    #icone-email      — envelope de e-mail
+    #icone-cadeado    — cadeado (campo de senha)
+    #icone-olho       — olho aberto (mostrar senha)
+    #icone-olho-off   — olho fechado (ocultar senha)
+    #icone-seta       — seta para direita (botão entrar)
+    #icone-erro       — círculo com exclamação (mensagem de erro)
+    #icone-onibus     — ônibus (logo do sistema)
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     aria-hidden="true">
+
+  <!-- ── E-mail ── -->
+  <symbol id="icone-email" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+  </symbol>
+
+  <!-- ── Cadeado (senha) ── -->
+  <symbol id="icone-cadeado" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </symbol>
+
+  <!-- ── Olho aberto (mostrar senha) ── -->
+  <symbol id="icone-olho" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </symbol>
+
+  <!-- ── Olho fechado (ocultar senha) ── -->
+  <symbol id="icone-olho-off" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </symbol>
+
+  <!-- ── Seta para direita (botão entrar) ── -->
+  <symbol id="icone-seta" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14"/>
+    <path d="m12 5 7 7-7 7"/>
+  </symbol>
+
+  <!-- ── Erro / alerta ── -->
+  <symbol id="icone-erro" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8"  x2="12"    y2="12"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </symbol>
+
+  <!-- ── Ônibus (logo) ── -->
+  <symbol id="icone-onibus" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 6v6"/>
+    <path d="M15 6v6"/>
+    <path d="M2 12h19.6"/>
+    <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+    <circle cx="7"  cy="18" r="2"/>
+    <circle cx="17" cy="18" r="2"/>
+  </symbol>
+
+</svg>

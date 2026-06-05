@@ -1,0 +1,616 @@
+/*
+ * login.css — Estilos da Tela de Login
+ * ──────────────────────────────────────
+ * ESTRUTURA:
+ *  - Fundo escuro (cidade + animações) ocupa 100% da tela
+ *  - Card branco do formulário fica centralizado por cima
+ */
+
+
+/* ══════════════════════════════════════════════════════════
+   1. FUNDO — ocupa a tela inteira
+   ══════════════════════════════════════════════════════════ */
+
+.login-fundo {
+  position:        fixed;   /* Fica fixo, não rola com a página */
+  inset:           0;       /* top/right/bottom/left = 0 */
+  background-color: #0b1628;
+  overflow:        hidden;
+  z-index:         0;
+}
+
+/* O SVG da cidade estica para preencher o fundo */
+.login-fundo__svg {
+  width:    100%;
+  height:   100%;
+  position: absolute;
+  inset:    0;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   2. ANIMAÇÕES DO FUNDO
+   ══════════════════════════════════════════════════════════ */
+
+/*
+  Linha pontilhada horizontal (estrada principal)
+  strokeDasharray="16 12" → 16px de traço, 12px de espaço
+  A animação move o padrão para a esquerda, criando a ilusão
+  de que a estrada está se deslocando (como num videogame).
+*/
+.rota-animada-h {
+  animation: mover-horizontal 2.4s linear infinite;
+}
+
+/* Velocidade mais lenta para a rota secundária */
+.rota-animada-h--lenta {
+  animation: mover-horizontal 3.8s linear infinite;
+}
+
+/* Linha pontilhada vertical */
+.rota-animada-v {
+  animation: mover-vertical 2.8s linear infinite;
+}
+
+.rota-animada-v--lenta {
+  animation: mover-vertical 4.5s linear infinite;
+}
+
+@keyframes mover-horizontal {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -56; }  /* 16 + 12 + 16 + 12 = tamanho de 2 ciclos */
+}
+
+@keyframes mover-vertical {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -56; }
+}
+
+/* Ônibus deslizando pela rua */
+.onibus-animado {
+  animation: deslizar 9s linear infinite;
+}
+
+.onibus-animado--devagar {
+  animation: deslizar 14s linear infinite;
+  animation-delay: -5s;  /* Começa no meio da animação para não sincronizar */
+}
+
+@keyframes deslizar {
+  from { transform: translateX(0); }
+  to   { transform: translateX(110vw); }  /* Sai pela direita da tela */
+}
+
+/* Piscada suave das janelas dos prédios */
+.janela-pisca {
+  animation: piscar-janela 4s ease-in-out infinite;
+}
+.janela-pisca--2 { animation-delay: 1.2s; }
+.janela-pisca--3 { animation-delay: 2.7s; }
+.janela-pisca--4 { animation-delay: 0.5s; }
+
+@keyframes piscar-janela {
+  0%, 85%, 100% { opacity: 0.85; }
+  90%            { opacity: 0.2;  }
+}
+
+/* Ping dos pontos de parada */
+.ponto-parada-ping {
+  animation: ping-parada 3s ease-out infinite;
+}
+.ponto-parada-ping--2 { animation-delay: 1s; }
+.ponto-parada-ping--3 { animation-delay: 2s; }
+
+@keyframes ping-parada {
+  0%   { r: 4;  opacity: 0.8; }
+  70%  { r: 12; opacity: 0; }
+  100% { r: 4;  opacity: 0; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   3. WRAPPER DA PÁGINA — centraliza o card
+   ══════════════════════════════════════════════════════════ */
+
+.login-wrapper {
+  position:        relative;
+  z-index:         1;         /* Fica acima do fundo */
+  min-height:      100vh;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         24px 16px;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   4. CARD BRANCO DO FORMULÁRIO
+   ══════════════════════════════════════════════════════════ */
+
+.form-card {
+  width:            100%;
+  max-width:        420px;
+  background:       #ffffff;
+  border-radius:    20px;
+  padding:          40px 36px;
+  box-shadow:       0 24px 64px rgba(0, 0, 0, 0.45),
+                    0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* Animação de entrada: card sobe suavemente ao carregar */
+  animation: subir-card 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes subir-card {
+  from {
+    opacity:   0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   5. LOGO E CABEÇALHO DO FORMULÁRIO
+   ══════════════════════════════════════════════════════════ */
+
+.form-logo {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  text-align:      center;
+  margin-bottom:   32px;
+}
+
+/* Quadrado azul com ícone de ônibus */
+.form-logo__icone {
+  width:           52px;
+  height:          52px;
+  background:      var(--cor-marca);
+  border-radius:   14px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  margin-bottom:   14px;
+  box-shadow:      0 8px 24px rgba(26, 111, 212, 0.35);
+}
+
+.form-logo__icone svg {
+  width: 26px;
+  height: 26px;
+  color: #ffffff;
+}
+
+.form-logo__nome {
+  font-size:   36px;
+  font-weight: 800;
+  color:       var(--cor-marca);
+  line-height: 1.2;
+}
+
+.form-logo__subtitulo {
+  font-size:  16px;
+  color:      var(--texto-secundario);
+  margin-top: 4px;
+  letter-spacing: 0.03em;
+}
+
+/* Separador fino abaixo do logo */
+.form-logo__separador {
+  width:        40px;
+  height:       2px;
+  background:   var(--cor-marca);
+  border-radius: 2px;
+  margin:       16px auto 0;
+  opacity:      0.4;
+}
+
+/* Título e subtítulo do formulário */
+.form-titulo {
+  font-size:     20px;
+  font-weight:   700;
+  color:         var(--texto-principal);
+  margin-bottom: 4px;
+  text-align:    center;
+}
+
+.form-subtitulo {
+  font-size:     13px;
+  color:         var(--texto-secundario);
+  margin-bottom: 28px;
+  text-align:    center;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   6. CAMPOS DO FORMULÁRIO
+   ══════════════════════════════════════════════════════════ */
+
+.campo {
+  margin-bottom: 16px;
+}
+
+.campo__label {
+  display:       block;
+  font-size:     13px;
+  font-weight:   500;
+  color:         var(--texto-principal);
+  margin-bottom: 7px;
+}
+
+/* Wrapper do input — necessário para posicionar o ícone */
+.campo__wrapper {
+  position: relative;
+}
+
+/* Ícone dentro do campo — posicionado à esquerda */
+.campo__icone {
+  position:       absolute;
+  left:           13px;
+  top:            50%;
+  transform:      translateY(-50%);
+  width:          18px;
+  height:         18px;
+  stroke:         var(--texto-secundario);
+  pointer-events: none;
+}
+
+/* O input em si */
+.campo__input {
+  width:         100%;
+  height:        46px;
+  background:    var(--fundo-campo);
+  border:        1.5px solid var(--borda-cor);
+  border-radius: var(--raio-pequeno);
+  padding:       0 44px 0 42px;
+  font-size:     14px;
+  color:         var(--texto-principal);
+  outline:       none;
+  transition:    border-color var(--transicao),
+                 background   var(--transicao),
+                 box-shadow   var(--transicao);
+}
+
+.campo__input::placeholder {
+  color: var(--texto-secundario);
+}
+
+.campo__input:focus {
+  border-color: var(--borda-foco);
+  background:   #ffffff;
+  box-shadow:   0 0 0 3px rgba(26, 111, 212, 0.12);
+}
+
+.campo__input--erro {
+  border-color: var(--cor-erro);
+}
+.campo__input--erro:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+/* Botão de mostrar/ocultar senha */
+.campo__botao-olho {
+  position:      absolute;
+  right:         12px;
+  top:           50%;
+  transform:     translateY(-50%);
+  background:    none;
+  border:        none;
+  cursor:        pointer;
+  padding:       4px;
+  border-radius: var(--raio-pequeno);
+  display:       flex;
+  align-items:   center;
+  transition:    background var(--transicao);
+}
+
+.campo__botao-olho:hover {
+  background: var(--borda-cor);
+}
+
+.campo__botao-olho svg {
+  width:  18px;
+  height: 18px;
+  stroke: var(--texto-secundario);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   7. LINHA "LEMBRAR + ESQUECI SENHA"
+   ══════════════════════════════════════════════════════════ */
+
+.form-linha-opcoes {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  margin-bottom:   22px;
+}
+
+.checkbox-label {
+  display:     flex;
+  align-items: center;
+  gap:         7px;
+  cursor:      pointer;
+  font-size:   13px;
+  color:       var(--texto-secundario);
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width:        15px;
+  height:       15px;
+  accent-color: var(--cor-marca);
+  cursor:       pointer;
+}
+
+.link-esqueceu {
+  font-size:   13px;
+  font-weight: 500;
+  color:       var(--cor-marca);
+}
+
+.link-esqueceu:hover {
+  color:           var(--cor-marca-escura);
+  text-decoration: underline;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   8. MENSAGEM DE ERRO
+   ══════════════════════════════════════════════════════════ */
+
+.erro-mensagem {
+  display:       flex;
+  align-items:   flex-start;
+  gap:           10px;
+  background:    #fef2f2;
+  border:        1px solid #fecaca;
+  border-radius: var(--raio-pequeno);
+  padding:       12px 14px;
+  margin-bottom: 16px;
+  font-size:     13px;
+  color:         #b91c1c;
+  line-height:   1.5;
+  animation:     aparecer 0.25s ease;
+}
+
+.erro-mensagem svg {
+  width:       18px;
+  height:      18px;
+  stroke:      #dc2626;
+  flex-shrink: 0;
+  margin-top:  1px;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.erro-mensagem--oculto {
+  display: none;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   9. BOTÃO PRINCIPAL DE LOGIN
+   ══════════════════════════════════════════════════════════ */
+
+.botao-entrar {
+  width:           100%;
+  height:          48px;
+  background:      var(--cor-marca);
+  color:           #ffffff;
+  border:          none;
+  border-radius:   var(--raio-pequeno);
+  font-size:       15px;
+  font-weight:     600;
+  cursor:          pointer;
+  letter-spacing:  0.02em;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             8px;
+  transition:      background  var(--transicao),
+                   transform   var(--transicao),
+                   box-shadow  var(--transicao);
+}
+
+.botao-entrar:hover:not(:disabled) {
+  background:  var(--cor-marca-escura);
+  box-shadow:  var(--sombra-botao);
+  transform:   translateY(-1px);
+}
+
+.botao-entrar:active:not(:disabled) {
+  transform:  translateY(0);
+  box-shadow: none;
+}
+
+.botao-entrar:disabled {
+  opacity: 0.65;
+  cursor:  not-allowed;
+}
+
+.botao-entrar svg {
+  width:  18px;
+  height: 18px;
+  stroke: #ffffff;
+}
+
+.botao-entrar__icone {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.icone-loading {
+  animation: girar 0.8s linear infinite;
+  color: #ffffff;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   10. DIVISOR "OU"
+   ══════════════════════════════════════════════════════════ */
+
+.divisor {
+  display:     flex;
+  align-items: center;
+  gap:         12px;
+  margin:      20px 0;
+}
+
+.divisor__linha {
+  flex:       1;
+  height:     1px;
+  background: var(--borda-cor);
+}
+
+.divisor__texto {
+  font-size:   12px;
+  color:       var(--texto-secundario);
+  flex-shrink: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   11. BOTÃO SECUNDÁRIO (CADASTRO)
+   ══════════════════════════════════════════════════════════ */
+
+.botao-cadastro {
+  width:         100%;
+  height:        46px;
+  background:    transparent;
+  color:         var(--texto-principal);
+  border:        1.5px solid var(--borda-cor);
+  border-radius: var(--raio-pequeno);
+  font-size:     14px;
+  font-weight:   500;
+  cursor:        pointer;
+  transition:    background   var(--transicao),
+                 border-color var(--transicao);
+}
+
+.botao-cadastro:hover {
+  background:   var(--fundo-campo);
+  border-color: #cbd5e1;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   12. RODAPÉ DO FORMULÁRIO
+   ══════════════════════════════════════════════════════════ */
+
+.form-rodape {
+  text-align:  center;
+  margin-top:  22px;
+  font-size:   12px;
+  color:       var(--texto-secundario);
+  line-height: 1.7;
+}
+
+.form-rodape a {
+  color:       var(--cor-marca);
+  font-weight: 500;
+}
+
+
+/* ================================================= */
+/* RESPONSIVIDADE */
+/* ================================================= */
+
+/* CELULARES PEQUENOS */
+@media (max-width: 480px) {
+
+    .form-card {
+        padding: 24px;
+    }
+
+    .form-logo__nome {
+        font-size: 1.75rem;
+    }
+
+    .form-titulo {
+        font-size: 1.5rem;
+    }
+
+}
+
+/* CELULARES GRANDES */
+@media (min-width: 481px) and (max-width: 767px) {
+
+    .form-card {
+        max-width: 420px;
+        width: 100%;
+    }
+
+}
+
+/* TABLETS */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .login-wrapper {
+        padding: 32px;
+    }
+
+    .form-card {
+        max-width: 520px;
+        width: 100%;
+        padding: 40px;
+    }
+
+    .form-logo__nome {
+        font-size: 2.2rem;
+    }
+
+    .form-titulo {
+        font-size: 2rem;
+    }
+
+}
+
+/* NOTEBOOKS */
+@media (min-width: 1024px) and (max-width: 1365px) {
+
+    .login-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px;
+    }
+
+    .form-card {
+        max-width: 460px;
+    }
+
+}
+
+/* DESKTOPS GRANDES */
+@media (min-width: 1366px) {
+
+    .login-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px;
+    }
+
+    .form-card {
+        max-width: 480px;
+    }
+
+}
+
+/* MONITORES ULTRAWIDE */
+@media (min-width: 1920px) {
+
+    .login-wrapper {
+        max-width: 1600px;
+    }
+
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ValeBus — Login</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!--
+    Os caminhos saem de pages/ e sobem um nível com ../
+    para chegar na raiz do projeto onde ficam css/ e js/.
+  -->
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FUNDO — container vazio que recebe o SVG via JavaScript
+       O arquivo cidade-fundo.svg é injetado aqui pelo login.js
+       ═══════════════════════════════════════════════════════ -->
+  <div class="login-fundo" aria-hidden="true">
+    <div id="fundo-cidade"></div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       FORMULÁRIO — card branco centralizado
+       ═══════════════════════════════════════════════════════ -->
+  <div class="login-wrapper">
+    <div class="form-card">
+
+      <!-- Logo -->
+      <div class="form-logo">
+        <div class="form-logo__icone" aria-hidden="true">
+            <svg>
+                <use href="#icone-onibus"></use>
+            </svg>
+        </div>
+        <h1 class="form-logo__nome">ValeBus</h1>
+        <h3 class="form-logo__subtitulo">Seu ônibus, em tempo real.</h3>
+        <div class="form-logo__separador"></div>
+      </div>
+
+      <h2 class="form-titulo">Bem-vindo de volta</h2>
+      <p class="form-subtitulo">Acesse o painel de monitoramento</p>
+
+      <form id="form-login" novalidate>
+
+        <!-- Campo: E-mail -->
+        <div class="campo">
+          <label class="campo__label" for="input-email">E-mail</label>
+          <div class="campo__wrapper">
+            <svg class="campo__icone" aria-hidden="true">
+              <use href="#icone-email"/>
+            </svg>
+            <input class="campo__input"
+                   type="email" id="input-email" name="email"
+                   placeholder="seu@email.com"
+                   autocomplete="email" inputmode="email" required>
+          </div>
+        </div>
+
+        <!-- Campo: Senha -->
+        <div class="campo">
+          <label class="campo__label" for="input-senha">Senha</label>
+          <div class="campo__wrapper">
+            <svg class="campo__icone" aria-hidden="true">
+              <use href="#icone-cadeado"/>
+            </svg>
+            <input class="campo__input"
+                   type="password" id="input-senha" name="senha"
+                   placeholder="••••••••"
+                   autocomplete="current-password" required minlength="6">
+            <button
+                type="button"
+                class="campo__botao-olho"
+                id="botao-olho"
+                aria-label="Mostrar senha">
+
+                <svg>
+                    <use href="#icone-olho"></use>
+                </svg>
+
+            </button>
+          </div>
+        </div>
+
+        <!-- Lembrar-me + Esqueci a senha -->
+        <div class="form-linha-opcoes">
+          <label class="checkbox-label">
+            <input type="checkbox" id="lembrar-me" name="lembrar">
+            Lembrar-me
+          </label>
+          <a href="#" class="link-esqueceu">Esqueceu a senha?</a>
+        </div>
+
+        <!-- Mensagem de erro (oculta por padrão) -->
+        <div class="erro-mensagem erro-mensagem--oculto"
+             id="erro-mensagem" role="alert" aria-live="polite">
+          <svg class="erro-mensagem__icone" aria-hidden="true">
+            <use href="#icone-erro"/>
+          </svg>
+          <span id="erro-texto">Credenciais inválidas.</span>
+        </div>
+
+        <!-- Botão de login -->
+        <button type="submit" class="botao-entrar" id="botao-entrar">
+          <svg id="icone-padrao" class="botao-entrar__icone" aria-hidden="true">
+            <use href="#icone-seta"/>
+          </svg>
+          <svg id="icone-loading" class="icone-loading"
+               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+               fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               style="display:none" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          <span id="texto-botao">Entrar no sistema</span>
+        </button>
+
+      </form>
+
+      <!-- Divisor -->
+      <div class="divisor">
+        <div class="divisor__linha"></div>
+        <span class="divisor__texto">ou</span>
+        <div class="divisor__linha"></div>
+      </div>
+
+      <!-- Botão de cadastro -->
+      <button type="button" class="botao-cadastro"
+              onclick="alert('Tela de cadastro — próxima etapa!')">
+        Criar nova conta
+      </button>
+
+      <!-- Rodapé legal -->
+      <p class="form-rodape">
+        Ao acessar, você concorda com os
+        <a href="#">Termos de uso</a> e a
+        <a href="#">Política de privacidade</a>
+      </p>
+
+    </div><!-- /form-card -->
+  </div><!-- /login-wrapper -->
+
+  <script src="../js/login.js"></script>
+</body>
+</html>

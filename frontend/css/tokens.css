@@ -1,0 +1,64 @@
+/*
+ * tokens.css — Design System do SRS Bus
+ * ─────────────────────────────────────
+ * Este arquivo define todas as "variáveis globais" de design:
+ * cores, fontes, espaçamentos e bordas.
+ *
+ * POR QUÊ fazer isso?
+ * Se você quiser mudar a cor principal do app, muda SÓ AQUI.
+ * Todos os outros arquivos já usam essa variável automaticamente.
+ */
+
+:root {
+
+  /* ── CORES PRINCIPAIS ─────────────────────────────────── */
+
+  --cor-marca:           #1a6fd4;   /* Azul principal — botões, links, destaques */
+  --cor-marca-escura:    #1456a8;   /* Azul mais escuro — hover de botões         */
+  --cor-marca-clara:     #e8f0fd;   /* Azul bem claro — fundos sutis              */
+
+  --cor-fundo-escuro:    #0b1628;   /* Azul quase preto — painel da cidade        */
+  --cor-fundo-painel:    #132040;   /* Azul escuro médio — construções do painel  */
+
+  --cor-sucesso:         #16a34a;   /* Verde — mensagem de sucesso                */
+  --cor-erro:            #dc2626;   /* Vermelho — mensagem de erro                */
+  --cor-aviso:           #f59e0b;   /* Amarelo — alertas                          */
+
+  /* ── CORES DE TEXTO ───────────────────────────────────── */
+
+  --texto-principal:     #0f172a;   /* Quase preto — títulos e labels             */
+  --texto-secundario:    #64748b;   /* Cinza médio — placeholders e dicas         */
+  --texto-claro:         #f1f5f9;   /* Branco acinzentado — texto no fundo escuro */
+
+  /* ── CORES DE FUNDO ───────────────────────────────────── */
+
+  --fundo-pagina:        #f8fafc;   /* Cinza levíssimo — fundo da página          */
+  --fundo-card:          #ffffff;   /* Branco puro — cartões e formulários        */
+  --fundo-campo:         #f1f5f9;   /* Cinza suave — fundo dos inputs             */
+
+  /* ── BORDAS ───────────────────────────────────────────── */
+
+  --borda-cor:           #e2e8f0;   /* Cinza claro — bordas padrão                */
+  --borda-foco:          #1a6fd4;   /* Azul — borda quando campo está ativo       */
+  --raio-pequeno:        8px;       /* Arredondamento de campos e botões pequenos */
+  --raio-medio:          12px;      /* Arredondamento de cards                    */
+  --raio-grande:         20px;      /* Arredondamento do card principal           */
+
+  /* ── TIPOGRAFIA ───────────────────────────────────────── */
+
+  --fonte-principal:     'Inter', 'Segoe UI', system-ui, sans-serif;
+  --tamanho-pequeno:     12px;
+  --tamanho-normal:      14px;
+  --tamanho-medio:       16px;
+  --tamanho-grande:      20px;
+  --tamanho-titulo:      28px;
+
+  /* ── SOMBRAS ──────────────────────────────────────────── */
+
+  --sombra-card:         0 4px 24px rgba(0, 0, 0, 0.10);
+  --sombra-botao:        0 4px 14px rgba(26, 111, 212, 0.35);
+
+  /* ── TRANSIÇÕES ───────────────────────────────────────── */
+
+  --transicao:           0.18s ease;
+}
