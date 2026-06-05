@@ -1,42 +1,74 @@
 /*
  * dashboard.css — Tela Principal do ValeBus
  * ───────────────────────────────────────────
- * Layout: sidebar fixa + área principal + painel lateral direito
+ * Layout responsivo: sidebar + topbar + main + painel
+ *
+ * Breakpoints:
+ *   mobile  : < 768px   → topbar + bottom-nav + painel oculto
+ *   tablet  : 768–1099px → sidebar colapsada (64px) + sem painel
+ *   desktop : ≥ 1100px   → layout completo de 3 colunas
  */
 
-/* ── LAYOUT GERAL ────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT GERAL
+   ═══════════════════════════════════════════════════════════ */
 
 .dashboard {
   display: grid;
-  grid-template-columns: 240px 1fr 320px;
-  grid-template-rows: 64px 1fr;
+  grid-template-columns: var(--sidebar-largura) 1fr var(--painel-largura);
+  grid-template-rows: var(--topbar-altura) 1fr auto;
   grid-template-areas:
     "sidebar topbar topbar"
-    "sidebar main   painel";
+    "sidebar main   painel"
+    "sidebar rodape rodape";
   min-height: 100vh;
   background-color: var(--fundo-pagina);
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   OVERLAY — fundo escuro ao abrir sidebar no mobile
+   ═══════════════════════════════════════════════════════════ */
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 199;
+}
+
+.sidebar-overlay.ativo {
+  display: block;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════════ */
 
 .sidebar {
   grid-area: sidebar;
   background-color: var(--cor-marca);
   display: flex;
   flex-direction: column;
-  padding: 0;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow: hidden;
+  transition: width var(--transicao), transform var(--transicao);
+  z-index: 200;
 }
 
 .sidebar__logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.15);
+  min-height: var(--topbar-altura);
+  overflow: hidden;
 }
 
 .sidebar__logo-icone {
@@ -59,6 +91,8 @@
 .sidebar__logo-texto {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .sidebar__logo-nome {
@@ -74,13 +108,15 @@
   line-height: 1.2;
 }
 
-/* Nav */
+/* Navegação */
 .sidebar__nav {
   flex: 1;
   padding: 16px 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .nav__item {
@@ -100,6 +136,8 @@
   width: 100%;
   text-align: left;
   position: relative;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .nav__item:hover {
@@ -125,6 +163,10 @@
   stroke-linejoin: round;
 }
 
+.nav__label {
+  transition: opacity var(--transicao);
+}
+
 .nav__badge {
   margin-left: auto;
   background-color: var(--cor-erro);
@@ -138,9 +180,10 @@
   align-items: center;
   justify-content: center;
   padding: 0 5px;
+  flex-shrink: 0;
 }
 
-/* Sair — ao fundo */
+/* Sair */
 .sidebar__sair {
   padding: 12px;
   border-top: 1px solid rgba(255,255,255,0.15);
@@ -155,7 +198,10 @@
   color: #f87171;
 }
 
-/* ── TOPBAR ───────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   TOPBAR
+   ═══════════════════════════════════════════════════════════ */
 
 .topbar {
   grid-area: topbar;
@@ -166,6 +212,38 @@
   justify-content: space-between;
   padding: 0 24px;
   gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Botão hambúrguer — oculto no desktop */
+.topbar__menu-btn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--raio-pequeno);
+  background-color: var(--fundo-campo);
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color var(--transicao);
+}
+
+.topbar__menu-btn:hover {
+  background-color: var(--borda-cor);
+}
+
+.topbar__menu-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--texto-principal);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .topbar__status {
@@ -184,6 +262,7 @@
   background-color: var(--cor-sucesso);
   box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
   animation: pulsar 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
 @keyframes pulsar {
@@ -194,7 +273,7 @@
 .topbar__direita {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .topbar__hora {
@@ -217,6 +296,7 @@
   align-items: center;
   justify-content: center;
   transition: background-color var(--transicao);
+  flex-shrink: 0;
 }
 
 .topbar__sino:hover {
@@ -291,6 +371,7 @@
   font-weight: 600;
   color: var(--texto-principal);
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .topbar__usuario-cargo {
@@ -309,7 +390,10 @@
   stroke-linejoin: round;
 }
 
-/* ── ÁREA PRINCIPAL (MAPA) ───────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   ÁREA PRINCIPAL (MAPA)
+   ═══════════════════════════════════════════════════════════ */
 
 .main {
   grid-area: main;
@@ -318,6 +402,7 @@
   flex-direction: column;
   gap: 16px;
   overflow: hidden;
+  min-width: 0; /* impede overflow no grid */
 }
 
 .main__titulo {
@@ -326,7 +411,6 @@
   color: var(--texto-principal);
 }
 
-/* Container do mapa */
 .mapa-container {
   flex: 1;
   background-color: #e8eef4;
@@ -334,15 +418,23 @@
   border: 1px solid var(--borda-cor);
   position: relative;
   overflow: hidden;
-  min-height: 400px;
+  min-height: 360px;
 }
 
-/* Mapa SVG simulado */
-.mapa-svg {
+#mapa {
   width: 100%;
   height: 100%;
   position: absolute;
   inset: 0;
+  z-index: 1;
+}
+
+.leaflet-container {
+  background: #e8eef4;
+}
+
+.leaflet-control-container {
+  z-index: 900;
 }
 
 /* Legenda */
@@ -355,6 +447,7 @@
   border-radius: var(--raio-pequeno);
   padding: 12px 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
 
 .mapa-legenda__titulo {
@@ -389,144 +482,33 @@
   flex-shrink: 0;
 }
 
-.mapa-legenda__dot--horario  { background-color: #3b82f6; }
-.mapa-legenda__dot--atrasado { background-color: #f59e0b; }
-.mapa-legenda__dot--adiantado{ background-color: #22c55e; }
 
-/* Controles de zoom */
-.mapa-zoom {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  border-radius: var(--raio-pequeno);
-  overflow: hidden;
-}
+/* ═══════════════════════════════════════════════════════════
+   MARCADORES DOS ÔNIBUS
+   ═══════════════════════════════════════════════════════════ */
 
-.mapa-zoom__btn {
-  width: 36px;
-  height: 36px;
-  background-color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 300;
-  color: var(--texto-principal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color var(--transicao);
-}
-
-.mapa-zoom__btn:hover {
-  background-color: var(--fundo-campo);
-}
-
-/* Bússola */
-.mapa-bussola {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: 52px;
-  height: 52px;
-}
-
-/* Marcadores de ônibus no mapa */
-.onibus-marker {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  transition: transform var(--transicao);
-}
-
-.onibus-marker:hover {
-  transform: translate(-50%, -50%) scale(1.15);
-}
-
-.onibus-marker__icone {
-  width: 36px;
-  height: 36px;
+.bus-marker {
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2.5px solid #fff;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  font-size: 20px;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  animation: pulseBus 2s infinite;
 }
 
-.onibus-marker__icone svg {
-  width: 18px;
-  height: 18px;
-  stroke: #fff;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+@keyframes pulseBus {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
 }
 
-.onibus-marker__icone--horario  { background-color: #3b82f6; }
-.onibus-marker__icone--atrasado { background-color: #f59e0b; }
-.onibus-marker__icone--adiantado{ background-color: #22c55e; }
-.onibus-marker__icone--parado   { background-color: #a855f7; }
 
-/* Setas de direção */
-.onibus-marker__seta {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-.onibus-marker__seta--direita {
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid #3b82f6;
-  right: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.onibus-marker__seta--baixo {
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 8px solid #22c55e;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.onibus-marker__seta--esquerda {
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 8px solid #dc2626;
-  left: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.onibus-marker__seta--cima {
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 8px solid #f59e0b;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Labels das regiões */
-.mapa-label {
-  position: absolute;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(60,80,100,0.7);
-  pointer-events: none;
-  user-select: none;
-  text-align: center;
-}
-
-/* ── PAINEL LATERAL DIREITO ───────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   PAINEL LATERAL DIREITO
+   ═══════════════════════════════════════════════════════════ */
 
 .painel {
   grid-area: painel;
@@ -539,20 +521,37 @@
   gap: 28px;
 }
 
-.painel::-webkit-scrollbar {
-  width: 4px;
+.painel::-webkit-scrollbar        { width: 4px; }
+.painel::-webkit-scrollbar-track  { background: transparent; }
+.painel::-webkit-scrollbar-thumb  { background: var(--borda-cor); border-radius: 2px; }
+
+/* Botão fechar painel (mobile) */
+.painel__fechar {
+  display: none;
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--fundo-campo);
+  border: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: -10px;
 }
 
-.painel::-webkit-scrollbar-track {
-  background: transparent;
+.painel__fechar svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--texto-secundario);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.painel::-webkit-scrollbar-thumb {
-  background: var(--borda-cor);
-  border-radius: 2px;
-}
-
-/* ─ Próximos Ônibus ─ */
+/* Próximos Ônibus */
 .painel__secao-titulo {
   font-size: 16px;
   font-weight: 700;
@@ -676,8 +675,7 @@
   text-decoration: underline;
 }
 
-/* ─ Resumo do sistema ─ */
-
+/* Resumo do sistema */
 .resumo-lista {
   display: flex;
   flex-direction: column;
@@ -717,9 +715,7 @@
 .resumo-item__icone--linhas   svg { stroke: #8b5cf6; }
 .resumo-item__icone--chegadas svg { stroke: #22c55e; }
 
-.resumo-item__info {
-  flex: 1;
-}
+.resumo-item__info { flex: 1; }
 
 .resumo-item__label {
   font-size: 12px;
@@ -747,13 +743,16 @@
   border-radius: 4px;
 }
 
-.resumo-item__tag--online    { color: #16a34a; background: #f0fdf4; }
-.resumo-item__tag--operacao  { color: var(--texto-secundario); background: var(--fundo-campo); }
+.resumo-item__tag--online   { color: #16a34a; background: #f0fdf4; }
+.resumo-item__tag--operacao { color: var(--texto-secundario); background: var(--fundo-campo); }
 
-/* ── RODAPÉ ────────────────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════════════════
+   RODAPÉ
+   ═══════════════════════════════════════════════════════════ */
 
 .rodape {
-  grid-column: 2 / 4;
+  grid-area: rodape;
   background-color: var(--fundo-card);
   border-top: 1px solid var(--borda-cor);
   padding: 14px 24px;
@@ -762,12 +761,15 @@
   justify-content: space-between;
   font-size: 12px;
   color: var(--texto-secundario);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .rodape__links {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
 }
 
 .rodape__links a {
@@ -783,146 +785,288 @@
   margin: 0 2px;
 }
 
-/* ── RESPONSIVIDADE ─────────────────────────────────────────── */
 
-@media (max-width: 1100px) {
+/* ═══════════════════════════════════════════════════════════
+   BOTÃO FLUTUANTE — abrir painel no tablet/mobile
+   ═══════════════════════════════════════════════════════════ */
+
+.btn-painel-flutuante {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--cor-marca);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--sombra-botao);
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+  transition: background-color var(--transicao), transform var(--transicao);
+}
+
+.btn-painel-flutuante:hover {
+  background-color: var(--cor-marca-escura);
+  transform: scale(1.07);
+}
+
+.btn-painel-flutuante svg {
+  width: 22px;
+  height: 22px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVIDADE — TABLET  (768px – 1099px)
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1099px) {
+
+  :root {
+    --sidebar-largura: 64px;
+    --painel-largura:  0px;
+  }
+
   .dashboard {
-    grid-template-columns: 200px 1fr 280px;
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--topbar-altura) 1fr auto;
+    grid-template-areas:
+      "topbar"
+      "main"
+      "rodape";
+  }
+
+  /* Sidebar vira drawer também no tablet */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 200;
+  }
+
+  .sidebar.aberta {
+    transform: translateX(0);
+  }
+
+  /* Botão hambúrguer visível no tablet */
+  .topbar__menu-btn {
+    display: flex;
+  }
+
+  /* Painel como drawer lateral direito */
+  .painel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    z-index: 210;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  }
+
+  .painel.aberto {
+    transform: translateX(0);
+  }
+
+  .painel__fechar {
+    display: flex;
+  }
+
+  /* Botão flutuante visível */
+  .btn-painel-flutuante {
+    display: flex;
+  }
+
+  /* Overlay ativo quando painel aberto */
+  .painel.aberto ~ .sidebar-overlay {
+    display: block;
   }
 }
 
-/* ================================================= */
-/* LEAFLET */
-/* ================================================= */
 
-#mapa {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVIDADE — MOBILE  (< 768px)
+   ═══════════════════════════════════════════════════════════ */
 
-.leaflet-container {
-  background: #e8eef4;
-}
+@media (max-width: 767px) {
 
-/* ================================================= */
-/* MARCADORES */
-/* ================================================= */
-
-.bus-marker {
-
-  width: 42px;
-  height: 42px;
-
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 20px;
-
-  border: 3px solid #fff;
-
-  box-shadow:
-    0 4px 14px rgba(0,0,0,.25);
-
-  animation:
-    pulseBus 2s infinite;
-}
-
-@keyframes pulseBus {
-
-  0% {
-    transform: scale(1);
+  :root {
+    --topbar-altura: 56px;
   }
 
-  50% {
-    transform: scale(1.08);
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--topbar-altura) 1fr auto;
+    grid-template-areas:
+      "topbar"
+      "main"
+      "rodape";
   }
 
-  100% {
-    transform: scale(1);
+  /* Sidebar como drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 200;
   }
 
-}
-
-/* ================================================= */
-/* LEGENDA SOBRE O MAPA */
-/* ================================================= */
-
-.mapa-legenda {
-  z-index: 1000;
-}
-
-.leaflet-control-container {
-  z-index: 900;
-}
-
-/* ================================================= */
-/* LEAFLET */
-/* ================================================= */
-
-#mapa {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.leaflet-container {
-  background: #e8eef4;
-}
-
-/* ================================================= */
-/* MARCADORES DOS ÔNIBUS */
-/* ================================================= */
-
-.bus-marker {
-
-  width: 42px;
-  height: 42px;
-
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 20px;
-
-  border: 3px solid white;
-
-  box-shadow:
-    0 4px 14px rgba(0,0,0,.25);
-
-  animation:
-    pulseBus 2s infinite;
-}
-
-@keyframes pulseBus {
-
-  0% {
-    transform: scale(1);
+  .sidebar.aberta {
+    transform: translateX(0);
   }
 
-  50% {
-    transform: scale(1.08);
+  /* Restaura logo e labels dentro do drawer */
+  .sidebar__logo-texto,
+  .nav__label,
+  .sidebar__logo-cidade {
+    display: flex;
   }
 
-  100% {
-    transform: scale(1);
+  .sidebar__logo-texto {
+    flex-direction: column;
   }
 
+  .sidebar__logo {
+    justify-content: flex-start;
+    padding: 20px;
+  }
+
+  .sidebar__nav {
+    padding: 16px 12px;
+    align-items: stretch;
+  }
+
+  .nav__item {
+    width: 100%;
+    padding: 11px 14px;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .nav__badge {
+    display: flex;
+    margin-left: auto;
+  }
+
+  .sidebar__sair {
+    padding: 12px;
+    display: block;
+  }
+
+  .nav__item--sair {
+    width: 100%;
+    padding: 11px 14px;
+    justify-content: flex-start;
+  }
+
+  /* Botão hambúrguer visível */
+  .topbar__menu-btn {
+    display: flex;
+  }
+
+  /* Esconde infos do usuário no mobile */
+  .topbar__usuario-info,
+  .topbar__chevron,
+  .topbar__hora {
+    display: none;
+  }
+
+  .topbar {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  /* Main com padding menor */
+  .main {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .main__titulo {
+    font-size: var(--tamanho-medio);
+  }
+
+  .mapa-container {
+    min-height: 300px;
+  }
+
+  /* Painel como drawer de baixo pra cima */
+  .painel {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 85vh;
+    max-height: 85vh;
+    border-radius: var(--raio-grande) var(--raio-grande) 0 0;
+    border-left: none;
+    border-top: 1px solid var(--borda-cor);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 210;
+  }
+
+  .painel.aberto {
+    transform: translateY(0);
+  }
+
+  /* Alça de arraste visual no topo do painel */
+  .painel::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background-color: var(--borda-cor);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+    flex-shrink: 0;
+  }
+
+  /* Botão flutuante */
+  .btn-painel-flutuante {
+    display: flex;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  /* Rodapé simplificado */
+  .rodape {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 16px;
+    gap: 4px;
+  }
 }
 
-.mapa-legenda {
-  z-index: 1000;
-}
 
-.leaflet-control-container {
-  z-index: 900;
+/* ═══════════════════════════════════════════════════════════
+   DESKTOP GRANDE  (≥ 1400px)
+   ═══════════════════════════════════════════════════════════ */
+
+@media (min-width: 1400px) {
+  :root {
+    --painel-largura: 360px;
+  }
 }

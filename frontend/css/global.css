@@ -1,24 +1,15 @@
 /*
  * global.css — Reset e Estilos Base
- * ──────────────────────────────────
- * Este arquivo "zera" os estilos padrão do navegador
- * e define comportamentos base para todo o projeto.
- *
- * POR QUÊ fazer um reset?
- * Cada navegador (Chrome, Firefox, Safari) tem estilos padrão
- * diferentes. O reset garante que o visual seja igual em todos.
  */
 
-/* Remove margens e espaçamentos padrão de TUDO */
 *, *::before, *::after {
-  box-sizing: border-box;   /* Cálculo de tamanho mais intuitivo */
+  box-sizing: border-box;
   margin:     0;
   padding:    0;
 }
 
-/* Configurações base do documento */
 html {
-  font-size: 16px;           /* 1rem = 16px */
+  font-size: 16px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -29,12 +20,10 @@ body {
   background-color:   var(--fundo-pagina);
   line-height:        1.6;
   min-height:         100vh;
-  /* Melhora a renderização de fontes */
   -webkit-font-smoothing:  antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Links sem decoração por padrão */
 a {
   color:           var(--cor-marca);
   text-decoration: none;
@@ -43,24 +32,20 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Imagens responsivas por padrão */
 img {
   max-width: 100%;
   display:   block;
 }
 
-/* Remove estilo padrão de listas */
 ul, ol {
   list-style: none;
 }
 
-/* Botões herdam a fonte do body */
 button, input, select, textarea {
   font-family: inherit;
   font-size:   inherit;
 }
 
-/* Remove borda de foco feia no Firefox */
 button::-moz-focus-inner {
   border: 0;
 }
