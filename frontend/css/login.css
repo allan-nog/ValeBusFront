@@ -1,5 +1,5 @@
 /*
- * login.css — Estilos da Tela de Login
+ * login.css — Estilos da Tela de Login do ValeBus
  * ──────────────────────────────────────
  * ESTRUTURA:
  *  - Fundo escuro (cidade + animações) ocupa 100% da tela
@@ -14,7 +14,7 @@
 .login-fundo {
   position:        fixed;   /* Fica fixo, não rola com a página */
   inset:           0;       /* top/right/bottom/left = 0 */
-  background-color: #0b1628;
+  background-color: var(--cor-fundo-escuro);
   overflow:        hidden;
   z-index:         0;
 }
@@ -32,12 +32,7 @@
    2. ANIMAÇÕES DO FUNDO
    ══════════════════════════════════════════════════════════ */
 
-/*
-  Linha pontilhada horizontal (estrada principal)
-  strokeDasharray="16 12" → 16px de traço, 12px de espaço
-  A animação move o padrão para a esquerda, criando a ilusão
-  de que a estrada está se deslocando (como num videogame).
-*/
+/* Linha pontilhada horizontal (estrada principal) */
 .rota-animada-h {
   animation: mover-horizontal 2.4s linear infinite;
 }
@@ -58,7 +53,7 @@
 
 @keyframes mover-horizontal {
   from { stroke-dashoffset: 0; }
-  to   { stroke-dashoffset: -56; }  /* 16 + 12 + 16 + 12 = tamanho de 2 ciclos */
+  to   { stroke-dashoffset: -56; }
 }
 
 @keyframes mover-vertical {
@@ -73,12 +68,12 @@
 
 .onibus-animado--devagar {
   animation: deslizar 14s linear infinite;
-  animation-delay: -5s;  /* Começa no meio da animação para não sincronizar */
+  animation-delay: -5s;
 }
 
 @keyframes deslizar {
   from { transform: translateX(0); }
-  to   { transform: translateX(110vw); }  /* Sai pela direita da tela */
+  to   { transform: translateX(110vw); }
 }
 
 /* Piscada suave das janelas dos prédios */
@@ -119,7 +114,7 @@
   display:         flex;
   align-items:     center;
   justify-content: center;
-  padding:         24px 16px;
+  padding:         var(--espaco-lg) var(--espaco-md);
 }
 
 
@@ -130,9 +125,9 @@
 .form-card {
   width:            100%;
   max-width:        420px;
-  background:       #ffffff;
-  border-radius:    20px;
-  padding:          40px 36px;
+  background:       var(--fundo-card);
+  border-radius:    var(--raio-grande);
+  padding:          var(--espaco-xl) var(--espaco-lg);
   box-shadow:       0 24px 64px rgba(0, 0, 0, 0.45),
                     0 0 0 1px rgba(255, 255, 255, 0.08);
 
@@ -161,50 +156,54 @@
   flex-direction:  column;
   align-items:     center;
   text-align:      center;
-  margin-bottom:   32px;
+  margin-bottom:   var(--espaco-xl);
 }
 
 /* Quadrado azul com ícone de ônibus */
 .form-logo__icone {
-  width:           52px;
-  height:          52px;
+  width:           56px;
+  height:          56px;
   background:      var(--cor-marca);
-  border-radius:   14px;
+  border-radius:   16px;
   display:         flex;
   align-items:     center;
   justify-content: center;
-  margin-bottom:   14px;
+  margin-bottom:   var(--espaco-sm);
   box-shadow:      0 8px 24px rgba(26, 111, 212, 0.35);
 }
 
 .form-logo__icone svg {
-  width: 26px;
-  height: 26px;
-  color: #ffffff;
+  width:          28px;
+  height:         28px;
+  stroke:         #ffffff;
+  fill:           none;
+  stroke-width:   2.2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .form-logo__nome {
-  font-size:   36px;
+  font-size:   32px;
   font-weight: 800;
   color:       var(--cor-marca);
   line-height: 1.2;
 }
 
 .form-logo__subtitulo {
-  font-size:  16px;
-  color:      var(--texto-secundario);
-  margin-top: 4px;
-  letter-spacing: 0.03em;
+  font-size:      14px;
+  color:          var(--texto-secundario);
+  margin-top:     4px;
+  letter-spacing: 0.02em;
 }
 
 /* Separador fino abaixo do logo */
 .form-logo__separador {
-  width:        40px;
-  height:       2px;
-  background:   var(--cor-marca);
+  width:         40px;
+  height:        2px;
+  background:    var(--cor-marca);
   border-radius: 2px;
-  margin:       16px auto 0;
-  opacity:      0.4;
+  margin:        var(--espaco-md) auto 0;
+  opacity:       0.3;
 }
 
 /* Título e subtítulo do formulário */
@@ -219,7 +218,7 @@
 .form-subtitulo {
   font-size:     13px;
   color:         var(--texto-secundario);
-  margin-bottom: 28px;
+  margin-bottom: var(--espaco-lg);
   text-align:    center;
 }
 
@@ -229,15 +228,15 @@
    ══════════════════════════════════════════════════════════ */
 
 .campo {
-  margin-bottom: 16px;
+  margin-bottom: var(--espaco-md);
 }
 
 .campo__label {
   display:       block;
   font-size:     13px;
-  font-weight:   500;
+  font-weight:   600;
   color:         var(--texto-principal);
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
 
 /* Wrapper do input — necessário para posicionar o ícone */
@@ -248,12 +247,13 @@
 /* Ícone dentro do campo — posicionado à esquerda */
 .campo__icone {
   position:       absolute;
-  left:           13px;
+  left:           14px;
   top:            50%;
   transform:      translateY(-50%);
   width:          18px;
   height:         18px;
   stroke:         var(--texto-secundario);
+  fill:           none;
   pointer-events: none;
 }
 
@@ -264,7 +264,7 @@
   background:    var(--fundo-campo);
   border:        1.5px solid var(--borda-cor);
   border-radius: var(--raio-pequeno);
-  padding:       0 44px 0 42px;
+  padding:       0 48px 0 42px; /* Garante que o texto não colida com o botão olho */
   font-size:     14px;
   color:         var(--texto-principal);
   outline:       none;
@@ -280,29 +280,33 @@
 .campo__input:focus {
   border-color: var(--borda-foco);
   background:   #ffffff;
-  box-shadow:   0 0 0 3px rgba(26, 111, 212, 0.12);
+  box-shadow:   var(--sombra-foco);
 }
 
+/* Estado de Erro no Input */
 .campo__input--erro {
-  border-color: var(--cor-erro);
+  border-color: var(--cor-erro) !important;
+  background:   #fef2f2;
 }
+
 .campo__input--erro:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
 }
 
 /* Botão de mostrar/ocultar senha */
 .campo__botao-olho {
   position:      absolute;
-  right:         12px;
+  right:         10px;
   top:           50%;
   transform:     translateY(-50%);
   background:    none;
   border:        none;
   cursor:        pointer;
-  padding:       4px;
+  padding:       6px;
   border-radius: var(--raio-pequeno);
   display:       flex;
   align-items:   center;
+  justify-content: center;
   transition:    background var(--transicao);
 }
 
@@ -314,6 +318,7 @@
   width:  18px;
   height: 18px;
   stroke: var(--texto-secundario);
+  fill:   none;
 }
 
 
@@ -325,13 +330,13 @@
   display:         flex;
   justify-content: space-between;
   align-items:     center;
-  margin-bottom:   22px;
+  margin-bottom:   var(--espaco-lg);
 }
 
 .checkbox-label {
   display:     flex;
   align-items: center;
-  gap:         7px;
+  gap:         8px;
   cursor:      pointer;
   font-size:   13px;
   color:       var(--texto-secundario);
@@ -339,8 +344,8 @@
 }
 
 .checkbox-label input[type="checkbox"] {
-  width:        15px;
-  height:       15px;
+  width:        16px;
+  height:       16px;
   accent-color: var(--cor-marca);
   cursor:       pointer;
 }
@@ -369,7 +374,7 @@
   border:        1px solid #fecaca;
   border-radius: var(--raio-pequeno);
   padding:       12px 14px;
-  margin-bottom: 16px;
+  margin-bottom: var(--espaco-md);
   font-size:     13px;
   color:         #b91c1c;
   line-height:   1.5;
@@ -380,6 +385,7 @@
   width:       18px;
   height:      18px;
   stroke:      #dc2626;
+  fill:        none;
   flex-shrink: 0;
   margin-top:  1px;
 }
@@ -390,7 +396,7 @@
 }
 
 .erro-mensagem--oculto {
-  display: none;
+  display: none !important;
 }
 
 
@@ -438,17 +444,18 @@
   width:  18px;
   height: 18px;
   stroke: #ffffff;
+  fill:   none;
 }
 
 .botao-entrar__icone {
-  width: 18px;
-  height: 18px;
+  width:       18px;
+  height:      18px;
   flex-shrink: 0;
 }
 
 .icone-loading {
   animation: girar 0.8s linear infinite;
-  color: #ffffff;
+  color:     #ffffff;
 }
 
 @keyframes girar {
@@ -464,7 +471,7 @@
   display:     flex;
   align-items: center;
   gap:         12px;
-  margin:      20px 0;
+  margin:      var(--espaco-lg) 0;
 }
 
 .divisor__linha {
@@ -492,7 +499,7 @@
   border:        1.5px solid var(--borda-cor);
   border-radius: var(--raio-pequeno);
   font-size:     14px;
-  font-weight:   500;
+  font-weight:   600;
   cursor:        pointer;
   transition:    background   var(--transicao),
                  border-color var(--transicao);
@@ -510,10 +517,10 @@
 
 .form-rodape {
   text-align:  center;
-  margin-top:  22px;
+  margin-top:  var(--espaco-lg);
   font-size:   12px;
   color:       var(--texto-secundario);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 .form-rodape a {
@@ -522,95 +529,41 @@
 }
 
 
-/* ================================================= */
-/* RESPONSIVIDADE */
-/* ================================================= */
+/* =========================================================
+   13. RESPONSIVIDADE (MOBILE-FIRST)
+   ========================================================= */
 
-/* CELULARES PEQUENOS */
-@media (max-width: 480px) {
-
-    .form-card {
-        padding: 24px;
-    }
-
-    .form-logo__nome {
-        font-size: 1.75rem;
-    }
-
-    .form-titulo {
-        font-size: 1.5rem;
-    }
-
+/* Mobile Padrão (< 480px) */
+@media (max-width: 479px) {
+  .form-card {
+    padding: var(--espaco-lg) var(--espaco-md);
+  }
+  .form-logo__nome {
+    font-size: 28px;
+  }
+  .form-titulo {
+    font-size: 18px;
+  }
 }
 
-/* CELULARES GRANDES */
-@media (min-width: 481px) and (max-width: 767px) {
-
-    .form-card {
-        max-width: 420px;
-        width: 100%;
-    }
-
+/* Tablet (>= 768px) */
+@media (min-width: 768px) {
+  .login-wrapper {
+    padding: var(--espaco-xl);
+  }
+  .form-card {
+    max-width: 440px;
+    padding: var(--espaco-xl) 36px;
+  }
+  .form-logo__nome {
+    font-size: 34px;
+  }
 }
 
-/* TABLETS */
-@media (min-width: 768px) and (max-width: 1023px) {
-
-    .login-wrapper {
-        padding: 32px;
-    }
-
-    .form-card {
-        max-width: 520px;
-        width: 100%;
-        padding: 40px;
-    }
-
-    .form-logo__nome {
-        font-size: 2.2rem;
-    }
-
-    .form-titulo {
-        font-size: 2rem;
-    }
-
-}
-
-/* NOTEBOOKS */
-@media (min-width: 1024px) and (max-width: 1365px) {
-
-    .login-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 32px;
-    }
-
-    .form-card {
-        max-width: 460px;
-    }
-
-}
-
-/* DESKTOPS GRANDES */
-@media (min-width: 1366px) {
-
-    .login-wrapper {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 40px;
-    }
-
-    .form-card {
-        max-width: 480px;
-    }
-
-}
-
-/* MONITORES ULTRAWIDE */
-@media (min-width: 1920px) {
-
-    .login-wrapper {
-        max-width: 1600px;
-    }
-
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .form-card {
+    max-width: 460px;
+    padding: 44px 40px;
+  }
 }

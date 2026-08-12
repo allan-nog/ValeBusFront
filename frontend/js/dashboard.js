@@ -1,11 +1,22 @@
+/**
+ * dashboard.js — Lógica e Telemetria em Tempo Real (ValeBus)
+ * ─────────────────────────────────────────────────────────
+ * Módulos:
+ *  1. Relógio do Sistema em Tempo Real (TopBar CCO)
+ *  2. Controle do Mapa Leaflet (Frota de Santa Rita do Sapucaí)
+ *  3. Telemetria e Animação de Ônibus (Movimento GPS Simulado)
+ *  4. Filtro de Linhas Interativo na Legenda
+ *  5. Navegação Interativa (Cards -> Zoom no Ônibus com flyTo)
+ *  6. Controle das Gavetas (Sidebar Mobile e Painel Lateral)
+ */
+
 (function () {
   'use strict';
 
-  /* ══════════════════════════════════════════════════════
-     RELÓGIO
-     ══════════════════════════════════════════════════════ */
-
-  function atualizarHora() {
+  /* ──────────────────────────────────────────────────────────
+     1. RELÓGIO DO SISTEMA
+     ────────────────────────────────────────────────────────── */
+  function atualizarRelogio() {
     const el = document.getElementById('topbar-hora');
     if (!el) return;
     const agora = new Date();
@@ -14,91 +25,238 @@
     el.textContent = `${h}:${m}`;
   }
 
-  atualizarHora();
-  setInterval(atualizarHora, 5000);
+  atualizarRelogio();
+  setInterval(atualizarRelogio, 5000);
 
 
-  /* ══════════════════════════════════════════════════════
-     SIDEBAR — nav items
-     ══════════════════════════════════════════════════════ */
+  /* ──────────────────────────────────────────────────────────
+     2. DADOS DAS LINHAS E FROTA (Santa Rita do Sapucaí - MG)
+     ────────────────────────────────────────────────────────── */
+  const LINHAS = {
+    centro:     { id: 'L03', nome: 'Centro / ETE',       cor: '#22c55e' },
+    campus:     { id: 'L07', nome: 'Campus / FAI',       cor: '#2563eb' },
+    industrial: { id: 'L12', nome: 'Pq. Industrial',     cor: '#f97316' },
+    rodoviaria: { id: 'L15', nome: 'Rodoviária Central', cor: '#a855f7' }
+  };
 
-  const navItems = document.querySelectorAll('.nav__item[data-secao]');
+  const FROTA = [
+    { id: 'VB-101', chaveLinha: 'centro',     linha: LINHAS.centro,     posicao: [-22.2528, -45.7036], velocidade: 28, proximaParada: 'INATEL' },
+    { id: 'VB-102', chaveLinha: 'centro',     linha: LINHAS.centro,     posicao: [-22.2498, -45.7062], velocidade: 32, proximaParada: 'Praça da Matriz' },
+    { id: 'VB-201', chaveLinha: 'campus',     linha: LINHAS.campus,     posicao: [-22.2480, -45.6990], velocidade: 24, proximaParada: 'Praça da Bandeira' },
+    { id: 'VB-202', chaveLinha: 'campus',     linha: LINHAS.campus,     posicao: [-22.2465, -45.6968], velocidade: 35, proximaParada: 'FAI Campus II' },
+    { id: 'VB-301', chaveLinha: 'industrial', linha: LINHAS.industrial, posicao: [-22.2570, -45.7085], velocidade: 30, proximaParada: 'Distrito Industrial' },
+    { id: 'VB-302', chaveLinha: 'industrial', linha: LINHAS.industrial, posicao: [-22.2590, -45.7055], velocidade: 22, proximaParada: 'Av. Sinhá Moreira' },
+    { id: 'VB-401', chaveLinha: 'rodoviaria', linha: LINHAS.rodoviaria, posicao: [-22.2600, -45.7000], velocidade: 26, proximaParada: 'Terminal Rodoviário' },
+    { id: 'VB-402', chaveLinha: 'rodoviaria', linha: LINHAS.rodoviaria, posicao: [-22.2540, -45.7020], velocidade: 29, proximaParada: 'Bairro Alto' }
+  ];
 
-  navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(n => n.classList.remove('nav__item--ativo'));
-      item.classList.add('nav__item--ativo');
-      // fecha sidebar no mobile ao clicar num item
-      fecharSidebar();
+
+  /* ──────────────────────────────────────────────────────────
+     3. INICIALIZAÇÃO DO MAPA LEAFLET
+     ────────────────────────────────────────────────────────── */
+  const mapaContainer = document.getElementById('mapa');
+  if (!mapaContainer) return;
+
+  // Centro inicial: Santa Rita do Sapucaí
+  const map = L.map('mapa', {
+    zoomControl: true,
+    attributionControl: false
+  }).setView([-22.2528, -45.7036], 14);
+
+  // Tiles do OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(map);
+
+
+  /* ──────────────────────────────────────────────────────────
+     4. RENDERIZAÇÃO DOS MARCADORES SVG DE ÔNIBUS
+     ────────────────────────────────────────────────────────── */
+  const marcadoresMap = new Map();
+
+  function criarIconeBus(cor) {
+    const htmlIcone = `
+      <div class="bus-marker-container">
+        <div class="bus-marker" style="background-color: ${cor};">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
+            <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+            <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+          </svg>
+          <div class="bus-marker-pulse" style="color: ${cor};"></div>
+        </div>
+      </div>
+    `;
+
+    return L.divIcon({
+      html: htmlIcone,
+      className: '',
+      iconSize: [38, 38],
+      iconAnchor: [19, 19],
+      popupAnchor: [0, -18]
+    });
+  }
+
+  function renderizarMarcadores() {
+    FROTA.forEach(bus => {
+      const icone = criarIconeBus(bus.linha.cor);
+
+      const conteudoPopup = `
+        <div class="popup-onibus">
+          <div class="popup-onibus__header">
+            <span class="popup-onibus__id">${bus.id}</span>
+            <span class="popup-onibus__badge" style="background-color:${bus.linha.cor}">
+              ${bus.linha.id}
+            </span>
+          </div>
+          <div class="popup-onibus__linha">${bus.linha.nome}</div>
+          <div class="popup-onibus__detalhe">
+            <strong>Próxima Parada:</strong> ${bus.proximaParada}<br>
+            <strong>Velocidade:</strong> ${bus.velocidade} km/h<br>
+            <strong>GPS Status:</strong> Sinal excelente
+          </div>
+        </div>
+      `;
+
+      const marker = L.marker(bus.posicao, { icon: icone })
+        .addTo(map)
+        .bindPopup(conteudoPopup);
+
+      marcadoresMap.set(bus.id, { marker, bus });
+    });
+  }
+
+  renderizarMarcadores();
+
+
+  /* ──────────────────────────────────────────────────────────
+     5. SIMULAÇÃO DE MOVIMENTAÇÃO GPS
+     ────────────────────────────────────────────────────────── */
+  setInterval(() => {
+    marcadoresMap.forEach(({ marker, bus }) => {
+      const latAtual = marker.getLatLng().lat;
+      const lngAtual = marker.getLatLng().lng;
+
+      // Deslocamento suave aleatório
+      const deltaLat = (Math.random() - 0.5) * 0.0006;
+      const deltaLng = (Math.random() - 0.5) * 0.0006;
+
+      const novaLat = latAtual + deltaLat;
+      const novaLng = lngAtual + deltaLng;
+
+      marker.setLatLng([novaLat, novaLng]);
+
+      // Variação leve na velocidade simulada
+      bus.velocidade = Math.min(45, Math.max(15, bus.velocidade + Math.floor((Math.random() - 0.5) * 4)));
+    });
+  }, 3000);
+
+
+  /* ──────────────────────────────────────────────────────────
+     6. FILTRO INTERATIVO POR LINHA (LEGENDA)
+     ────────────────────────────────────────────────────────── */
+  const botoesFiltro = document.querySelectorAll('#filtros-legenda .mapa-legenda__item');
+
+  botoesFiltro.forEach(botao => {
+    botao.addEventListener('click', () => {
+      // Altera o estado visual dos botões de filtro
+      botoesFiltro.forEach(b => b.classList.remove('mapa-legenda__item--ativo'));
+      botao.classList.add('mapa-legenda__item--ativo');
+
+      const linhaSelecionada = botao.getAttribute('data-linha');
+      let totalVisivel = 0;
+
+      marcadoresMap.forEach(({ marker, bus }) => {
+        if (linhaSelecionada === 'todas' || bus.chaveLinha === linhaSelecionada) {
+          if (!map.hasLayer(marker)) map.addLayer(marker);
+          totalVisivel++;
+        } else {
+          if (map.hasLayer(marker)) map.removeLayer(marker);
+        }
+      });
+
+      // Atualiza o contador no resumo do painel
+      const elTotal = document.getElementById('total-onibus-ativo');
+      if (elTotal) elTotal.textContent = `${totalVisivel} / ${FROTA.length}`;
     });
   });
 
 
-  /* ══════════════════════════════════════════════════════
-     SIDEBAR HAMBÚRGUER (mobile)
-     ══════════════════════════════════════════════════════ */
+  /* ──────────────────────────────────────────────────────────
+     7. NAVEGAÇÃO INTERATIVA (Clique no Card -> flyTo no Mapa)
+     ────────────────────────────────────────────────────────── */
+  const cardsProximos = document.querySelectorAll('.proximo-card');
 
+  cardsProximos.forEach(card => {
+    card.addEventListener('click', () => {
+      const busId = card.getAttribute('data-bus-id');
+      const itemBus = marcadoresMap.get(busId);
+
+      if (itemBus) {
+        const { marker } = itemBus;
+        const latLng = marker.getLatLng();
+
+        // Faz o mapa voar suavemente até o ônibus selecionado
+        map.flyTo(latLng, 16, { animate: true, duration: 1.2 });
+        marker.openPopup();
+
+        // Se estiver no celular, fecha o painel lateral para mostrar o mapa
+        if (window.innerWidth < 1100) {
+          fecharPainel();
+        }
+      }
+    });
+  });
+
+
+  /* ──────────────────────────────────────────────────────────
+     8. GERENCIAMENTO DAS GAVETAS (SIDEBAR E PAINEL MOBILE)
+     ────────────────────────────────────────────────────────── */
   const sidebar      = document.getElementById('sidebar');
+  const painel       = document.getElementById('painel-lateral');
   const overlay      = document.getElementById('overlay');
   const btnMenu      = document.getElementById('btn-menu');
+  const btnPainel    = document.getElementById('btn-painel-flutuante');
+  const btnFecharP   = document.getElementById('btn-fechar-painel');
 
   function abrirSidebar() {
-    sidebar.classList.add('aberta');
-    overlay.classList.add('ativo');
-    btnMenu.setAttribute('aria-expanded', 'true');
-    // garante que o painel não fique aberto ao mesmo tempo
+    if (sidebar) sidebar.classList.add('aberta');
+    if (overlay) overlay.classList.add('ativo');
+    if (btnMenu) btnMenu.setAttribute('aria-expanded', 'true');
     fecharPainel();
   }
 
   function fecharSidebar() {
-    sidebar.classList.remove('aberta');
-    overlay.classList.remove('ativo');
-    btnMenu && btnMenu.setAttribute('aria-expanded', 'false');
+    if (sidebar) sidebar.classList.remove('aberta');
+    if (!painel || !painel.classList.contains('aberto')) {
+      if (overlay) overlay.classList.remove('ativo');
+    }
+    if (btnMenu) btnMenu.setAttribute('aria-expanded', 'false');
   }
-
-  if (btnMenu) {
-    btnMenu.addEventListener('click', () => {
-      const aberta = sidebar.classList.contains('aberta');
-      aberta ? fecharSidebar() : abrirSidebar();
-    });
-  }
-
-
-  /* ══════════════════════════════════════════════════════
-     PAINEL LATERAL — drawer (tablet + mobile)
-     ══════════════════════════════════════════════════════ */
-
-  const painel             = document.getElementById('painel-lateral');
-  const btnFecharPainel    = document.getElementById('btn-fechar-painel');
-  const btnPainelFlutuante = document.getElementById('btn-painel-flutuante');
 
   function abrirPainel() {
-    painel.classList.add('aberto');
-    overlay.classList.add('ativo');
-    // fecha sidebar se estiver aberta
+    if (painel) painel.classList.add('aberto');
+    if (overlay) overlay.classList.add('ativo');
     fecharSidebar();
   }
 
   function fecharPainel() {
-    painel.classList.remove('aberto');
-    // remove overlay apenas se sidebar também estiver fechada
-    if (!sidebar.classList.contains('aberta')) {
-      overlay.classList.remove('ativo');
+    if (painel) painel.classList.remove('aberto');
+    if (!sidebar || !sidebar.classList.contains('aberta')) {
+      if (overlay) overlay.classList.remove('ativo');
     }
   }
 
-  if (btnPainelFlutuante) {
-    btnPainelFlutuante.addEventListener('click', abrirPainel);
+  // Event Listeners das Gavetas
+  if (btnMenu) {
+    btnMenu.addEventListener('click', () => {
+      const aberta = sidebar && sidebar.classList.contains('aberta');
+      aberta ? fecharSidebar() : abrirSidebar();
+    });
   }
 
-  if (btnFecharPainel) {
-    btnFecharPainel.addEventListener('click', fecharPainel);
-  }
-
-
-  /* ══════════════════════════════════════════════════════
-     OVERLAY — fecha sidebar ou painel ao clicar fora
-     ══════════════════════════════════════════════════════ */
+  if (btnPainel) btnPainel.addEventListener('click', abrirPainel);
+  if (btnFecharP) btnFecharP.addEventListener('click', fecharPainel);
 
   if (overlay) {
     overlay.addEventListener('click', () => {
@@ -107,11 +265,7 @@
     });
   }
 
-
-  /* ══════════════════════════════════════════════════════
-     TECLA ESC — fecha qualquer coisa aberta
-     ══════════════════════════════════════════════════════ */
-
+  // Atalho Tecla ESC
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       fecharSidebar();
@@ -119,88 +273,13 @@
     }
   });
 
-
-  /* ══════════════════════════════════════════════════════
-     REDIMENSIONAMENTO — limpa estados ao voltar ao desktop
-     ══════════════════════════════════════════════════════ */
-
+  // Ajuste do tamanho do Leaflet ao redimensionar a janela
   window.addEventListener('resize', () => {
+    map.invalidateSize();
     if (window.innerWidth >= 1100) {
       fecharSidebar();
       fecharPainel();
     }
   });
-
-
-  /* ══════════════════════════════════════════════════════
-     MAPA LEAFLET
-     ══════════════════════════════════════════════════════ */
-
-  const map = L.map('mapa').setView([-22.2528, -45.7036], 14);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
-
-  // Corrige tamanho do mapa ao abrir/fechar painéis
-  function invalidarMapa() {
-    setTimeout(() => map.invalidateSize(), 300);
-  }
-
-  if (btnPainelFlutuante) btnPainelFlutuante.addEventListener('click', invalidarMapa);
-  if (btnFecharPainel)    btnFecharPainel.addEventListener('click', invalidarMapa);
-  if (btnMenu)            btnMenu.addEventListener('click', invalidarMapa);
-
-  const linhas = {
-    centro:     { nome: 'Centro',     cor: '#22c55e' },
-    campus:     { nome: 'Campus',     cor: '#2563eb' },
-    industrial: { nome: 'Industrial', cor: '#f97316' },
-    rodoviaria: { nome: 'Rodoviária', cor: '#a855f7' }
-  };
-
-  const onibus = [
-    { id: 'VB-101', linha: linhas.centro,     posicao: [-22.2528, -45.7036] },
-    { id: 'VB-102', linha: linhas.centro,     posicao: [-22.2498, -45.7062] },
-    { id: 'VB-103', linha: linhas.centro,     posicao: [-22.2550, -45.7001] },
-    { id: 'VB-201', linha: linhas.campus,     posicao: [-22.2480, -45.6990] },
-    { id: 'VB-202', linha: linhas.campus,     posicao: [-22.2465, -45.6968] },
-    { id: 'VB-301', linha: linhas.industrial, posicao: [-22.2570, -45.7085] },
-    { id: 'VB-302', linha: linhas.industrial, posicao: [-22.2590, -45.7055] },
-    { id: 'VB-401', linha: linhas.rodoviaria, posicao: [-22.2600, -45.7000] }
-  ];
-
-  const marcadores = [];
-
-  onibus.forEach(bus => {
-
-    const icone = L.divIcon({
-      className: '',
-      html: `<div class="bus-marker" style="background:${bus.linha.cor}">🚌</div>`,
-      iconSize: [42, 42],
-      iconAnchor: [21, 21]
-    });
-
-    const marker = L.marker(bus.posicao, { icon: icone })
-      .addTo(map)
-      .bindPopup(`
-        <strong>${bus.id}</strong><br>
-        Linha: ${bus.linha.nome}<br>
-        Status: Em operação
-      `);
-
-    marcadores.push(marker);
-
-  });
-
-  /* Movimento simulado */
-  setInterval(() => {
-    marcadores.forEach(marker => {
-      const atual = marker.getLatLng();
-      marker.setLatLng([
-        atual.lat + (Math.random() - 0.5) * 0.0008,
-        atual.lng + (Math.random() - 0.5) * 0.0008
-      ]);
-    });
-  }, 3000);
 
 })();

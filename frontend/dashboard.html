@@ -9,47 +9,53 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../css/tokens.css">
-  <link rel="stylesheet" href="../css/global.css">
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 
 <body>
 
-  <!-- Sprite de ícones (inline para acesso rápido) -->
+  <!-- Sprite de ícones (inline padronizado com o sistema) -->
   <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
 
+    <!-- Ônibus -->
     <symbol id="icone-onibus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
       <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
       <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
     </symbol>
 
+    <!-- Mapa -->
     <symbol id="icone-mapa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
       <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
     </symbol>
 
+    <!-- Linhas -->
     <symbol id="icone-linhas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"/>
       <line x1="3" y1="6"  x2="21" y2="6"/>
       <line x1="3" y1="18" x2="21" y2="18"/>
     </symbol>
 
+    <!-- Paradas -->
     <symbol id="icone-paradas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <line x1="12" y1="8" x2="12" y2="12"/>
       <line x1="12" y1="16" x2="12.01" y2="16"/>
     </symbol>
 
+    <!-- Alertas (sino) -->
     <symbol id="icone-sino" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
       <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
     </symbol>
 
+    <!-- Relatórios -->
     <symbol id="icone-relatorios" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2"/>
       <line x1="3"  y1="9"  x2="21" y2="9"/>
@@ -57,62 +63,69 @@
       <line x1="9"  y1="9"  x2="9"  y2="21"/>
     </symbol>
 
+    <!-- Configurações -->
     <symbol id="icone-config" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </symbol>
 
+    <!-- Sair -->
     <symbol id="icone-sair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
       <polyline points="16 17 21 12 16 7"/>
       <line x1="21" y1="12" x2="9" y2="12"/>
     </symbol>
 
+    <!-- Menu Hambúrguer -->
+    <symbol id="icone-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+
+    <!-- Fechar X -->
+    <symbol id="icone-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+
+    <!-- Chevron baixo -->
     <symbol id="icone-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="6 9 12 15 18 9"/>
     </symbol>
 
+    <!-- Share / Linhas ativas -->
     <symbol id="icone-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
       <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
     </symbol>
 
+    <!-- Relógio -->
     <symbol id="icone-relogio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <polyline points="12 6 12 12 16 14"/>
     </symbol>
 
-    <!-- Hambúrguer -->
-    <symbol id="icone-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="3" y1="6"  x2="21" y2="6"/>
-      <line x1="3" y1="12" x2="21" y2="12"/>
-      <line x1="3" y1="18" x2="21" y2="18"/>
-    </symbol>
-
-    <!-- X (fechar) -->
-    <symbol id="icone-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18"/>
-      <line x1="6" y1="6" x2="18" y2="18"/>
-    </symbol>
-
   </svg>
 
+  <!-- Overlay de fundo para gavetas mobile -->
+  <div class="sidebar-overlay" id="overlay" aria-hidden="true"></div>
 
   <!-- ═══════════════════════════════════════════════════════
-       LAYOUT PRINCIPAL
+       LAYOUT PRINCIPAL DO DASHBOARD
        ═══════════════════════════════════════════════════════ -->
   <div class="dashboard">
 
-
     <!-- ──────────────────────────────────────────────────────
-         SIDEBAR — Navegação lateral esquerda
+         SIDEBAR — Navegação lateral
          ────────────────────────────────────────────────────── -->
-    <aside class="sidebar" id="sidebar" aria-label="Menu de navegação">
+    <aside class="sidebar" id="sidebar">
 
+      <!-- Logo -->
       <div class="sidebar__logo">
-        <div class="sidebar__logo-icone">
-          <svg aria-hidden="true"><use href="#icone-onibus"/></svg>
+        <div class="sidebar__logo-icone" aria-hidden="true">
+          <svg><use href="#icone-onibus"/></svg>
         </div>
         <div class="sidebar__logo-texto">
           <span class="sidebar__logo-nome">ValeBus</span>
@@ -120,46 +133,48 @@
         </div>
       </div>
 
+      <!-- Navegação -->
       <nav class="sidebar__nav" aria-label="Navegação principal">
 
-        <a href="#" class="nav__item nav__item--ativo" data-secao="mapa" aria-current="page">
+        <button type="button" class="nav__item nav__item--ativo" data-secao="mapa" aria-current="page">
           <svg aria-hidden="true"><use href="#icone-mapa"/></svg>
           <span class="nav__label">Mapa</span>
-        </a>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="linhas">
+        <button type="button" class="nav__item" data-secao="linhas">
           <svg aria-hidden="true"><use href="#icone-linhas"/></svg>
           <span class="nav__label">Linhas</span>
-        </a>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="onibus">
+        <button type="button" class="nav__item" data-secao="onibus">
           <svg aria-hidden="true"><use href="#icone-onibus"/></svg>
           <span class="nav__label">Ônibus</span>
-        </a>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="paradas">
+        <button type="button" class="nav__item" data-secao="paradas">
           <svg aria-hidden="true"><use href="#icone-paradas"/></svg>
           <span class="nav__label">Paradas</span>
-        </a>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="alertas">
+        <button type="button" class="nav__item" data-secao="alertas">
           <svg aria-hidden="true"><use href="#icone-sino"/></svg>
           <span class="nav__label">Alertas</span>
-          <span class="nav__badge" aria-label="2 alertas">2</span>
-        </a>
+          <span class="nav__badge" aria-label="2 alertas ativos">2</span>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="relatorios">
+        <button type="button" class="nav__item" data-secao="relatorios">
           <svg aria-hidden="true"><use href="#icone-relatorios"/></svg>
           <span class="nav__label">Relatórios</span>
-        </a>
+        </button>
 
-        <a href="#" class="nav__item" data-secao="config">
+        <button type="button" class="nav__item" data-secao="config">
           <svg aria-hidden="true"><use href="#icone-config"/></svg>
           <span class="nav__label">Configurações</span>
-        </a>
+        </button>
 
       </nav>
 
+      <!-- Sair -->
       <div class="sidebar__sair">
         <a href="login.html" class="nav__item nav__item--sair">
           <svg aria-hidden="true"><use href="#icone-sair"/></svg>
@@ -175,23 +190,24 @@
          ────────────────────────────────────────────────────── -->
     <header class="topbar" role="banner">
 
-      <!-- Botão hambúrguer (visível em mobile) -->
-      <button class="topbar__menu-btn" id="btn-menu" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="sidebar">
-        <svg aria-hidden="true"><use href="#icone-menu"/></svg>
-      </button>
+      <!-- Esquerda: botão menu (mobile) + status -->
+      <div class="topbar__esquerda">
+        <button class="topbar__menu-btn" id="btn-menu" aria-label="Abrir menu de navegação" aria-expanded="false">
+          <svg aria-hidden="true"><use href="#icone-menu"/></svg>
+        </button>
 
-      <!-- Status do sistema -->
-      <div class="topbar__status">
-        <span class="topbar__status-dot" aria-hidden="true"></span>
-        <span>Sistema online</span>
+        <div class="topbar__status">
+          <span class="topbar__status-dot" aria-hidden="true"></span>
+          <span>Sistema online</span>
+        </div>
       </div>
 
       <!-- Direita: hora + sino + usuário -->
       <div class="topbar__direita">
 
-        <time class="topbar__hora" id="topbar-hora" aria-label="Hora atual">--:--</time>
+        <time class="topbar__hora" id="topbar-hora" aria-label="Hora atual">14:32</time>
 
-        <button class="topbar__sino" aria-label="Ver notificações (2 não lidas)">
+        <button class="topbar__sino" id="btn-sino-notificacoes" aria-label="Ver 2 notificações não lidas">
           <svg aria-hidden="true"><use href="#icone-sino"/></svg>
           <span class="topbar__badge-sino" aria-hidden="true">2</span>
         </button>
@@ -200,7 +216,7 @@
           <div class="topbar__avatar" aria-hidden="true">JD</div>
           <div class="topbar__usuario-info">
             <span class="topbar__usuario-nome">João da Silva</span>
-            <span class="topbar__usuario-cargo">Usuário</span>
+            <span class="topbar__usuario-cargo">Avaliador Feira</span>
           </div>
           <svg class="topbar__chevron" aria-hidden="true"><use href="#icone-chevron"/></svg>
         </button>
@@ -214,39 +230,54 @@
          ────────────────────────────────────────────────────── -->
     <main class="main" id="secao-mapa">
 
-      <h1 class="main__titulo">Mapa em tempo real</h1>
+      <div class="main__header">
+        <h1 class="main__titulo">Monitoramento de Frota em Tempo Real</h1>
+        <p class="main__subtitulo">Santa Rita do Sapucaí — Simulação GPS Telemetria</p>
+      </div>
 
-      <div class="mapa-container" role="region" aria-label="Mapa de ônibus em tempo real">
+      <!-- Container do mapa -->
+      <div class="mapa-container" role="region" aria-label="Mapa interativo de monitoramento de ônibus">
 
         <div id="mapa"></div>
 
-        <div class="mapa-legenda" aria-label="Legenda do mapa">
+        <!-- Legenda com Filtro Interativo por Linha -->
+        <div class="mapa-legenda">
 
-          <div class="mapa-legenda__titulo">ValeBus</div>
-
-          <div class="mapa-legenda__subtitulo">Linhas monitoradas</div>
-
-          <div class="mapa-legenda__item">
-            <span class="mapa-legenda__dot" style="background:#22c55e;" aria-hidden="true"></span>
-            Centro
+          <div class="mapa-legenda__header">
+            <span class="mapa-legenda__titulo">Linhas Monitoradas</span>
+            <span class="mapa-legenda__dica">Clique para filtrar</span>
           </div>
 
-          <div class="mapa-legenda__item">
-            <span class="mapa-legenda__dot" style="background:#2563eb;" aria-hidden="true"></span>
-            Campus
+          <div class="mapa-legenda__filtros" id="filtros-legenda">
+
+            <button type="button" class="mapa-legenda__item mapa-legenda__item--ativo" data-linha="todas">
+              <span class="mapa-legenda__dot" style="background:#0f172a;"></span>
+              <strong>Todas as Linhas</strong>
+            </button>
+
+            <button type="button" class="mapa-legenda__item" data-linha="centro">
+              <span class="mapa-legenda__dot" style="background:#22c55e;"></span>
+              <span>L03 Centro / INATEL</span>
+            </button>
+
+            <button type="button" class="mapa-legenda__item" data-linha="campus">
+              <span class="mapa-legenda__dot" style="background:#2563eb;"></span>
+              <span>L07 Campus / FAI</span>
+            </button>
+
+            <button type="button" class="mapa-legenda__item" data-linha="industrial">
+              <span class="mapa-legenda__dot" style="background:#f97316;"></span>
+              <span>L12 Pq. Industrial</span>
+            </button>
+
+            <button type="button" class="mapa-legenda__item" data-linha="rodoviaria">
+              <span class="mapa-legenda__dot" style="background:#a855f7;"></span>
+              <span>L15 Rodoviária</span>
+            </button>
+
           </div>
 
-          <div class="mapa-legenda__item">
-            <span class="mapa-legenda__dot" style="background:#f97316;" aria-hidden="true"></span>
-            Industrial
-          </div>
-
-          <div class="mapa-legenda__item">
-            <span class="mapa-legenda__dot" style="background:#a855f7;" aria-hidden="true"></span>
-            Rodoviária
-          </div>
-
-        </div>
+        </div><!-- /mapa-legenda -->
 
       </div><!-- /mapa-container -->
 
@@ -256,86 +287,87 @@
     <!-- ──────────────────────────────────────────────────────
          PAINEL LATERAL DIREITO
          ────────────────────────────────────────────────────── -->
-    <aside class="painel" id="painel-lateral" aria-label="Informações do sistema">
+    <aside class="painel" id="painel-lateral" aria-label="Informações detalhadas da operação">
 
-      <!-- Botão fechar (visível no tablet/mobile) -->
-      <button class="painel__fechar" id="btn-fechar-painel" aria-label="Fechar painel">
+      <!-- Botão fechar painel no mobile/tablet -->
+      <button class="painel__fechar" id="btn-fechar-painel" aria-label="Fechar painel de informações">
         <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
       </button>
 
       <!-- Próximos ônibus -->
       <section aria-labelledby="titulo-proximos">
-        <h2 class="painel__secao-titulo" id="titulo-proximos">Próximos ônibus</h2>
+        <h2 class="painel__secao-titulo" id="titulo-proximos">Próximos ônibus por Parada</h2>
 
         <div class="proximos-lista">
 
-          <div class="proximo-card" role="article" aria-label="Linha L03 Centro, chegando em 2 minutos">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l03" aria-label="Linha L03">L03</div>
-            <span class="proximo-card__nome-linha">Centro</span>
-            <span class="proximo-card__parada">INATEL<br>
-              <span class="proximo-distancia">350 m</span>
-            </span>
+          <!-- L03 Centro (Clique centraliza no ônibus VB-101) -->
+          <article class="proximo-card" data-bus-id="VB-101" role="button" tabindex="0" aria-label="Linha L03 Centro, chegando em 2 minutos. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge proximo-card__linha-badge--l03">L03</div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Centro / ETE</span>
+              <span class="proximo-card__parada">Parada INATEL <strong class="proximo-distancia">(350m)</strong></span>
+            </div>
             <div class="proximo-card__lado-direito">
-              <svg class="proximo-card__icone-onibus" aria-hidden="true"><use href="#icone-onibus"/></svg>
               <span class="proximo-card__tempo" id="tempo-l03">2 min</span>
               <span class="status-badge status-badge--horario">No horário</span>
             </div>
-          </div>
+          </article>
 
-          <div class="proximo-card" role="article" aria-label="Linha L07 São João, chegando em 4 minutos, atrasado">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l07" aria-label="Linha L07">L07</div>
-            <span class="proximo-card__nome-linha">São João</span>
-            <span class="proximo-card__parada">Praça da Bandeira<br>
-              <span class="proximo-distancia">500 m</span>
-            </span>
+          <!-- L07 Campus -->
+          <article class="proximo-card" data-bus-id="VB-201" role="button" tabindex="0" aria-label="Linha L07 São João, chegando em 4 minutos. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge proximo-card__linha-badge--l07">L07</div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Campus / FAI</span>
+              <span class="proximo-card__parada">Praça da Bandeira <strong class="proximo-distancia">(500m)</strong></span>
+            </div>
             <div class="proximo-card__lado-direito">
-              <svg class="proximo-card__icone-onibus" aria-hidden="true"><use href="#icone-onibus"/></svg>
               <span class="proximo-card__tempo" id="tempo-l07">4 min</span>
               <span class="status-badge status-badge--atrasado">Atrasado</span>
             </div>
-          </div>
+          </article>
 
-          <div class="proximo-card" role="article" aria-label="Linha L12 Bairro Alto, chegando em 6 minutos, adiantado">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l12" aria-label="Linha L12">L12</div>
-            <span class="proximo-card__nome-linha">Bairro Alto</span>
-            <span class="proximo-card__parada">Parque Industrial<br>
-              <span class="proximo-distancia">800 m</span>
-            </span>
+          <!-- L12 Bairro Alto -->
+          <article class="proximo-card" data-bus-id="VB-301" role="button" tabindex="0" aria-label="Linha L12 Pq. Industrial, chegando em 6 minutos. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge proximo-card__linha-badge--l12">L12</div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Industrial</span>
+              <span class="proximo-card__parada">Distrito Industrial <strong class="proximo-distancia">(800m)</strong></span>
+            </div>
             <div class="proximo-card__lado-direito">
-              <svg class="proximo-card__icone-onibus" aria-hidden="true"><use href="#icone-onibus"/></svg>
               <span class="proximo-card__tempo" id="tempo-l12">6 min</span>
               <span class="status-badge status-badge--adiantado">Adiantado</span>
             </div>
-          </div>
+          </article>
 
-        </div>
+        </div><!-- /proximos-lista -->
 
-        <button class="painel__ver-todos" aria-label="Ver todos os próximos ônibus">
-          Ver todos os próximos
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <button class="painel__ver-todos" id="btn-ver-todos" aria-label="Ver todas as linhas e frota completa">
+          Ver todas as 8 unidades da frota
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 6h10M9 2l4 4-4 4"/>
           </svg>
         </button>
       </section>
 
-      <!-- Resumo do sistema -->
+      <!-- Resumo da Operação -->
       <section aria-labelledby="titulo-resumo">
-        <h2 class="painel__secao-titulo" id="titulo-resumo">Resumo do sistema</h2>
+        <h2 class="painel__secao-titulo" id="titulo-resumo">Resumo da Operação</h2>
 
         <div class="resumo-lista">
 
+          <!-- Ônibus ativos -->
           <div class="resumo-item">
             <div class="resumo-item__icone resumo-item__icone--onibus" aria-hidden="true">
               <svg><use href="#icone-onibus"/></svg>
             </div>
             <div class="resumo-item__info">
-              <p class="resumo-item__label">Ônibus ativos</p>
-              <p class="resumo-item__valor">8</p>
+              <p class="resumo-item__label">Ônibus em circulação</p>
+              <p class="resumo-item__valor" id="total-onibus-ativo">8 / 8</p>
             </div>
-            <span class="resumo-item__tag resumo-item__tag--online">online</span>
+            <span class="resumo-item__tag resumo-item__tag--online">100% online</span>
           </div>
 
+          <!-- Linhas ativas -->
           <div class="resumo-item">
             <div class="resumo-item__icone resumo-item__icone--linhas" aria-hidden="true">
               <svg><use href="#icone-share"/></svg>
@@ -344,52 +376,50 @@
               <p class="resumo-item__label">Linhas ativas</p>
               <p class="resumo-item__valor">4</p>
             </div>
-            <span class="resumo-item__tag resumo-item__tag--operacao">em operação</span>
+            <span class="resumo-item__tag resumo-item__tag--operacao">Em operação</span>
           </div>
 
+          <!-- Intervalo Médio -->
           <div class="resumo-item">
             <div class="resumo-item__icone resumo-item__icone--chegadas" aria-hidden="true">
               <svg><use href="#icone-relogio"/></svg>
             </div>
             <div class="resumo-item__info">
-              <p class="resumo-item__label">Próximas chegadas</p>
-              <p class="resumo-item__valor">3</p>
-              <p class="resumo-item__sub">nos próximos 5 min</p>
+              <p class="resumo-item__label">Frequência média</p>
+              <p class="resumo-item__valor">12 min</p>
+              <p class="resumo-item__sub">Horário de pico ativo</p>
             </div>
           </div>
 
-        </div>
+        </div><!-- /resumo-lista -->
       </section>
 
-    </aside>
+    </aside><!-- /painel -->
 
 
     <!-- ──────────────────────────────────────────────────────
          RODAPÉ
          ────────────────────────────────────────────────────── -->
     <footer class="rodape">
-      <span>© 2025 ValeBus — Todos os direitos reservados.</span>
+      <span>© 2026 ValeBus — Plataforma Tecnológica Santa Rita do Sapucaí.</span>
       <div class="rodape__links">
-        <span>Versão 1.0.0</span>
-        <span class="rodape__sep">|</span>
-        <a href="#">Política de Privacidade</a>
+        <span>Versão 1.2.0 (Feira Tech)</span>
         <span class="rodape__sep">|</span>
         <a href="#">Termos de Uso</a>
+        <span class="rodape__sep">|</span>
+        <a href="#">Privacidade</a>
       </div>
     </footer>
 
   </div><!-- /dashboard -->
 
-  <!-- Overlay de fundo (sidebar/painel no mobile) -->
-  <div class="sidebar-overlay" id="overlay" aria-hidden="true"></div>
-
-  <!-- Botão flutuante para abrir o painel no tablet/mobile -->
-  <button class="btn-painel-flutuante" id="btn-painel-flutuante" aria-label="Ver próximos ônibus e resumo do sistema">
-    <svg aria-hidden="true"><use href="#icone-sino"/></svg>
+  <!-- Botão Flutuante de Telemetria (Mobile / Tablet) -->
+  <button class="btn-painel-flutuante" id="btn-painel-flutuante" aria-label="Abrir resumo da operação">
+    <svg aria-hidden="true"><use href="#icone-onibus"/></svg>
   </button>
 
+  <!-- Bibliotecas de Terceiros e Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="../js/dashboard.js"></script>
-
+  <script src="js/dashboard.js"></script>
 </body>
 </html>

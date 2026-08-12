@@ -1,8 +1,11 @@
 /*
- * tokens.css — Design System do SRS Bus
+ * tokens.css — Design System do ValeBus (SRS Bus)
  * ─────────────────────────────────────
- * Variáveis globais de design: cores, fontes, espaçamentos e bordas.
+ * Variáveis globais de design: cores, fontes, escala de espaçamentos, bordas e sombras.
  */
+
+/* Importação da fonte Inter via Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
 
@@ -33,8 +36,18 @@
   --raio-medio:          12px;
   --raio-grande:         20px;
 
+  /* ── ESCALA DE ESPAÇAMENTOS (SPACING SCALE) ───────────── */
+  --espaco-3xs:          2px;
+  --espaco-2xs:          4px;
+  --espaco-xs:           8px;
+  --espaco-sm:           12px;
+  --espaco-md:           16px;
+  --espaco-lg:           24px;
+  --espaco-xl:           32px;
+  --espaco-2xl:          48px;
+
   /* ── TIPOGRAFIA ───────────────────────────────────────── */
-  --fonte-principal:     'Inter', 'Segoe UI', system-ui, sans-serif;
+  --fonte-principal:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --tamanho-pequeno:     12px;
   --tamanho-normal:      14px;
   --tamanho-medio:       16px;
@@ -42,8 +55,9 @@
   --tamanho-titulo:      28px;
 
   /* ── SOMBRAS ──────────────────────────────────────────── */
-  --sombra-card:         0 4px 24px rgba(0, 0, 0, 0.10);
+  --sombra-card:         0 4px 24px rgba(0, 0, 0, 0.08);
   --sombra-botao:        0 4px 14px rgba(26, 111, 212, 0.35);
+  --sombra-foco:         0 0 0 3px rgba(26, 111, 212, 0.25);
 
   /* ── TRANSIÇÕES ───────────────────────────────────────── */
   --transicao:           0.18s ease;

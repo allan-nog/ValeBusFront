@@ -1,17 +1,17 @@
 /*
- * dashboard.css — Tela Principal do ValeBus
+ * dashboard.css — Painel Principal ValeBus
  * ───────────────────────────────────────────
- * Layout responsivo: sidebar + topbar + main + painel
+ * Layout responsivo: Sidebar + Topbar + Main (Mapa Leaflet) + Painel
  *
- * Breakpoints:
- *   mobile  : < 768px   → topbar + bottom-nav + painel oculto
- *   tablet  : 768–1099px → sidebar colapsada (64px) + sem painel
- *   desktop : ≥ 1100px   → layout completo de 3 colunas
+ * BREAKPOINTS:
+ *   mobile  : < 768px   → Topbar compacta + Painel estilo Bottom Sheet + Drawer Sidebar
+ *   tablet  : 768–1099px → Sidebar retrátil + Painel como Drawer Direito + Botão Flutuante
+ *   desktop : ≥ 1100px   → Grid de 3 colunas completo
  */
 
 
 /* ═══════════════════════════════════════════════════════════
-   LAYOUT GERAL
+   1. ESTRUTURA GERAL DO DASHBOARD (GRID)
    ═══════════════════════════════════════════════════════════ */
 
 .dashboard {
@@ -24,19 +24,22 @@
     "sidebar rodape rodape";
   min-height: 100vh;
   background-color: var(--fundo-pagina);
+  color: var(--texto-principal);
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   OVERLAY — fundo escuro ao abrir sidebar no mobile
+   2. OVERLAY ESCURO PARA DRAWER MOBILE/TABLET
    ═══════════════════════════════════════════════════════════ */
 
 .sidebar-overlay {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(3px);
   z-index: 199;
+  transition: opacity var(--transicao);
 }
 
 .sidebar-overlay.ativo {
@@ -45,7 +48,7 @@
 
 
 /* ═══════════════════════════════════════════════════════════
-   SIDEBAR
+   3. SIDEBAR (MENU LATERAL ESQUERDO)
    ═══════════════════════════════════════════════════════════ */
 
 .sidebar {
@@ -57,24 +60,26 @@
   top: 0;
   height: 100vh;
   overflow: hidden;
-  transition: width var(--transicao), transform var(--transicao);
+  transition: transform var(--transicao), width var(--transicao);
   z-index: 200;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Logo da Sidebar */
 .sidebar__logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   min-height: var(--topbar-altura);
-  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .sidebar__logo-icone {
   width: 40px;
   height: 40px;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: var(--raio-pequeno);
   display: flex;
   align-items: center;
@@ -85,7 +90,8 @@
 .sidebar__logo-icone svg {
   width: 22px;
   height: 22px;
-  stroke: #fff;
+  stroke: #ffffff;
+  fill: none;
 }
 
 .sidebar__logo-texto {
@@ -97,26 +103,25 @@
 
 .sidebar__logo-nome {
   font-size: 18px;
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: #ffffff;
   line-height: 1.2;
 }
 
 .sidebar__logo-cidade {
   font-size: 11px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.2;
 }
 
-/* Navegação */
+/* Itens de Navegação */
 .sidebar__nav {
   flex: 1;
   padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .nav__item {
@@ -125,7 +130,7 @@
   gap: 12px;
   padding: 11px 14px;
   border-radius: var(--raio-pequeno);
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.8);
   font-size: var(--tamanho-normal);
   font-weight: 500;
   cursor: pointer;
@@ -135,42 +140,33 @@
   background: none;
   width: 100%;
   text-align: left;
-  position: relative;
   white-space: nowrap;
-  overflow: hidden;
 }
 
 .nav__item:hover {
-  background-color: rgba(255,255,255,0.12);
-  color: #fff;
-  text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
 }
 
 .nav__item--ativo {
-  background-color: rgba(255,255,255,0.18);
-  color: #fff;
-  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: inset 4px 0 0 #ffffff;
 }
 
 .nav__item svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   stroke: currentColor;
   fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.nav__label {
-  transition: opacity var(--transicao);
 }
 
 .nav__badge {
   margin-left: auto;
   background-color: var(--cor-erro);
-  color: #fff;
+  color: #ffffff;
   font-size: 10px;
   font-weight: 700;
   min-width: 18px;
@@ -180,27 +176,25 @@
   align-items: center;
   justify-content: center;
   padding: 0 5px;
-  flex-shrink: 0;
 }
 
-/* Sair */
 .sidebar__sair {
   padding: 12px;
-  border-top: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .nav__item--sair {
-  color: rgba(255,100,100,0.85);
+  color: #fca5a5;
 }
 
 .nav__item--sair:hover {
-  background-color: rgba(220,38,38,0.18);
-  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ffffff;
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   TOPBAR
+   4. TOPBAR (BARRA SUPERIOR)
    ═══════════════════════════════════════════════════════════ */
 
 .topbar {
@@ -211,25 +205,29 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  gap: 16px;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-/* Botão hambúrguer — oculto no desktop */
+.topbar__esquerda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .topbar__menu-btn {
-  display: none;
-  width: 36px;
-  height: 36px;
+  display: none; /* Visível só mobile/tablet */
+  width: 38px;
+  height: 38px;
   border-radius: var(--raio-pequeno);
   background-color: var(--fundo-campo);
-  border: none;
+  border: 1px solid var(--borda-cor);
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: background-color var(--transicao);
+  color: var(--texto-principal);
+  transition: background var(--transicao);
 }
 
 .topbar__menu-btn:hover {
@@ -239,11 +237,7 @@
 .topbar__menu-btn svg {
   width: 20px;
   height: 20px;
-  stroke: var(--texto-principal);
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: currentColor;
 }
 
 .topbar__status {
@@ -251,7 +245,7 @@
   align-items: center;
   gap: 8px;
   font-size: var(--tamanho-normal);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--texto-principal);
 }
 
@@ -260,14 +254,13 @@
   height: 10px;
   border-radius: 50%;
   background-color: var(--cor-sucesso);
-  box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
-  animation: pulsar 2s ease-in-out infinite;
-  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+  animation: pulsar-status 2s ease-in-out infinite;
 }
 
-@keyframes pulsar {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(22,163,74,0.2); }
-  50%       { box-shadow: 0 0 0 6px rgba(22,163,74,0.08); }
+@keyframes pulsar-status {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25); }
+  50%       { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0.08); }
 }
 
 .topbar__direita {
@@ -277,26 +270,26 @@
 }
 
 .topbar__hora {
-  font-size: var(--tamanho-medio);
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--texto-principal);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .topbar__sino {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background-color: var(--fundo-campo);
-  border: none;
+  border: 1px solid var(--borda-cor);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transicao);
-  flex-shrink: 0;
+  color: var(--texto-principal);
+  transition: background var(--transicao);
 }
 
 .topbar__sino:hover {
@@ -306,28 +299,24 @@
 .topbar__sino svg {
   width: 18px;
   height: 18px;
-  stroke: var(--texto-principal);
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: currentColor;
 }
 
 .topbar__badge-sino {
   position: absolute;
-  top: 3px;
-  right: 3px;
+  top: 2px;
+  right: 2px;
   width: 16px;
   height: 16px;
   background-color: var(--cor-erro);
-  color: #fff;
+  color: #ffffff;
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 800;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
+  border: 2px solid #ffffff;
 }
 
 .topbar__usuario {
@@ -335,9 +324,8 @@
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: var(--raio-pequeno);
-  transition: background-color var(--transicao);
   border: none;
   background: none;
 }
@@ -350,14 +338,13 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background-color: var(--cor-marca);
-  color: #fff;
+  background: linear-gradient(135deg, var(--cor-marca) 0%, var(--cor-marca-escura) 100%);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .topbar__usuario-info {
@@ -371,54 +358,60 @@
   font-weight: 600;
   color: var(--texto-principal);
   line-height: 1.2;
-  white-space: nowrap;
 }
 
 .topbar__usuario-cargo {
   font-size: 11px;
   color: var(--texto-secundario);
-  line-height: 1.2;
 }
 
 .topbar__chevron {
   width: 14px;
   height: 14px;
   stroke: var(--texto-secundario);
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   ÁREA PRINCIPAL (MAPA)
+   5. ÁREA PRINCIPAL DO MAPA (MAIN)
    ═══════════════════════════════════════════════════════════ */
 
 .main {
   grid-area: main;
-  padding: 24px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   overflow: hidden;
-  min-width: 0; /* impede overflow no grid */
+  min-width: 0;
+}
+
+.main__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .main__titulo {
   font-size: var(--tamanho-grande);
-  font-weight: 700;
+  font-weight: 800;
   color: var(--texto-principal);
+}
+
+.main__subtitulo {
+  font-size: 13px;
+  color: var(--texto-secundario);
 }
 
 .mapa-container {
   flex: 1;
-  background-color: #e8eef4;
-  border-radius: var(--raio-medio);
+  background-color: #cbd5e1;
+  border-radius: var(--raio-grande);
   border: 1px solid var(--borda-cor);
   position: relative;
   overflow: hidden;
-  min-height: 360px;
+  min-height: 420px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 #mapa {
@@ -429,50 +422,86 @@
   z-index: 1;
 }
 
-.leaflet-container {
-  background: #e8eef4;
+/* Customização dos Controles do Leaflet */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border-radius: var(--raio-pequeno) !important;
+  overflow: hidden;
 }
 
-.leaflet-control-container {
-  z-index: 900;
+.leaflet-control-zoom a {
+  background-color: #ffffff !important;
+  color: var(--texto-principal) !important;
+  border-bottom: 1px solid var(--borda-cor) !important;
 }
 
-/* Legenda */
+
+/* Legenda e Filtros do Mapa */
 .mapa-legenda {
   position: absolute;
   top: 16px;
-  left: 16px;
-  background-color: rgba(255,255,255,0.95);
+  right: 16px;
+  background-color: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
   border: 1px solid var(--borda-cor);
-  border-radius: var(--raio-pequeno);
-  padding: 12px 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: var(--raio-medio);
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   z-index: 1000;
+  max-width: 240px;
+}
+
+.mapa-legenda__header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
 }
 
 .mapa-legenda__titulo {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--texto-principal);
-  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.mapa-legenda__subtitulo {
+.mapa-legenda__dica {
   font-size: 10px;
-  font-weight: 600;
   color: var(--texto-secundario);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
+}
+
+.mapa-legenda__filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .mapa-legenda__item {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--raio-pequeno);
   font-size: 12px;
   color: var(--texto-principal);
-  margin-bottom: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transicao), border var(--transicao);
+  width: 100%;
+}
+
+.mapa-legenda__item:hover {
+  background-color: var(--fundo-campo);
+}
+
+.mapa-legenda__item--ativo {
+  background-color: #ffffff;
+  border-color: var(--cor-marca);
+  box-shadow: 0 2px 6px rgba(26, 111, 212, 0.15);
+  font-weight: 700;
 }
 
 .mapa-legenda__dot {
@@ -483,31 +512,101 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   MARCADORES DOS ÔNIBUS
-   ═══════════════════════════════════════════════════════════ */
+/* Marcadores Customizados de Ônibus no Leaflet */
+.bus-marker-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .bus-marker {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  border: 3px solid #fff;
-  box-shadow: 0 4px 14px rgba(0,0,0,.25);
-  animation: pulseBus 2s infinite;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
-@keyframes pulseBus {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.08); }
+.bus-marker svg {
+  width: 20px;
+  height: 20px;
+  stroke: #ffffff;
+  fill: none;
+}
+
+.bus-marker-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0.6;
+  animation: bus-pulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes bus-pulse {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+
+/* Popups do Leaflet Customizados */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--raio-medio) !important;
+  padding: 4px !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+}
+
+.popup-onibus {
+  padding: 8px 10px;
+  font-family: inherit;
+}
+
+.popup-onibus__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--borda-cor);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+
+.popup-onibus__badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.popup-onibus__id {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.popup-onibus__linha {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-marca);
+  margin-bottom: 4px;
+}
+
+.popup-onibus__detalhe {
+  font-size: 12px;
+  color: var(--texto-secundario);
+  line-height: 1.4;
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   PAINEL LATERAL DIREITO
+   6. PAINEL LATERAL DIREITO (METRICAS E LISTA)
    ═══════════════════════════════════════════════════════════ */
 
 .painel {
@@ -521,40 +620,23 @@
   gap: 28px;
 }
 
-.painel::-webkit-scrollbar        { width: 4px; }
-.painel::-webkit-scrollbar-track  { background: transparent; }
-.painel::-webkit-scrollbar-thumb  { background: var(--borda-cor); border-radius: 2px; }
-
-/* Botão fechar painel (mobile) */
 .painel__fechar {
-  display: none;
-  margin-left: auto;
+  display: none; /* Visível só mobile */
+  align-self: flex-end;
+  background: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: 50%;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background-color: var(--fundo-campo);
-  border: none;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  margin-bottom: -10px;
+  color: var(--texto-secundario);
 }
 
-.painel__fechar svg {
-  width: 16px;
-  height: 16px;
-  stroke: var(--texto-secundario);
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Próximos Ônibus */
 .painel__secao-titulo {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--texto-principal);
   margin-bottom: 14px;
 }
@@ -566,91 +648,80 @@
 }
 
 .proximo-card {
-  border: 1px solid var(--borda-cor);
+  border: 1.5px solid var(--borda-cor);
   border-radius: var(--raio-medio);
   padding: 12px 14px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-rows: auto auto;
-  gap: 2px 10px;
+  display: flex;
   align-items: center;
-  background-color: #fff;
-  transition: box-shadow var(--transicao), border-color var(--transicao);
+  gap: 12px;
+  background-color: #ffffff;
+  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
   cursor: pointer;
 }
 
 .proximo-card:hover {
   border-color: var(--cor-marca);
-  box-shadow: 0 2px 8px rgba(26,111,212,0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 111, 212, 0.12);
 }
 
 .proximo-card__linha-badge {
-  grid-row: 1 / 3;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--raio-pequeno);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
-  color: #fff;
+  color: #ffffff;
   flex-shrink: 0;
-  align-self: center;
 }
 
-.proximo-card__linha-badge--l03 { background-color: #3b82f6; }
-.proximo-card__linha-badge--l07 { background-color: #f59e0b; }
-.proximo-card__linha-badge--l12 { background-color: #22c55e; }
+.proximo-card__linha-badge--l03 { background-color: #22c55e; }
+.proximo-card__linha-badge--l07 { background-color: #2563eb; }
+.proximo-card__linha-badge--l12 { background-color: #f97316; }
+
+.proximo-card__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 .proximo-card__nome-linha {
-  font-size: var(--tamanho-normal);
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--texto-principal);
-  line-height: 1.3;
 }
 
 .proximo-card__parada {
   font-size: 12px;
   color: var(--texto-secundario);
-  line-height: 1.3;
 }
 
 .proximo-card__lado-direito {
-  grid-row: 1 / 3;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
-  align-self: center;
+  gap: 2px;
 }
 
 .proximo-card__tempo {
   font-size: 15px;
-  font-weight: 700;
-  color: var(--texto-principal);
-}
-
-.proximo-card__icone-onibus {
-  width: 20px;
-  height: 20px;
-  stroke: var(--cor-marca);
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  font-weight: 800;
+  color: var(--cor-marca);
 }
 
 .status-badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
-.status-badge--horario  { color: #2563eb; background: #eff6ff; }
-.status-badge--atrasado { color: #d97706; background: #fffbeb; }
-.status-badge--adiantado{ color: #16a34a; background: #f0fdf4; }
+.status-badge--horario  { color: #166534; background: #dcfce7; }
+.status-badge--atrasado { color: #9a3412; background: #ffedd5; }
+.status-badge--adiantado{ color: #1e40af; background: #dbeafe; }
 
 .proximo-distancia {
   font-size: 11px;
@@ -661,10 +732,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--tamanho-normal);
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--cor-marca);
-  margin-top: 4px;
+  margin-top: 10px;
   cursor: pointer;
   border: none;
   background: none;
@@ -675,7 +746,7 @@
   text-decoration: underline;
 }
 
-/* Resumo do sistema */
+/* Resumo da Operação */
 .resumo-lista {
   display: flex;
   flex-direction: column;
@@ -698,78 +769,69 @@
   flex-shrink: 0;
 }
 
-.resumo-item__icone--onibus   { background-color: #eff6ff; }
-.resumo-item__icone--linhas   { background-color: #f5f3ff; }
-.resumo-item__icone--chegadas { background-color: #f0fdf4; }
+.resumo-item__icone--onibus   { background-color: #dbeafe; }
+.resumo-item__icone--linhas   { background-color: #f3e8ff; }
+.resumo-item__icone--chegadas { background-color: #dcfce7; }
 
 .resumo-item__icone svg {
   width: 20px;
   height: 20px;
   fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
-.resumo-item__icone--onibus   svg { stroke: #3b82f6; }
-.resumo-item__icone--linhas   svg { stroke: #8b5cf6; }
-.resumo-item__icone--chegadas svg { stroke: #22c55e; }
+.resumo-item__icone--onibus   svg { stroke: #2563eb; }
+.resumo-item__icone--linhas   svg { stroke: #9333ea; }
+.resumo-item__icone--chegadas svg { stroke: #16a34a; }
 
 .resumo-item__info { flex: 1; }
 
 .resumo-item__label {
   font-size: 12px;
   color: var(--texto-secundario);
-  line-height: 1.2;
 }
 
 .resumo-item__valor {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: var(--texto-principal);
-  line-height: 1.2;
 }
 
 .resumo-item__sub {
   font-size: 11px;
   color: var(--texto-secundario);
-  line-height: 1.2;
 }
 
 .resumo-item__tag {
   font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
+  font-weight: 700;
+  padding: 3px 8px;
   border-radius: 4px;
 }
 
-.resumo-item__tag--online   { color: #16a34a; background: #f0fdf4; }
-.resumo-item__tag--operacao { color: var(--texto-secundario); background: var(--fundo-campo); }
+.resumo-item__tag--online   { color: #15803d; background: #dcfce7; }
+.resumo-item__tag--operacao { color: var(--texto-principal); background: var(--fundo-campo); }
 
 
 /* ═══════════════════════════════════════════════════════════
-   RODAPÉ
+   7. RODAPÉ
    ═══════════════════════════════════════════════════════════ */
 
 .rodape {
   grid-area: rodape;
   background-color: var(--fundo-card);
   border-top: 1px solid var(--borda-cor);
-  padding: 14px 24px;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
   color: var(--texto-secundario);
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .rodape__links {
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .rodape__links a {
@@ -782,58 +844,53 @@
 
 .rodape__sep {
   color: var(--borda-cor);
-  margin: 0 2px;
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   BOTÃO FLUTUANTE — abrir painel no tablet/mobile
+   8. BOTÃO FLUTUANTE DE TELEMETRIA (MOBILE / TABLET)
    ═══════════════════════════════════════════════════════════ */
 
 .btn-painel-flutuante {
   display: none;
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  width: 52px;
-  height: 52px;
+  bottom: 20px;
+  right: 20px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background-color: var(--cor-marca);
-  color: #fff;
+  color: #ffffff;
   border: none;
   cursor: pointer;
-  box-shadow: var(--sombra-botao);
+  box-shadow: 0 8px 24px rgba(26, 111, 212, 0.4);
   align-items: center;
   justify-content: center;
   z-index: 150;
-  transition: background-color var(--transicao), transform var(--transicao);
+  transition: transform var(--transicao);
 }
 
 .btn-painel-flutuante:hover {
-  background-color: var(--cor-marca-escura);
-  transform: scale(1.07);
+  transform: scale(1.08);
 }
 
 .btn-painel-flutuante svg {
-  width: 22px;
-  height: 22px;
-  stroke: #fff;
+  width: 24px;
+  height: 24px;
+  stroke: #ffffff;
   fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVIDADE — TABLET  (768px – 1099px)
+   9. RESPONSIVIDADE — TABLET (768px – 1099px)
    ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 1099px) {
 
   :root {
-    --sidebar-largura: 64px;
-    --painel-largura:  0px;
+    --sidebar-largura: 0px;
+    --painel-largura: 0px;
   }
 
   .dashboard {
@@ -845,7 +902,11 @@
       "rodape";
   }
 
-  /* Sidebar vira drawer também no tablet */
+  .topbar__menu-btn {
+    display: flex;
+  }
+
+  /* Sidebar como Drawer Esquerdo */
   .sidebar {
     position: fixed;
     top: 0;
@@ -853,20 +914,13 @@
     width: 260px;
     height: 100vh;
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 200;
   }
 
   .sidebar.aberta {
     transform: translateX(0);
   }
 
-  /* Botão hambúrguer visível no tablet */
-  .topbar__menu-btn {
-    display: flex;
-  }
-
-  /* Painel como drawer lateral direito */
+  /* Painel como Drawer Direito */
   .painel {
     position: fixed;
     top: 0;
@@ -875,8 +929,8 @@
     height: 100vh;
     z-index: 210;
     transform: translateX(100%);
-    transition: transform 0.25s ease;
-    box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+    box-shadow: -6px 0 24px rgba(0, 0, 0, 0.15);
+    transition: transform var(--transicao);
   }
 
   .painel.aberto {
@@ -887,20 +941,14 @@
     display: flex;
   }
 
-  /* Botão flutuante visível */
   .btn-painel-flutuante {
     display: flex;
-  }
-
-  /* Overlay ativo quando painel aberto */
-  .painel.aberto ~ .sidebar-overlay {
-    display: block;
   }
 }
 
 
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVIDADE — MOBILE  (< 768px)
+   10. RESPONSIVIDADE — MOBILE (< 768px)
    ═══════════════════════════════════════════════════════════ */
 
 @media (max-width: 767px) {
@@ -909,107 +957,44 @@
     --topbar-altura: 56px;
   }
 
-  .dashboard {
-    grid-template-columns: 1fr;
-    grid-template-rows: var(--topbar-altura) 1fr auto;
-    grid-template-areas:
-      "topbar"
-      "main"
-      "rodape";
+  .topbar {
+    padding: 0 16px;
   }
 
-  /* Sidebar como drawer */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    height: 100vh;
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    z-index: 200;
-  }
-
-  .sidebar.aberta {
-    transform: translateX(0);
-  }
-
-  /* Restaura logo e labels dentro do drawer */
-  .sidebar__logo-texto,
-  .nav__label,
-  .sidebar__logo-cidade {
-    display: flex;
-  }
-
-  .sidebar__logo-texto {
-    flex-direction: column;
-  }
-
-  .sidebar__logo {
-    justify-content: flex-start;
-    padding: 20px;
-  }
-
-  .sidebar__nav {
-    padding: 16px 12px;
-    align-items: stretch;
-  }
-
-  .nav__item {
-    width: 100%;
-    padding: 11px 14px;
-    justify-content: flex-start;
-    gap: 12px;
-  }
-
-  .nav__badge {
-    display: flex;
-    margin-left: auto;
-  }
-
-  .sidebar__sair {
-    padding: 12px;
-    display: block;
-  }
-
-  .nav__item--sair {
-    width: 100%;
-    padding: 11px 14px;
-    justify-content: flex-start;
-  }
-
-  /* Botão hambúrguer visível */
-  .topbar__menu-btn {
-    display: flex;
-  }
-
-  /* Esconde infos do usuário no mobile */
   .topbar__usuario-info,
   .topbar__chevron,
   .topbar__hora {
     display: none;
   }
 
-  .topbar {
-    padding: 0 16px;
-    gap: 12px;
-  }
-
-  /* Main com padding menor */
   .main {
-    padding: 16px;
-    gap: 12px;
+    padding: 14px 16px;
   }
 
   .main__titulo {
-    font-size: var(--tamanho-medio);
+    font-size: 18px;
   }
 
   .mapa-container {
-    min-height: 300px;
+    min-height: 320px;
   }
 
-  /* Painel como drawer de baixo pra cima */
+  /* Reposiciona Filtro de Legenda no Mobile */
+  .mapa-legenda {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    padding: 8px 12px;
+  }
+
+  .mapa-legenda__filtros {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  /* Painel como Bottom Sheet no Mobile */
   .painel {
     position: fixed;
     top: auto;
@@ -1017,56 +1002,20 @@
     left: 0;
     right: 0;
     width: 100%;
-    height: 85vh;
-    max-height: 85vh;
+    height: 80vh;
     border-radius: var(--raio-grande) var(--raio-grande) 0 0;
     border-left: none;
     border-top: 1px solid var(--borda-cor);
     transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 210;
   }
 
   .painel.aberto {
     transform: translateY(0);
   }
 
-  /* Alça de arraste visual no topo do painel */
-  .painel::before {
-    content: '';
-    display: block;
-    width: 40px;
-    height: 4px;
-    background-color: var(--borda-cor);
-    border-radius: 2px;
-    margin: 0 auto 16px;
-    flex-shrink: 0;
-  }
-
-  /* Botão flutuante */
-  .btn-painel-flutuante {
-    display: flex;
-    bottom: 16px;
-    right: 16px;
-  }
-
-  /* Rodapé simplificado */
   .rodape {
     flex-direction: column;
-    align-items: center;
+    gap: 6px;
     text-align: center;
-    padding: 12px 16px;
-    gap: 4px;
-  }
-}
-
-
-/* ═══════════════════════════════════════════════════════════
-   DESKTOP GRANDE  (≥ 1400px)
-   ═══════════════════════════════════════════════════════════ */
-
-@media (min-width: 1400px) {
-  :root {
-    --painel-largura: 360px;
   }
 }

@@ -1,19 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-     width="48"
-     height="48">
-
-    <circle
-        cx="24"
-        cy="24"
-        r="20"
-        fill="#2563eb"/>
-
-    <text
-        x="24"
-        y="30"
-        font-size="18"
-        text-anchor="middle">
-        🚌
-    </text>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36">
+  <circle cx="18" cy="18" r="16" fill="#1a6fd4" stroke="#ffffff" stroke-width="2.5"/>
+  <g transform="translate(6, 6)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 6v6"/>
+    <path d="M16 6v6"/>
+    <path d="M2 12h20"/>
+    <rect x="2" y="3" width="20" height="15" rx="3"/>
+    <path d="M6 18v2"/>
+    <path d="M18 18v2"/>
+    <circle cx="7" cy="15" r="1" fill="#ffffff"/>
+    <circle cx="17" cy="15" r="1" fill="#ffffff"/>
+  </g>
 </svg>

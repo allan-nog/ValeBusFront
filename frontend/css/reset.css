@@ -1,43 +1,51 @@
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
+/*
+ * global.css — Estilos Base Globais e Acessibilidade
+ */
+
 body {
-	line-height: 1;
+  font-family:        var(--fonte-principal);
+  font-size:          var(--tamanho-normal);
+  color:              var(--texto-principal);
+  background-color:   var(--fundo-pagina);
+  line-height:        1.6;
 }
-ol, ul {
-	list-style: none;
+
+/* ── ACESSIBILIDADE DE FOCO (TECLADO) ───────────────────── */
+:focus-visible {
+  outline: 2px solid var(--borda-foco);
+  outline-offset: 2px;
+  box-shadow: var(--sombra-foco);
 }
-blockquote, q {
-	quotes: none;
+
+/* Desativa outline padrão para cliques de mouse quando :focus-visible é suportado */
+:focus:not(:focus-visible) {
+  outline: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+/* ── LINKS ─────────────────────────────────────────────── */
+a {
+  color:           var(--cor-marca);
+  transition:      color var(--transicao);
 }
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
+
+a:hover {
+  color:           var(--cor-marca-escura);
+  text-decoration: underline;
+}
+
+/* ── FORMULÁRIOS & ELEMENTOS DE ENTRADA BASE ────────────── */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size:   inherit;
+  color:       inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+button::-moz-focus-inner {
+  border: 0;
 }
