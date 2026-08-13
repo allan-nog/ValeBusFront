@@ -153,12 +153,24 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     6. FILTRO INTERATIVO POR LINHA (LEGENDA)
+     6. FILTRO INTERATIVO POR LINHA (LEGENDA) + RECOLHIMENTO MOBILE
      ────────────────────────────────────────────────────────── */
   const botoesFiltro = document.querySelectorAll('#filtros-legenda .mapa-legenda__item');
+  const mapaLegenda = document.querySelector('.mapa-legenda');
+  const mapaLegendaHeader = document.querySelector('.mapa-legenda__header');
+
+  // Permite recolher/expandir o filtro da legenda no mobile ao clicar no cabeçalho
+  if (mapaLegendaHeader && mapaLegenda) {
+    mapaLegendaHeader.addEventListener('click', () => {
+      if (window.innerWidth < 768) {
+        mapaLegenda.classList.toggle('recolhida');
+      }
+    });
+  }
 
   botoesFiltro.forEach(botao => {
-    botao.addEventListener('click', () => {
+    botao.addEventListener('click', (e) => {
+      e.stopPropagation(); // Evita recolher ao clicar nos botões de filtro no mobile
       // Altera o estado visual dos botões de filtro
       botoesFiltro.forEach(b => b.classList.remove('mapa-legenda__item--ativo'));
       botao.classList.add('mapa-legenda__item--ativo');
@@ -187,30 +199,112 @@
      ────────────────────────────────────────────────────────── */
   const cardsProximos = document.querySelectorAll('.proximo-card');
 
+  function focarOnibusPorId(busId) {
+    const itemBus = marcadoresMap.get(busId);
+    if (itemBus) {
+      const { marker } = itemBus;
+      const latLng = marker.getLatLng();
+
+      // Garantir que a camada do marcador está visível se houver filtro
+      if (!map.hasLayer(marker)) {
+        map.addLayer(marker);
+      }
+
+      // Faz o mapa voar suavemente até o ônibus selecionado
+      map.flyTo(latLng, 16, { animate: true, duration: 1.2 });
+      marker.openPopup();
+
+      // Se estiver no celular/tablet, fecha o painel lateral para mostrar o mapa
+      if (window.innerWidth < 1100) {
+        fecharPainel();
+      }
+    }
+  }
+
   cardsProximos.forEach(card => {
     card.addEventListener('click', () => {
       const busId = card.getAttribute('data-bus-id');
-      const itemBus = marcadoresMap.get(busId);
+      focarOnibusPorId(busId);
+    });
 
-      if (itemBus) {
-        const { marker } = itemBus;
-        const latLng = marker.getLatLng();
+    // Suporte a navegação por teclado (Enter e Espaço)
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const busId = card.getAttribute('data-bus-id');
+        focarOnibusPorId(busId);
+      }
+    });
+  });
 
-        // Faz o mapa voar suavemente até o ônibus selecionado
-        map.flyTo(latLng, 16, { animate: true, duration: 1.2 });
-        marker.openPopup();
+  // Botão "Ver todas as 8 unidades da frota"
+  const btnVerTodos = document.getElementById('btn-ver-todos');
+  if (btnVerTodos) {
+    btnVerTodos.addEventListener('click', () => {
+      // Reseta o filtro para 'todas'
+      const btnTodas = document.querySelector('#filtros-legenda [data-linha="todas"]');
+      if (btnTodas) btnTodas.click();
 
-        // Se estiver no celular, fecha o painel lateral para mostrar o mapa
-        if (window.innerWidth < 1100) {
-          fecharPainel();
-        }
+      // Redefine a visão inicial do mapa
+      map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.2 });
+
+      if (window.innerWidth < 1100) {
+        fecharPainel();
+      }
+    });
+  }
+
+
+  /* ──────────────────────────────────────────────────────────
+     8. DEMAIS INTERAÇÕES DA INTERFACE (Sino, Usuário e Navegação)
+     ────────────────────────────────────────────────────────── */
+  const btnSino = document.getElementById('btn-sino-notificacoes');
+  if (btnSino) {
+    btnSino.addEventListener('click', () => {
+      alert('🔔 Alertas Operacionais ValeBus:\n\n1. Linha L07 Campus: Trânsito moderado na Praça da Bandeira (+4 min).\n2. Linha L12 Industrial: Manutenção preventiva agendada para às 22:00 em VB-302.');
+    });
+  }
+
+  const btnUsuario = document.querySelector('.topbar__usuario');
+  if (btnUsuario) {
+    btnUsuario.addEventListener('click', () => {
+      alert('👤 Perfil do Usuário: João da Silva\nFunção: Avaliador Feira Tech (CCO ValeBus)\nSessão ativa em Santa Rita do Sapucaí.');
+    });
+  }
+
+  // Links do Menu Lateral (Sidebar)
+  const itensNav = document.querySelectorAll('.sidebar__nav .nav__item');
+  itensNav.forEach(item => {
+    item.addEventListener('click', () => {
+      itensNav.forEach(i => {
+        i.classList.remove('nav__item--ativo');
+        i.removeAttribute('aria-current');
+      });
+      item.classList.add('nav__item--ativo');
+      item.setAttribute('aria-current', 'page');
+
+      const secao = item.getAttribute('data-secao');
+      const tituloMain = document.querySelector('.main__titulo');
+
+      if (tituloMain) {
+        if (secao === 'mapa') tituloMain.textContent = 'Monitoramento de Frota em Tempo Real';
+        else if (secao === 'linhas') tituloMain.textContent = 'Gestão e Horários das Linhas';
+        else if (secao === 'onibus') tituloMain.textContent = 'Telemetria dos Veículos (8 Unidades)';
+        else if (secao === 'paradas') tituloMain.textContent = 'Pontos de Parada e Abrigos';
+        else if (secao === 'alertas') tituloMain.textContent = 'Central de Alertas Operacionais';
+        else if (secao === 'relatorios') tituloMain.textContent = 'Relatórios de Pontualidade e Demanda';
+        else if (secao === 'config') tituloMain.textContent = 'Configurações do Sistema CCO';
+      }
+
+      if (window.innerWidth < 1100) {
+        fecharSidebar();
       }
     });
   });
 
 
   /* ──────────────────────────────────────────────────────────
-     8. GERENCIAMENTO DAS GAVETAS (SIDEBAR E PAINEL MOBILE)
+     9. GERENCIAMENTO DAS GAVETAS (SIDEBAR E PAINEL MOBILE)
      ────────────────────────────────────────────────────────── */
   const sidebar      = document.getElementById('sidebar');
   const painel       = document.getElementById('painel-lateral');
@@ -219,11 +313,18 @@
   const btnPainel    = document.getElementById('btn-painel-flutuante');
   const btnFecharP   = document.getElementById('btn-fechar-painel');
 
+  function atualizarMapaAposTransicao() {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
+  }
+
   function abrirSidebar() {
     if (sidebar) sidebar.classList.add('aberta');
     if (overlay) overlay.classList.add('ativo');
     if (btnMenu) btnMenu.setAttribute('aria-expanded', 'true');
     fecharPainel();
+    atualizarMapaAposTransicao();
   }
 
   function fecharSidebar() {
@@ -232,12 +333,14 @@
       if (overlay) overlay.classList.remove('ativo');
     }
     if (btnMenu) btnMenu.setAttribute('aria-expanded', 'false');
+    atualizarMapaAposTransicao();
   }
 
   function abrirPainel() {
     if (painel) painel.classList.add('aberto');
     if (overlay) overlay.classList.add('ativo');
     fecharSidebar();
+    atualizarMapaAposTransicao();
   }
 
   function fecharPainel() {
@@ -245,6 +348,7 @@
     if (!sidebar || !sidebar.classList.contains('aberta')) {
       if (overlay) overlay.classList.remove('ativo');
     }
+    atualizarMapaAposTransicao();
   }
 
   // Event Listeners das Gavetas
