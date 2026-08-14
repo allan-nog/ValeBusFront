@@ -22,11 +22,41 @@
 <body>
 
   <!-- ═══════════════════════════════════════════════════════
-       FUNDO — container que recebe o SVG da cidade
+       FUNDO DINÂMICO — Muda conforme horário (Manhã / Tarde / Noite)
        ═══════════════════════════════════════════════════════ -->
-  <div class="login-fundo" aria-hidden="true">
+  <div class="login-fundo" id="login-fundo" aria-hidden="true">
     <div id="fundo-cidade"></div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       BARRA DE AMBIENTE / HORÁRIO (CONTROLE DEMO PARA A FEIRA)
+       ═══════════════════════════════════════════════════════ -->
+  <header class="barra-horario" aria-label="Controle de Horário e Ambiente">
+    <div class="badge-cidade" id="badge-cidade">
+      <span class="badge-cidade__icone" id="badge-icone">☀️</span>
+      <span class="badge-cidade__texto" id="badge-texto">Santa Rita do Sapucaí — 14:00</span>
+    </div>
+
+    <!-- Controles de Demonstração (Permite aos avaliadores testar ao vivo) -->
+    <div class="seletor-horario" role="group" aria-label="Alternar tema de horário do fundo">
+      <button type="button" class="seletor-horario__btn seletor-horario__btn--ativo" data-periodo="auto" id="btn-periodo-auto" title="Seguir horário real do sistema">
+        <span class="seletor-horario__icone">🕒</span>
+        <span class="seletor-horario__label">Auto</span>
+      </button>
+      <button type="button" class="seletor-horario__btn" data-periodo="manha" id="btn-periodo-manha" title="Simular período da manhã">
+        <span class="seletor-horario__icone">🌅</span>
+        <span class="seletor-horario__label">Manhã</span>
+      </button>
+      <button type="button" class="seletor-horario__btn" data-periodo="tarde" id="btn-periodo-tarde" title="Simular período da tarde">
+        <span class="seletor-horario__icone">☀️</span>
+        <span class="seletor-horario__label">Tarde</span>
+      </button>
+      <button type="button" class="seletor-horario__btn" data-periodo="noite" id="btn-periodo-noite" title="Simular período da noite">
+        <span class="seletor-horario__icone">🌙</span>
+        <span class="seletor-horario__label">Noite</span>
+      </button>
+    </div>
+  </header>
 
   <!-- ═══════════════════════════════════════════════════════
        FORMULÁRIO — card centralizado
@@ -37,9 +67,9 @@
       <!-- Logo & Identidade -->
       <div class="form-logo">
         <div class="form-logo__icone" aria-hidden="true">
-            <svg>
-                <use href="#icone-onibus"></use>
-            </svg>
+          <svg>
+            <use href="#icone-onibus"></use>
+          </svg>
         </div>
         <h1 class="form-logo__nome">ValeBus</h1>
         <p class="form-logo__subtitulo">Seu ônibus, em tempo real.</p>
@@ -108,7 +138,7 @@
           <span id="erro-texto">Credenciais inválidas.</span>
         </div>
 
-        <!-- Botão de login -->
+        <!-- Botão de login padrão -->
         <button type="submit" class="botao-entrar" id="botao-entrar">
           <svg id="icone-padrao" class="botao-entrar__icone" aria-hidden="true">
             <use href="#icone-seta"/>
@@ -124,12 +154,25 @@
 
       </form>
 
-      <!-- Divisor -->
+      <!-- Divisor "ou" -->
       <div class="divisor" aria-hidden="true">
         <div class="divisor__linha"></div>
         <span class="divisor__texto">ou</span>
         <div class="divisor__linha"></div>
       </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           BOTÃO OFICIAL: ENTRAR COM O GOOGLE
+           ═══════════════════════════════════════════════════════ -->
+      <button type="button" class="botao-google" id="btn-login-google" aria-label="Entrar com a conta do Google">
+        <svg class="botao-google__icone" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span class="botao-google__texto">Entrar com o Google</span>
+      </button>
 
       <!-- Botão de cadastro -->
       <button type="button" class="botao-cadastro" id="botao-cadastro">
@@ -139,12 +182,55 @@
       <!-- Rodapé legal -->
       <p class="form-rodape">
         Ao acessar, você concorda com os
-        <a href="#">Termos de uso</a> e a
-        <a href="#">Política de privacidade</a>
+        <a href="#" id="link-termos">Termos de uso</a> e a
+        <a href="#" id="link-privacidade">Política de privacidade</a>
       </p>
 
     </main><!-- /form-card -->
   </div><!-- /login-wrapper -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL DE SELEÇÃO DE CONTA DO GOOGLE (SIMULAÇÃO REALISTA)
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal-google-overlay" id="modal-google" aria-hidden="true">
+    <div class="modal-google" role="dialog" aria-modal="true" aria-labelledby="modal-google-titulo">
+      <div class="modal-google__header">
+        <svg class="modal-google__logo" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <h3 id="modal-google-titulo" class="modal-google__titulo">Fazer login com o Google</h3>
+        <p class="modal-google__subtitulo">Escolha uma conta para continuar no <strong>ValeBus</strong></p>
+      </div>
+
+      <div class="modal-google__contas">
+        <!-- Conta Principal 1 -->
+        <button type="button" class="modal-google__conta-item" data-email="allannog.dev@gmail.com" data-nome="Allan Nogueira">
+          <div class="modal-google__avatar" style="background:#1a6fd4;">AN</div>
+          <div class="modal-google__info">
+            <span class="modal-google__nome">Allan Nogueira</span>
+            <span class="modal-google__email">allannog.dev@gmail.com</span>
+          </div>
+          <span class="modal-google__tag-sessao">Sessão ativa</span>
+        </button>
+
+        <!-- Conta Principal 2 (Avaliador da Feira) -->
+        <button type="button" class="modal-google__conta-item" data-email="avaliador.feira@inatel.br" data-nome="Avaliador Feira Tech">
+          <div class="modal-google__avatar" style="background:#10b981;">AF</div>
+          <div class="modal-google__info">
+            <span class="modal-google__nome">Avaliador Feira Tech</span>
+            <span class="modal-google__email">avaliador.feira@inatel.br</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="modal-google__footer">
+        <button type="button" class="modal-google__btn-cancelar" id="btn-cancelar-google">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/login.js"></script>
 </body>

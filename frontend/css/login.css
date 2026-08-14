@@ -1,230 +1,434 @@
 /*
  * login.css — Estilos da Tela de Login do ValeBus
- * ──────────────────────────────────────
+ * ──────────────────────────────────────────────────────────
  * ESTRUTURA:
- *  - Fundo escuro (cidade + animações) ocupa 100% da tela
- *  - Card branco do formulário fica centralizado por cima
+ *  1. Barra Superior de Horário & Ambiente (Controle da Feira)
+ *  2. Fundo Dinâmico com suporte a Manhã, Tarde e Noite
+ *  3. Animações Atmosféricas (Sol, Lua, Estrelas, Nuvens, Janelas, Ônibus)
+ *  4. Wrapper e Card Centralizado
+ *  5. Logo & Tipografia
+ *  6. Campos de Formulário & Acessibilidade
+ *  7. Botão Principal & Botão Oficial do Google
+ *  8. Modal Realista de Seleção de Contas Google
+ *  9. Responsividade Mobile-First
  */
 
 
 /* ══════════════════════════════════════════════════════════
-   1. FUNDO — ocupa a tela inteira
+   1. BARRA SUPERIOR DE HORÁRIO / AMBIENTE
    ══════════════════════════════════════════════════════════ */
 
-.login-fundo {
-  position:        fixed;   /* Fica fixo, não rola com a página */
-  inset:           0;       /* top/right/bottom/left = 0 */
-  background-color: var(--cor-fundo-escuro);
-  overflow:        hidden;
-  z-index:         0;
+.barra-horario {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none; /* Apenas os botões filhos recebem clique */
 }
 
-/* O SVG da cidade estica para preencher o fundo */
-.login-fundo__svg {
-  width:    100%;
-  height:   100%;
-  position: absolute;
-  inset:    0;
+/* Badge indicando a cidade e horário */
+.badge-cidade {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: background var(--transicao), border-color var(--transicao);
+}
+
+.badge-cidade__icone {
+  font-size: 14px;
+}
+
+/* Seletor de Período (Demo Controller) */
+.seletor-horario {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.seletor-horario__btn {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background var(--transicao), color var(--transicao), transform var(--transicao);
+}
+
+.seletor-horario__btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.seletor-horario__btn--ativo {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 
 /* ══════════════════════════════════════════════════════════
-   2. ANIMAÇÕES DO FUNDO
+   2. FUNDO DINÂMICO & CAMADAS DE AMBIENTE
    ══════════════════════════════════════════════════════════ */
 
-/* Linha pontilhada horizontal (estrada principal) */
+.login-fundo {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  transition: background-color 0.8s ease;
+}
+
+.login-fundo__svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+/* Transições suaves entre as camadas do céu */
+.camada-ceu {
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+}
+
+.camada-predios .predio-fundo {
+  transition: fill 0.8s ease;
+}
+
+.camada-asfalto {
+  transition: fill 0.8s ease;
+}
+
+.linha-meio-fio {
+  transition: stroke 0.8s ease;
+}
+
+.rota-principal,
+.rota-secundaria {
+  transition: stroke 0.8s ease, opacity 0.8s ease;
+}
+
+.camada-pontos-parada .ponto-aura,
+.camada-pontos-parada .ponto-nucleo {
+  transition: fill 0.8s ease;
+}
+
+.onibus-janela {
+  transition: fill 0.8s ease;
+}
+
+.farol-cone {
+  transition: opacity 0.8s ease, fill 0.8s ease;
+}
+
+.farol-lampada {
+  transition: fill 0.8s ease;
+}
+
+.camada-janelas {
+  transition: opacity 0.8s ease;
+}
+
+.elemento-estrelas,
+.elemento-sol-manha,
+.elemento-sol-tarde,
+.elemento-lua,
+.elemento-nuvens {
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   TEMAS POR HORÁRIO: MANHÃ, TARDE E NOITE
+   ────────────────────────────────────────────────────────── */
+
+/* ── 🌅 TEMA MANHÃ (05:00 - 11:59) ── */
+.login-fundo--manha {
+  background-color: #14345c;
+}
+.login-fundo--manha .camada-ceu--manha { opacity: 1; }
+.login-fundo--manha .elemento-sol-manha { opacity: 1; transform: translateY(0); }
+.login-fundo--manha .elemento-sol-tarde { opacity: 0; transform: translateY(40px); }
+.login-fundo--manha .elemento-lua       { opacity: 0; transform: translateY(-40px); }
+.login-fundo--manha .elemento-estrelas  { opacity: 0; }
+.login-fundo--manha .elemento-nuvens    { opacity: 0.9; }
+.login-fundo--manha .camada-janelas     { opacity: 0.4; fill: #fde047; }
+.login-fundo--manha .predio-fundo       { fill: #1e3a5f; }
+.login-fundo--manha .camada-asfalto     { fill: #1e293b; }
+.login-fundo--manha .linha-meio-fio     { stroke: #475569; }
+.login-fundo--manha .rota-principal     { stroke: #38bdf8; opacity: 0.9; }
+.login-fundo--manha .rota-secundaria    { stroke: #f59e0b; opacity: 0.8; }
+.login-fundo--manha .ponto-aura         { fill: #0284c7; }
+.login-fundo--manha .ponto-nucleo       { fill: #38bdf8; }
+.login-fundo--manha .ponto-parada-ping  { stroke: #38bdf8; }
+.login-fundo--manha .onibus-janela      { fill: #e0f2fe; }
+.login-fundo--manha .farol-cone         { fill: #fef08a; opacity: 0.15; }
+.login-fundo--manha .farol-lampada      { fill: #fde047; }
+
+/* ── ☀️ TEMA TARDE (12:00 - 17:59) ── */
+.login-fundo--tarde {
+  background-color: #0284c7;
+}
+.login-fundo--tarde .camada-ceu--tarde { opacity: 1; }
+.login-fundo--tarde .elemento-sol-manha { opacity: 0; transform: translateY(40px); }
+.login-fundo--tarde .elemento-sol-tarde { opacity: 1; transform: translateY(0); }
+.login-fundo--tarde .elemento-lua       { opacity: 0; transform: translateY(-40px); }
+.login-fundo--tarde .elemento-estrelas  { opacity: 0; }
+.login-fundo--tarde .elemento-nuvens    { opacity: 1; }
+.login-fundo--tarde .camada-janelas     { opacity: 0.15; fill: #ffffff; }
+.login-fundo--tarde .predio-fundo       { fill: #334155; }
+.login-fundo--tarde .camada-asfalto     { fill: #334155; }
+.login-fundo--tarde .linha-meio-fio     { stroke: #64748b; }
+.login-fundo--tarde .rota-principal     { stroke: #0284c7; opacity: 0.85; }
+.login-fundo--tarde .rota-secundaria    { stroke: #ea580c; opacity: 0.75; }
+.login-fundo--tarde .ponto-aura         { fill: #0369a1; }
+.login-fundo--tarde .ponto-nucleo       { fill: #0284c7; }
+.login-fundo--tarde .ponto-parada-ping  { stroke: #0284c7; }
+.login-fundo--tarde .onibus-janela      { fill: #ffffff; }
+.login-fundo--tarde .farol-cone         { fill: #ffffff; opacity: 0.08; }
+.login-fundo--tarde .farol-lampada      { fill: #ffffff; }
+
+/* ── 🌙 TEMA NOITE (18:00 - 04:59) ── */
+.login-fundo--noite {
+  background-color: #070e1b;
+}
+.login-fundo--noite .camada-ceu--noite { opacity: 1; }
+.login-fundo--noite .elemento-sol-manha { opacity: 0; transform: translateY(40px); }
+.login-fundo--noite .elemento-sol-tarde { opacity: 0; transform: translateY(40px); }
+.login-fundo--noite .elemento-lua       { opacity: 1; transform: translateY(0); }
+.login-fundo--noite .elemento-estrelas  { opacity: 1; }
+.login-fundo--noite .elemento-nuvens    { opacity: 0.35; }
+.login-fundo--noite .camada-janelas     { opacity: 0.85; fill: #fde047; }
+.login-fundo--noite .predio-fundo       { fill: #0f172a; }
+.login-fundo--noite .camada-asfalto     { fill: #090e17; }
+.login-fundo--noite .linha-meio-fio     { stroke: #1e293b; }
+.login-fundo--noite .rota-principal     { stroke: #38bdf8; opacity: 0.9; }
+.login-fundo--noite .rota-secundaria    { stroke: #f59e0b; opacity: 0.75; }
+.login-fundo--noite .ponto-aura         { fill: #1a6fd4; }
+.login-fundo--noite .ponto-nucleo       { fill: #38bdf8; }
+.login-fundo--noite .ponto-parada-ping  { stroke: #38bdf8; }
+.login-fundo--noite .onibus-janela      { fill: #e0f2fe; }
+.login-fundo--noite .farol-cone         { fill: #fde047; opacity: 0.35; }
+.login-fundo--noite .farol-lampada      { fill: #fde047; }
+
+
+/* ══════════════════════════════════════════════════════════
+   3. ANIMAÇÕES DO FUNDO (NUVENS, ROTAS, ÔNIBUS, PINGS)
+   ══════════════════════════════════════════════════════════ */
+
+/* Nuvens Deslizando no Céu */
+.nuvem-animada--1 {
+  animation: deslizar-nuvem 45s linear infinite;
+}
+.nuvem-animada--2 {
+  animation: deslizar-nuvem 60s linear infinite;
+  animation-delay: -20s;
+}
+
+@keyframes deslizar-nuvem {
+  from { transform: translateX(-200px); }
+  to   { transform: translateX(1500px); }
+}
+
+/* Estrelas Cintilando */
+.estrela-pisca {
+  animation: cintilar 3s ease-in-out infinite alternate;
+}
+@keyframes cintilar {
+  0%   { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1;   transform: scale(1.2); }
+}
+
+/* Rota Pontilhada Horizontal */
 .rota-animada-h {
   animation: mover-horizontal 2.4s linear infinite;
 }
-
-/* Velocidade mais lenta para a rota secundária */
 .rota-animada-h--lenta {
   animation: mover-horizontal 3.8s linear infinite;
 }
-
-/* Linha pontilhada vertical */
-.rota-animada-v {
-  animation: mover-vertical 2.8s linear infinite;
-}
-
-.rota-animada-v--lenta {
-  animation: mover-vertical 4.5s linear infinite;
-}
-
 @keyframes mover-horizontal {
   from { stroke-dashoffset: 0; }
   to   { stroke-dashoffset: -56; }
 }
 
-@keyframes mover-vertical {
-  from { stroke-dashoffset: 0; }
-  to   { stroke-dashoffset: -56; }
-}
-
-/* Ônibus deslizando pela rua */
+/* Ônibus Deslizando pela Estrada */
 .onibus-animado {
-  animation: deslizar 9s linear infinite;
+  animation: deslizar-onibus 10s linear infinite;
 }
-
 .onibus-animado--devagar {
-  animation: deslizar 14s linear infinite;
-  animation-delay: -5s;
+  animation: deslizar-onibus 15s linear infinite;
+  animation-delay: -6s;
 }
-
-@keyframes deslizar {
+@keyframes deslizar-onibus {
   from { transform: translateX(0); }
-  to   { transform: translateX(110vw); }
+  to   { transform: translateX(1600px); }
 }
 
-/* Piscada suave das janelas dos prédios */
+/* Janelas Piscando */
 .janela-pisca {
   animation: piscar-janela 4s ease-in-out infinite;
 }
 .janela-pisca--2 { animation-delay: 1.2s; }
 .janela-pisca--3 { animation-delay: 2.7s; }
 .janela-pisca--4 { animation-delay: 0.5s; }
-
 @keyframes piscar-janela {
-  0%, 85%, 100% { opacity: 0.85; }
-  90%            { opacity: 0.2;  }
+  0%, 85%, 100% { opacity: 0.9; }
+  90%            { opacity: 0.15; }
 }
 
-/* Ping dos pontos de parada */
+/* Ping Pulsante nos Pontos de Parada */
 .ponto-parada-ping {
   animation: ping-parada 3s ease-out infinite;
 }
 .ponto-parada-ping--2 { animation-delay: 1s; }
 .ponto-parada-ping--3 { animation-delay: 2s; }
-
 @keyframes ping-parada {
-  0%   { r: 4;  opacity: 0.8; }
-  70%  { r: 12; opacity: 0; }
+  0%   { r: 4;  opacity: 0.9; }
+  70%  { r: 14; opacity: 0; }
   100% { r: 4;  opacity: 0; }
 }
 
 
 /* ══════════════════════════════════════════════════════════
-   3. WRAPPER DA PÁGINA — centraliza o card
+   4. WRAPPER & CARD CENTRALIZADO
    ══════════════════════════════════════════════════════════ */
 
 .login-wrapper {
-  position:        relative;
-  z-index:         1;         /* Fica acima do fundo */
-  min-height:      100vh;
-  display:         flex;
-  align-items:     center;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding:         var(--espaco-lg) var(--espaco-md);
+  padding: 72px var(--espaco-md) var(--espaco-lg);
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   4. CARD BRANCO DO FORMULÁRIO
-   ══════════════════════════════════════════════════════════ */
-
 .form-card {
-  width:            100%;
-  max-width:        420px;
-  background:       var(--fundo-card);
-  border-radius:    var(--raio-grande);
-  padding:          var(--espaco-xl) var(--espaco-lg);
-  box-shadow:       0 24px 64px rgba(0, 0, 0, 0.45),
-                    0 0 0 1px rgba(255, 255, 255, 0.08);
-
-  /* Animação de entrada: card sobe suavemente ao carregar */
+  width: 100%;
+  max-width: 430px;
+  background: var(--fundo-card);
+  border-radius: var(--raio-grande);
+  padding: var(--espaco-xl) var(--espaco-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45),
+              0 0 0 1px rgba(255, 255, 255, 0.12);
   animation: subir-card 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes subir-card {
   from {
-    opacity:   0;
-    transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(24px);
   }
   to {
-    opacity:   1;
+    opacity: 1;
     transform: translateY(0);
   }
 }
 
 
 /* ══════════════════════════════════════════════════════════
-   5. LOGO E CABEÇALHO DO FORMULÁRIO
+   5. LOGO & IDENTIDADE VISUAL
    ══════════════════════════════════════════════════════════ */
 
 .form-logo {
-  display:         flex;
-  flex-direction:  column;
-  align-items:     center;
-  text-align:      center;
-  margin-bottom:   var(--espaco-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--espaco-lg);
 }
 
-/* Quadrado azul com ícone de ônibus */
 .form-logo__icone {
-  width:           56px;
-  height:          56px;
-  background:      var(--cor-marca);
-  border-radius:   16px;
-  display:         flex;
-  align-items:     center;
+  width: 56px;
+  height: 56px;
+  background: var(--cor-marca);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom:   var(--espaco-sm);
-  box-shadow:      0 8px 24px rgba(26, 111, 212, 0.35);
+  margin-bottom: var(--espaco-sm);
+  box-shadow: 0 8px 24px rgba(26, 111, 212, 0.35);
 }
 
 .form-logo__icone svg {
-  width:          28px;
-  height:         28px;
-  stroke:         #ffffff;
-  fill:           none;
-  stroke-width:   2.2px;
+  width: 28px;
+  height: 28px;
+  stroke: #ffffff;
+  fill: none;
+  stroke-width: 2.2px;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .form-logo__nome {
-  font-size:   32px;
+  font-size: 32px;
   font-weight: 800;
-  color:       var(--cor-marca);
+  color: var(--cor-marca);
   line-height: 1.2;
 }
 
 .form-logo__subtitulo {
-  font-size:      14px;
-  color:          var(--texto-secundario);
-  margin-top:     4px;
+  font-size: 14px;
+  color: var(--texto-secundario);
+  margin-top: 4px;
   letter-spacing: 0.02em;
 }
 
-/* Separador fino abaixo do logo */
 .form-logo__separador {
-  width:         40px;
-  height:        2px;
-  background:    var(--cor-marca);
+  width: 40px;
+  height: 2px;
+  background: var(--cor-marca);
   border-radius: 2px;
-  margin:        var(--espaco-md) auto 0;
-  opacity:       0.3;
+  margin: var(--espaco-md) auto 0;
+  opacity: 0.3;
 }
 
-/* Título e subtítulo do formulário */
 .form-titulo {
-  font-size:     20px;
-  font-weight:   700;
-  color:         var(--texto-principal);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--texto-principal);
   margin-bottom: 4px;
-  text-align:    center;
+  text-align: center;
 }
 
 .form-subtitulo {
-  font-size:     13px;
-  color:         var(--texto-secundario);
+  font-size: 13px;
+  color: var(--texto-secundario);
   margin-bottom: var(--espaco-lg);
-  text-align:    center;
+  text-align: center;
 }
 
 
 /* ══════════════════════════════════════════════════════════
-   6. CAMPOS DO FORMULÁRIO
+   6. CAMPOS DE FORMULÁRIO
    ══════════════════════════════════════════════════════════ */
 
 .campo {
@@ -232,45 +436,42 @@
 }
 
 .campo__label {
-  display:       block;
-  font-size:     13px;
-  font-weight:   600;
-  color:         var(--texto-principal);
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-principal);
   margin-bottom: 6px;
 }
 
-/* Wrapper do input — necessário para posicionar o ícone */
 .campo__wrapper {
   position: relative;
 }
 
-/* Ícone dentro do campo — posicionado à esquerda */
 .campo__icone {
-  position:       absolute;
-  left:           14px;
-  top:            50%;
-  transform:      translateY(-50%);
-  width:          18px;
-  height:         18px;
-  stroke:         var(--texto-secundario);
-  fill:           none;
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  stroke: var(--texto-secundario);
+  fill: none;
   pointer-events: none;
 }
 
-/* O input em si */
 .campo__input {
-  width:         100%;
-  height:        46px;
-  background:    var(--fundo-campo);
-  border:        1.5px solid var(--borda-cor);
+  width: 100%;
+  height: 46px;
+  background: var(--fundo-campo);
+  border: 1.5px solid var(--borda-cor);
   border-radius: var(--raio-pequeno);
-  padding:       0 48px 0 42px; /* Garante que o texto não colida com o botão olho */
-  font-size:     14px;
-  color:         var(--texto-principal);
-  outline:       none;
-  transition:    border-color var(--transicao),
-                 background   var(--transicao),
-                 box-shadow   var(--transicao);
+  padding: 0 48px 0 42px;
+  font-size: 14px;
+  color: var(--texto-principal);
+  outline: none;
+  transition: border-color var(--transicao),
+              background var(--transicao),
+              box-shadow var(--transicao);
 }
 
 .campo__input::placeholder {
@@ -279,35 +480,33 @@
 
 .campo__input:focus {
   border-color: var(--borda-foco);
-  background:   #ffffff;
-  box-shadow:   var(--sombra-foco);
+  background: #ffffff;
+  box-shadow: var(--sombra-foco);
 }
 
-/* Estado de Erro no Input */
 .campo__input--erro {
   border-color: var(--cor-erro) !important;
-  background:   #fef2f2;
+  background: #fef2f2;
 }
 
 .campo__input--erro:focus {
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2) !important;
 }
 
-/* Botão de mostrar/ocultar senha */
 .campo__botao-olho {
-  position:      absolute;
-  right:         10px;
-  top:           50%;
-  transform:     translateY(-50%);
-  background:    none;
-  border:        none;
-  cursor:        pointer;
-  padding:       6px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
   border-radius: var(--raio-pequeno);
-  display:       flex;
-  align-items:   center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  transition:    background var(--transicao);
+  transition: background var(--transicao);
 }
 
 .campo__botao-olho:hover {
@@ -315,79 +514,75 @@
 }
 
 .campo__botao-olho svg {
-  width:  18px;
+  width: 18px;
   height: 18px;
   stroke: var(--texto-secundario);
-  fill:   none;
+  fill: none;
 }
 
 
 /* ══════════════════════════════════════════════════════════
-   7. LINHA "LEMBRAR + ESQUECI SENHA"
+   7. LINHA DE OPÇÕES & ERROS
    ══════════════════════════════════════════════════════════ */
 
 .form-linha-opcoes {
-  display:         flex;
+  display: flex;
   justify-content: space-between;
-  align-items:     center;
-  margin-bottom:   var(--espaco-lg);
+  align-items: center;
+  margin-bottom: var(--espaco-md);
 }
 
 .checkbox-label {
-  display:     flex;
+  display: flex;
   align-items: center;
-  gap:         8px;
-  cursor:      pointer;
-  font-size:   13px;
-  color:       var(--texto-secundario);
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--texto-secundario);
   user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width:        16px;
-  height:       16px;
+  width: 16px;
+  height: 16px;
   accent-color: var(--cor-marca);
-  cursor:       pointer;
+  cursor: pointer;
 }
 
 .link-esqueceu {
-  font-size:   13px;
+  font-size: 13px;
   font-weight: 500;
-  color:       var(--cor-marca);
+  color: var(--cor-marca);
+  text-decoration: none;
 }
 
 .link-esqueceu:hover {
-  color:           var(--cor-marca-escura);
+  color: var(--cor-marca-escura);
   text-decoration: underline;
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   8. MENSAGEM DE ERRO
-   ══════════════════════════════════════════════════════════ */
-
 .erro-mensagem {
-  display:       flex;
-  align-items:   flex-start;
-  gap:           10px;
-  background:    #fef2f2;
-  border:        1px solid #fecaca;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
   border-radius: var(--raio-pequeno);
-  padding:       12px 14px;
+  padding: 12px 14px;
   margin-bottom: var(--espaco-md);
-  font-size:     13px;
-  color:         #b91c1c;
-  line-height:   1.5;
-  animation:     aparecer 0.25s ease;
+  font-size: 13px;
+  color: #b91c1c;
+  line-height: 1.5;
+  animation: aparecer 0.25s ease;
 }
 
 .erro-mensagem svg {
-  width:       18px;
-  height:      18px;
-  stroke:      #dc2626;
-  fill:        none;
+  width: 18px;
+  height: 18px;
+  stroke: #dc2626;
+  fill: none;
   flex-shrink: 0;
-  margin-top:  1px;
+  margin-top: 1px;
 }
 
 @keyframes aparecer {
@@ -401,169 +596,358 @@
 
 
 /* ══════════════════════════════════════════════════════════
-   9. BOTÃO PRINCIPAL DE LOGIN
+   8. BOTÕES DE ENTRAR & LOGIN COM O GOOGLE
    ══════════════════════════════════════════════════════════ */
 
+/* Botão Principal */
 .botao-entrar {
-  width:           100%;
-  height:          48px;
-  background:      var(--cor-marca);
-  color:           #ffffff;
-  border:          none;
-  border-radius:   var(--raio-pequeno);
-  font-size:       15px;
-  font-weight:     600;
-  cursor:          pointer;
-  letter-spacing:  0.02em;
-  display:         flex;
-  align-items:     center;
+  width: 100%;
+  height: 48px;
+  background: var(--cor-marca);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--raio-pequeno);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap:             8px;
-  transition:      background  var(--transicao),
-                   transform   var(--transicao),
-                   box-shadow  var(--transicao);
+  gap: 8px;
+  transition: background var(--transicao),
+              transform var(--transicao),
+              box-shadow var(--transicao);
 }
 
 .botao-entrar:hover:not(:disabled) {
-  background:  var(--cor-marca-escura);
-  box-shadow:  var(--sombra-botao);
-  transform:   translateY(-1px);
+  background: var(--cor-marca-escura);
+  box-shadow: var(--sombra-botao);
+  transform: translateY(-1px);
 }
 
 .botao-entrar:active:not(:disabled) {
-  transform:  translateY(0);
+  transform: translateY(0);
   box-shadow: none;
 }
 
 .botao-entrar:disabled {
   opacity: 0.65;
-  cursor:  not-allowed;
-}
-
-.botao-entrar svg {
-  width:  18px;
-  height: 18px;
-  stroke: #ffffff;
-  fill:   none;
+  cursor: not-allowed;
 }
 
 .botao-entrar__icone {
-  width:       18px;
-  height:      18px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
 .icone-loading {
   animation: girar 0.8s linear infinite;
-  color:     #ffffff;
+  color: #ffffff;
 }
 
 @keyframes girar {
   to { transform: rotate(360deg); }
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   10. DIVISOR "OU"
-   ══════════════════════════════════════════════════════════ */
-
+/* Divisor "ou" */
 .divisor {
-  display:     flex;
+  display: flex;
   align-items: center;
-  gap:         12px;
-  margin:      var(--espaco-lg) 0;
+  gap: 12px;
+  margin: 16px 0;
 }
 
 .divisor__linha {
-  flex:       1;
-  height:     1px;
+  flex: 1;
+  height: 1px;
   background: var(--borda-cor);
 }
 
 .divisor__texto {
-  font-size:   12px;
-  color:       var(--texto-secundario);
+  font-size: 12px;
+  color: var(--texto-secundario);
   flex-shrink: 0;
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   11. BOTÃO SECUNDÁRIO (CADASTRO)
-   ══════════════════════════════════════════════════════════ */
-
-.botao-cadastro {
-  width:         100%;
-  height:        46px;
-  background:    transparent;
-  color:         var(--texto-principal);
-  border:        1.5px solid var(--borda-cor);
+/* Botão Oficial: Entrar com o Google */
+.botao-google {
+  width: 100%;
+  height: 46px;
+  background-color: #ffffff;
+  color: #3c4043;
+  border: 1.5px solid #dadce0;
   border-radius: var(--raio-pequeno);
-  font-size:     14px;
-  font-weight:   600;
-  cursor:        pointer;
-  transition:    background   var(--transicao),
-                 border-color var(--transicao);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.08);
+  transition: background-color var(--transicao),
+              border-color var(--transicao),
+              box-shadow var(--transicao),
+              transform var(--transicao);
+}
+
+.botao-google:hover {
+  background-color: #f8f9fa;
+  border-color: #d2e3fc;
+  box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15);
+  transform: translateY(-1px);
+}
+
+.botao-google:active {
+  background-color: #f1f3f4;
+  transform: translateY(0);
+}
+
+.botao-google__icone {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.botao-google__texto {
+  letter-spacing: 0.01em;
+}
+
+/* Botão Secundário (Cadastro) */
+.botao-cadastro {
+  width: 100%;
+  height: 46px;
+  background: transparent;
+  color: var(--texto-principal);
+  border: 1.5px solid var(--borda-cor);
+  border-radius: var(--raio-pequeno);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transicao),
+              border-color var(--transicao);
 }
 
 .botao-cadastro:hover {
-  background:   var(--fundo-campo);
+  background: var(--fundo-campo);
   border-color: #cbd5e1;
 }
 
-
-/* ══════════════════════════════════════════════════════════
-   12. RODAPÉ DO FORMULÁRIO
-   ══════════════════════════════════════════════════════════ */
-
+/* Rodapé Legal */
 .form-rodape {
-  text-align:  center;
-  margin-top:  var(--espaco-lg);
-  font-size:   12px;
-  color:       var(--texto-secundario);
+  text-align: center;
+  margin-top: var(--espaco-lg);
+  font-size: 12px;
+  color: var(--texto-secundario);
   line-height: 1.6;
 }
 
 .form-rodape a {
-  color:       var(--cor-marca);
+  color: var(--cor-marca);
   font-weight: 500;
+  text-decoration: none;
+}
+
+.form-rodape a:hover {
+  text-decoration: underline;
 }
 
 
-/* =========================================================
-   13. RESPONSIVIDADE (MOBILE-FIRST)
-   ========================================================= */
+/* ══════════════════════════════════════════════════════════
+   9. MODAL DE SELEÇÃO DE CONTA DO GOOGLE
+   ══════════════════════════════════════════════════════════ */
 
-/* Mobile Padrão (< 480px) */
-@media (max-width: 479px) {
+.modal-google-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-google-overlay.ativo {
+  display: flex;
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-google {
+  background-color: #ffffff;
+  border-radius: var(--raio-grande);
+  width: 100%;
+  max-width: 440px;
+  padding: 28px 24px 20px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: subir-card 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.modal-google__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.modal-google__titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+
+.modal-google__subtitulo {
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.modal-google__contas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-google__conta-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dadce0;
+  border-radius: var(--raio-medio);
+  background: #ffffff;
+  cursor: pointer;
+  transition: background var(--transicao), border-color var(--transicao), transform var(--transicao);
+  text-align: left;
+  position: relative;
+}
+
+.modal-google__conta-item:hover {
+  background-color: #f8f9fa;
+  border-color: #1a6fd4;
+  transform: translateY(-1px);
+}
+
+.modal-google__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal-google__info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.modal-google__nome {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.modal-google__email {
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.modal-google__tag-sessao {
+  font-size: 11px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.modal-google__footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+}
+
+.modal-google__btn-cancelar {
+  background: none;
+  border: none;
+  color: #1a73e8;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background var(--transicao);
+}
+
+.modal-google__btn-cancelar:hover {
+  background-color: #f1f3f4;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   10. RESPONSIVIDADE (MOBILE-FIRST)
+   ══════════════════════════════════════════════════════════ */
+
+@media (max-width: 540px) {
+  .barra-horario {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .badge-cidade {
+    justify-content: center;
+  }
+
+  .seletor-horario {
+    justify-content: center;
+  }
+
+  .login-wrapper {
+    padding-top: 90px;
+  }
+
   .form-card {
     padding: var(--espaco-lg) var(--espaco-md);
   }
+
   .form-logo__nome {
     font-size: 28px;
   }
+
   .form-titulo {
     font-size: 18px;
   }
 }
 
-/* Tablet (>= 768px) */
 @media (min-width: 768px) {
-  .login-wrapper {
-    padding: var(--espaco-xl);
-  }
   .form-card {
     max-width: 440px;
     padding: var(--espaco-xl) 36px;
   }
   .form-logo__nome {
     font-size: 34px;
-  }
-}
-
-/* Desktop (>= 1024px) */
-@media (min-width: 1024px) {
-  .form-card {
-    max-width: 460px;
-    padding: 44px 40px;
   }
 }
