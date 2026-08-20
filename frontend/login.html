@@ -29,32 +29,12 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════
-       BARRA DE AMBIENTE / HORÁRIO (CONTROLE DEMO PARA A FEIRA)
+       BARRA DE AMBIENTE / HORÁRIO
        ═══════════════════════════════════════════════════════ -->
-  <header class="barra-horario" aria-label="Controle de Horário e Ambiente">
+  <header class="barra-horario" aria-label="Horário e Ambiente">
     <div class="badge-cidade" id="badge-cidade">
       <span class="badge-cidade__icone" id="badge-icone">☀️</span>
       <span class="badge-cidade__texto" id="badge-texto">Santa Rita do Sapucaí — 14:00</span>
-    </div>
-
-    <!-- Controles de Demonstração (Permite aos avaliadores testar ao vivo) -->
-    <div class="seletor-horario" role="group" aria-label="Alternar tema de horário do fundo">
-      <button type="button" class="seletor-horario__btn seletor-horario__btn--ativo" data-periodo="auto" id="btn-periodo-auto" title="Seguir horário real do sistema">
-        <span class="seletor-horario__icone">🕒</span>
-        <span class="seletor-horario__label">Auto</span>
-      </button>
-      <button type="button" class="seletor-horario__btn" data-periodo="manha" id="btn-periodo-manha" title="Simular período da manhã">
-        <span class="seletor-horario__icone">🌅</span>
-        <span class="seletor-horario__label">Manhã</span>
-      </button>
-      <button type="button" class="seletor-horario__btn" data-periodo="tarde" id="btn-periodo-tarde" title="Simular período da tarde">
-        <span class="seletor-horario__icone">☀️</span>
-        <span class="seletor-horario__label">Tarde</span>
-      </button>
-      <button type="button" class="seletor-horario__btn" data-periodo="noite" id="btn-periodo-noite" title="Simular período da noite">
-        <span class="seletor-horario__icone">🌙</span>
-        <span class="seletor-horario__label">Noite</span>
-      </button>
     </div>
   </header>
 
@@ -144,10 +124,11 @@
             <use href="#icone-seta"/>
           </svg>
           <svg id="icone-loading" class="icone-loading"
-               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+               fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                style="display:none" aria-hidden="true">
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" fill="none"/>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" fill="none"/>
           </svg>
           <span id="texto-botao">Entrar no sistema</span>
         </button>

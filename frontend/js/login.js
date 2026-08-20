@@ -67,24 +67,22 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     3. TEMA DINÂMICO DE FUNDO BASEADO NO HORÁRIO DO DIA
+     3. TEMA DINÂMICO AUTOMÁTICO BASEADO NO HORÁRIO DO DIA
      ────────────────────────────────────────────────────────── */
-  const elFundo         = document.getElementById('login-fundo');
-  const badgeIcone      = document.getElementById('badge-icone');
-  const badgeTexto      = document.getElementById('badge-texto');
-  const btnsPeriodo     = document.querySelectorAll('.seletor-horario__btn');
-  let modoPeriodoAtual  = 'auto'; // 'auto' | 'manha' | 'tarde' | 'noite'
+  const elFundo    = document.getElementById('login-fundo');
+  const badgeIcone = document.getElementById('badge-icone');
+  const badgeTexto = document.getElementById('badge-texto');
 
   function obterPeriodoReal() {
     const agora = new Date();
     const hora = agora.getHours();
 
     if (hora >= 5 && hora < 12) {
-      return { periodo: 'manha', nome: 'Manhã', icone: '🌅' };
+      return { periodo: 'manha', icone: '🌅' };
     } else if (hora >= 12 && hora < 18) {
-      return { periodo: 'tarde', nome: 'Tarde', icone: '☀️' };
+      return { periodo: 'tarde', icone: '☀️' };
     } else {
-      return { periodo: 'noite', nome: 'Noite', icone: '🌙' };
+      return { periodo: 'noite', icone: '🌙' };
     }
   }
 
@@ -95,55 +93,34 @@
     return `${h}:${m}`;
   }
 
-  function aplicarTemaFundo(periodo, ehManual = false) {
+  function aplicarTemaFundo(periodo) {
     if (!elFundo) return;
 
     // Remove temas anteriores
     elFundo.classList.remove('login-fundo--manha', 'login-fundo--tarde', 'login-fundo--noite');
 
-    // Adiciona o tema selecionado
+    // Adiciona o tema atual
     elFundo.classList.add(`login-fundo--${periodo}`);
 
-    const info = periodo === 'manha' ? { nome: 'Manhã', icone: '🌅' }
-               : periodo === 'tarde' ? { nome: 'Tarde', icone: '☀️' }
-               : { nome: 'Noite', icone: '🌙' };
+    const info = periodo === 'manha' ? { icone: '🌅' }
+               : periodo === 'tarde' ? { icone: '☀️' }
+               : { icone: '🌙' };
 
     if (badgeIcone) badgeIcone.textContent = info.icone;
     if (badgeTexto) {
       const horaStr = formatarHoraAtual();
-      const sufixo = ehManual ? `(Simulação ${info.nome})` : `(${info.nome})`;
-      badgeTexto.textContent = `Santa Rita do Sapucaí — ${horaStr} ${sufixo}`;
+      badgeTexto.textContent = `Santa Rita do Sapucaí — ${horaStr}`;
     }
   }
 
   function atualizarAmbiente() {
-    if (modoPeriodoAtual === 'auto') {
-      const real = obterPeriodoReal();
-      aplicarTemaFundo(real.periodo, false);
-    }
+    const real = obterPeriodoReal();
+    aplicarTemaFundo(real.periodo);
   }
 
-  // Inicializa tema de acordo com horário real
+  // Inicializa tema de acordo com horário real e atualiza a cada 30 segundos
   atualizarAmbiente();
-  setInterval(atualizarAmbiente, 30000); // Atualiza relógio e tema periodicamente
-
-  // Event Listeners dos Botões de Simulação (Para a Feira)
-  btnsPeriodo.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btnsPeriodo.forEach(b => b.classList.remove('seletor-horario__btn--ativo'));
-      btn.classList.add('seletor-horario__btn--ativo');
-
-      const periodoEscolhido = btn.getAttribute('data-periodo');
-      modoPeriodoAtual = periodoEscolhido;
-
-      if (periodoEscolhido === 'auto') {
-        const real = obterPeriodoReal();
-        aplicarTemaFundo(real.periodo, false);
-      } else {
-        aplicarTemaFundo(periodoEscolhido, true);
-      }
-    });
-  });
+  setInterval(atualizarAmbiente, 30000);
 
 
   /* ──────────────────────────────────────────────────────────
@@ -416,18 +393,32 @@
   }
 
   function setCarregando(ativo) {
-    if (botaoEntrar) botaoEntrar.disabled = ativo;
-    if (iconePadrao) iconePadrao.style.display = ativo ? 'none' : 'block';
-    if (iconeLoading) iconeLoading.style.display = ativo ? 'block' : 'none';
-    if (textoBotao) textoBotao.textContent = ativo ? 'Entrando no sistema...' : 'Entrar no sistema';
+    if (botaoEntrar) {
+      botaoEntrar.disabled = ativo;
+      if (ativo) {
+        botaoEntrar.classList.add('botao-entrar--carregando');
+      } else {
+        botaoEntrar.classList.remove('botao-entrar--carregando');
+      }
+    }
+    if (iconePadrao) {
+      iconePadrao.style.display = ativo ? 'none' : 'inline-block';
+    }
+    if (iconeLoading) {
+      iconeLoading.style.display = ativo ? 'inline-block' : 'none';
+    }
+    if (textoBotao) {
+      textoBotao.textContent = ativo ? 'Entrando no sistema...' : 'Entrar no sistema';
+    }
   }
 
   function resetarBotao() {
     if (botaoEntrar) {
       botaoEntrar.style.background = '';
       botaoEntrar.disabled = false;
+      botaoEntrar.classList.remove('botao-entrar--carregando');
     }
-    if (iconePadrao) iconePadrao.style.display = 'block';
+    if (iconePadrao) iconePadrao.style.display = 'inline-block';
     if (iconeLoading) iconeLoading.style.display = 'none';
     if (textoBotao) textoBotao.textContent = 'Entrar no sistema';
   }

@@ -21,13 +21,13 @@
 .barra-horario {
   position: fixed;
   top: 16px;
-  left: 16px;
-  right: 16px;
+  left: 0;
+  right: 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   z-index: 10;
-  pointer-events: none; /* Apenas os botões filhos recebem clique */
+  pointer-events: none;
 }
 
 /* Badge indicando a cidade e horário */
@@ -36,13 +36,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 7px 16px;
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 999px;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.02em;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
@@ -50,47 +50,8 @@
 }
 
 .badge-cidade__icone {
-  font-size: 14px;
-}
-
-/* Seletor de Período (Demo Controller) */
-.seletor-horario {
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  padding: 4px;
-  gap: 2px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-}
-
-.seletor-horario__btn {
-  background: transparent;
-  border: none;
-  color: #cbd5e1;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 999px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: background var(--transicao), color var(--transicao), transform var(--transicao);
-}
-
-.seletor-horario__btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.seletor-horario__btn--ativo {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 15px;
+  line-height: 1;
 }
 
 
@@ -614,7 +575,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   transition: background var(--transicao),
               transform var(--transicao),
               box-shadow var(--transicao);
@@ -632,8 +593,14 @@
 }
 
 .botao-entrar:disabled {
-  opacity: 0.65;
+  opacity: 1 !important; /* Mantém 100% de opacidade e cores vivas */
   cursor: not-allowed;
+}
+
+.botao-entrar--carregando {
+  background: var(--cor-marca-escura) !important;
+  cursor: wait !important;
+  box-shadow: 0 4px 16px rgba(26, 111, 212, 0.4) !important;
 }
 
 .botao-entrar__icone {
@@ -643,8 +610,13 @@
 }
 
 .icone-loading {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
   animation: girar 0.8s linear infinite;
   color: #ffffff;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 @keyframes girar {
@@ -909,24 +881,17 @@
 
 @media (max-width: 540px) {
   .barra-horario {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+    top: 12px;
+    padding: 0 12px;
   }
 
   .badge-cidade {
-    justify-content: center;
-  }
-
-  .seletor-horario {
-    justify-content: center;
+    font-size: 12px;
+    padding: 5px 12px;
   }
 
   .login-wrapper {
-    padding-top: 90px;
+    padding-top: 60px;
   }
 
   .form-card {
