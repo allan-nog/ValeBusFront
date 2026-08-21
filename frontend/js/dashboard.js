@@ -33,21 +33,73 @@
      2. DADOS DAS LINHAS E FROTA (Santa Rita do Sapucaí - MG)
      ────────────────────────────────────────────────────────── */
   const LINHAS = {
-    centro:     { id: 'L03', nome: 'Centro / ETE',       cor: '#22c55e' },
-    campus:     { id: 'L07', nome: 'Campus / FAI',       cor: '#2563eb' },
-    industrial: { id: 'L12', nome: 'Pq. Industrial',     cor: '#f97316' },
-    rodoviaria: { id: 'L15', nome: 'Rodoviária Central', cor: '#a855f7' }
+    anchieta: {
+      chave: 'anchieta',
+      nome: 'Linha Anchieta',
+      cor: '#16a34a',
+      partida: 'Praça Urbana Carolina | Praça Do Murilo',
+      proximaParada: 'Rua José Ribeiro De Barros, 59 | Inatel - Sentido Recanto'
+    },
+    fernandes: {
+      chave: 'fernandes',
+      nome: 'Linha Fernandes',
+      cor: '#2563eb',
+      partida: 'Rua Das Rosas, 300 | Caixa D\'Água Da Copasa',
+      proximaParada: 'Rua Das Rosas, 400 | Ginásio Poliesportivo'
+    },
+    fortaleza: {
+      chave: 'fortaleza',
+      nome: 'Linha Fortaleza',
+      cor: '#9333ea',
+      partida: 'Rua Das Rosas, 300 | Caixa D\'Água Da Copasa',
+      proximaParada: 'Rua Das Rosas, 400 | Ginásio Poliesportivo'
+    },
+    industrial: {
+      chave: 'industrial',
+      nome: 'Linha Industrial',
+      cor: '#ea580c',
+      partida: 'Br-459 Rod. Jk, Km 119,8 Leste | Entr. Mg-173 Para Cachoeira De Minas',
+      proximaParada: 'Br-459 Rod. Jk, Km 120,7 Leste | Linear'
+    },
+    porto_sapucai: {
+      chave: 'porto_sapucai',
+      nome: 'Linha Porto Sapucaí',
+      cor: '#0891b2',
+      partida: 'Br-459 Rod. Jk, Km 116 Leste',
+      proximaParada: 'Br-459 Rod. Jk, Km 116,3 Leste | Acesso Ao Porto Sapucaí'
+    },
+    reforco_jose_gm: {
+      chave: 'reforco_jose_gm',
+      nome: 'Linha Reforço José G.M (via MCM)',
+      cor: '#dc2626',
+      partida: 'Rua Das Rosas, 300 | Caixa D\'Água Da Copasa',
+      proximaParada: 'Rua Das Rosas, 400 | Ginásio Poliesportivo'
+    },
+    sao_benedito_hora_meia: {
+      chave: 'sao_benedito_hora_meia',
+      nome: 'Linha São Benedito (Hora e Meia)',
+      cor: '#db2777',
+      partida: 'Rua Das Rosas, 300 | Caixa D\'Água Da Copasa',
+      proximaParada: 'Rua Das Rosas, 400 | Ginásio Poliesportivo'
+    },
+    sao_benedito_hora: {
+      chave: 'sao_benedito_hora',
+      nome: 'Linha São Benedito (Hora)',
+      cor: '#eab308',
+      partida: 'Rua Das Rosas, 300 | Caixa D\'Água Da Copasa',
+      proximaParada: 'Rua Das Rosas, 400 | Ginásio Poliesportivo'
+    }
   };
 
   const FROTA = [
-    { id: 'VB-101', chaveLinha: 'centro',     linha: LINHAS.centro,     posicao: [-22.2528, -45.7036], velocidade: 28, proximaParada: 'INATEL' },
-    { id: 'VB-102', chaveLinha: 'centro',     linha: LINHAS.centro,     posicao: [-22.2498, -45.7062], velocidade: 32, proximaParada: 'Praça da Matriz' },
-    { id: 'VB-201', chaveLinha: 'campus',     linha: LINHAS.campus,     posicao: [-22.2480, -45.6990], velocidade: 24, proximaParada: 'Praça da Bandeira' },
-    { id: 'VB-202', chaveLinha: 'campus',     linha: LINHAS.campus,     posicao: [-22.2465, -45.6968], velocidade: 35, proximaParada: 'FAI Campus II' },
-    { id: 'VB-301', chaveLinha: 'industrial', linha: LINHAS.industrial, posicao: [-22.2570, -45.7085], velocidade: 30, proximaParada: 'Distrito Industrial' },
-    { id: 'VB-302', chaveLinha: 'industrial', linha: LINHAS.industrial, posicao: [-22.2590, -45.7055], velocidade: 22, proximaParada: 'Av. Sinhá Moreira' },
-    { id: 'VB-401', chaveLinha: 'rodoviaria', linha: LINHAS.rodoviaria, posicao: [-22.2600, -45.7000], velocidade: 26, proximaParada: 'Terminal Rodoviário' },
-    { id: 'VB-402', chaveLinha: 'rodoviaria', linha: LINHAS.rodoviaria, posicao: [-22.2540, -45.7020], velocidade: 29, proximaParada: 'Bairro Alto' }
+    { chaveLinha: 'anchieta',               linha: LINHAS.anchieta,               posicao: [-22.2575, -45.6965], velocidade: 28 },
+    { chaveLinha: 'fernandes',              linha: LINHAS.fernandes,              posicao: [-22.2470, -45.7090], velocidade: 32 },
+    { chaveLinha: 'fortaleza',              linha: LINHAS.fortaleza,              posicao: [-22.2445, -45.7060], velocidade: 25 },
+    { chaveLinha: 'industrial',             linha: LINHAS.industrial,             posicao: [-22.2610, -45.7140], velocidade: 35 },
+    { chaveLinha: 'porto_sapucai',          linha: LINHAS.porto_sapucai,          posicao: [-22.2660, -45.6880], velocidade: 30 },
+    { chaveLinha: 'reforco_jose_gm',        linha: LINHAS.reforco_jose_gm,        posicao: [-22.2420, -45.7020], velocidade: 22 },
+    { chaveLinha: 'sao_benedito_hora_meia', linha: LINHAS.sao_benedito_hora_meia, posicao: [-22.2510, -45.7010], velocidade: 27 },
+    { chaveLinha: 'sao_benedito_hora',      linha: LINHAS.sao_benedito_hora,      posicao: [-22.2545, -45.7075], velocidade: 29 }
   ];
 
 
@@ -97,32 +149,43 @@
     });
   }
 
+  function gerarHtmlPopup(bus) {
+    return `
+      <div class="popup-onibus">
+        <div class="popup-onibus__header">
+          <span class="popup-onibus__dot" style="background-color: ${bus.linha.cor};"></span>
+          <h3 class="popup-onibus__titulo" style="color: ${bus.linha.cor};">
+            ${bus.linha.nome}
+          </h3>
+        </div>
+        <div class="popup-onibus__corpo">
+          <div class="popup-onibus__item">
+            <span class="popup-onibus__rotulo">🚩 Partida:</span>
+            <span class="popup-onibus__valor">${bus.linha.partida}</span>
+          </div>
+          <div class="popup-onibus__item">
+            <span class="popup-onibus__rotulo">📍 Próxima Parada:</span>
+            <span class="popup-onibus__valor">${bus.linha.proximaParada}</span>
+          </div>
+        </div>
+        <div class="popup-onibus__footer">
+          <span class="popup-onibus__velocidade">⚡ <strong>${bus.velocidade} km/h</strong></span>
+          <span class="popup-onibus__gps-badge">GPS Online</span>
+        </div>
+      </div>
+    `;
+  }
+
   function renderizarMarcadores() {
     FROTA.forEach(bus => {
       const icone = criarIconeBus(bus.linha.cor);
-
-      const conteudoPopup = `
-        <div class="popup-onibus">
-          <div class="popup-onibus__header">
-            <span class="popup-onibus__id">${bus.id}</span>
-            <span class="popup-onibus__badge" style="background-color:${bus.linha.cor}">
-              ${bus.linha.id}
-            </span>
-          </div>
-          <div class="popup-onibus__linha">${bus.linha.nome}</div>
-          <div class="popup-onibus__detalhe">
-            <strong>Próxima Parada:</strong> ${bus.proximaParada}<br>
-            <strong>Velocidade:</strong> ${bus.velocidade} km/h<br>
-            <strong>GPS Status:</strong> Sinal excelente
-          </div>
-        </div>
-      `;
+      const conteudoPopup = gerarHtmlPopup(bus);
 
       const marker = L.marker(bus.posicao, { icon: icone })
         .addTo(map)
         .bindPopup(conteudoPopup);
 
-      marcadoresMap.set(bus.id, { marker, bus });
+      marcadoresMap.set(bus.chaveLinha, { marker, bus });
     });
   }
 
@@ -138,8 +201,8 @@
       const lngAtual = marker.getLatLng().lng;
 
       // Deslocamento suave aleatório
-      const deltaLat = (Math.random() - 0.5) * 0.0006;
-      const deltaLng = (Math.random() - 0.5) * 0.0006;
+      const deltaLat = (Math.random() - 0.5) * 0.0005;
+      const deltaLng = (Math.random() - 0.5) * 0.0005;
 
       const novaLat = latAtual + deltaLat;
       const novaLng = lngAtual + deltaLng;
@@ -148,6 +211,11 @@
 
       // Variação leve na velocidade simulada
       bus.velocidade = Math.min(45, Math.max(15, bus.velocidade + Math.floor((Math.random() - 0.5) * 4)));
+
+      // Atualiza conteúdo do popup mantendo dados dinâmicos
+      if (marker.isPopupOpen()) {
+        marker.setPopupContent(gerarHtmlPopup(bus));
+      }
     });
   }, 3000);
 
@@ -170,8 +238,7 @@
 
   botoesFiltro.forEach(botao => {
     botao.addEventListener('click', (e) => {
-      e.stopPropagation(); // Evita recolher ao clicar nos botões de filtro no mobile
-      // Altera o estado visual dos botões de filtro
+      e.stopPropagation();
       botoesFiltro.forEach(b => b.classList.remove('mapa-legenda__item--ativo'));
       botao.classList.add('mapa-legenda__item--ativo');
 
@@ -199,16 +266,19 @@
      ────────────────────────────────────────────────────────── */
   const cardsProximos = document.querySelectorAll('.proximo-card');
 
-  function focarOnibusPorId(busId) {
-    const itemBus = marcadoresMap.get(busId);
+  function focarOnibusPorLinha(chaveLinha) {
+    const itemBus = marcadoresMap.get(chaveLinha);
     if (itemBus) {
-      const { marker } = itemBus;
+      const { marker, bus } = itemBus;
       const latLng = marker.getLatLng();
 
       // Garantir que a camada do marcador está visível se houver filtro
       if (!map.hasLayer(marker)) {
         map.addLayer(marker);
       }
+
+      // Atualiza popup antes de abrir
+      marker.setPopupContent(gerarHtmlPopup(bus));
 
       // Faz o mapa voar suavemente até o ônibus selecionado
       map.flyTo(latLng, 16, { animate: true, duration: 1.2 });
@@ -223,21 +293,21 @@
 
   cardsProximos.forEach(card => {
     card.addEventListener('click', () => {
-      const busId = card.getAttribute('data-bus-id');
-      focarOnibusPorId(busId);
+      const chaveLinha = card.getAttribute('data-linha');
+      focarOnibusPorLinha(chaveLinha);
     });
 
     // Suporte a navegação por teclado (Enter e Espaço)
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        const busId = card.getAttribute('data-bus-id');
-        focarOnibusPorId(busId);
+        const chaveLinha = card.getAttribute('data-linha');
+        focarOnibusPorLinha(chaveLinha);
       }
     });
   });
 
-  // Botão "Ver todas as 8 unidades da frota"
+  // Botão "Ver todas as 8 linhas da frota"
   const btnVerTodos = document.getElementById('btn-ver-todos');
   if (btnVerTodos) {
     btnVerTodos.addEventListener('click', () => {
@@ -261,7 +331,7 @@
   const btnSino = document.getElementById('btn-sino-notificacoes');
   if (btnSino) {
     btnSino.addEventListener('click', () => {
-      alert('🔔 Alertas Operacionais ValeBus:\n\n1. Linha L07 Campus: Trânsito moderado na Praça da Bandeira (+4 min).\n2. Linha L12 Industrial: Manutenção preventiva agendada para às 22:00 em VB-302.');
+      navegarParaSecao('alertas');
     });
   }
 
@@ -272,32 +342,189 @@
     });
   }
 
+  // Gerenciamento Centralizado de Seções / Views
+  const secoesConfig = {
+    mapa: {
+      titulo: 'Monitoramento de Frota em Tempo Real',
+      subtitulo: 'Santa Rita do Sapucaí — Simulação GPS Telemetria'
+    },
+    buscar: {
+      titulo: 'Buscar Linhas e Destinos',
+      subtitulo: 'Pesquise por bairro, pontos turísticos, faculdades e conexões'
+    },
+    horarios: {
+      titulo: 'Quadro Geral de Horários',
+      subtitulo: 'Itinerários e intervalos programados da frota municipal'
+    },
+    alertas: {
+      titulo: 'Central de Alertas Operacionais',
+      subtitulo: 'Avisos de tráfego, manutenções e pontualidade em tempo real'
+    },
+    sobre: {
+      titulo: 'Sobre o Projeto ValeBus',
+      subtitulo: 'Inovação e mobilidade inteligente para Santa Rita do Sapucaí'
+    }
+  };
+
+  function navegarParaSecao(secao) {
+    // 1. Atualiza botões do menu lateral
+    itensNav.forEach(i => {
+      const isAlvo = i.getAttribute('data-secao') === secao;
+      i.classList.toggle('nav__item--ativo', isAlvo);
+      if (isAlvo) {
+        i.setAttribute('aria-current', 'page');
+      } else {
+        i.removeAttribute('aria-current');
+      }
+    });
+
+    // 2. Atualiza títulos no cabeçalho da página
+    const cfg = secoesConfig[secao] || secoesConfig.mapa;
+    const elTitulo = document.getElementById('main-titulo');
+    const elSubtitulo = document.getElementById('main-subtitulo');
+    if (elTitulo) elTitulo.textContent = cfg.titulo;
+    if (elSubtitulo) elSubtitulo.textContent = cfg.subtitulo;
+
+    // 3. Alterna a exibição das views
+    const todasViews = document.querySelectorAll('.secao-view');
+    todasViews.forEach(v => {
+      v.style.display = 'none';
+      v.classList.remove('secao-view--ativa');
+    });
+
+    const viewAlvo = document.getElementById(`view-${secao}`);
+    if (viewAlvo) {
+      viewAlvo.style.display = 'flex';
+      viewAlvo.classList.add('secao-view--ativa');
+    }
+
+    // 4. Se a view selecionada for o mapa, revalida o tamanho do Leaflet
+    if (secao === 'mapa') {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+    }
+
+    if (window.innerWidth < 1100) {
+      fecharSidebar();
+    }
+  }
+
   // Links do Menu Lateral (Sidebar)
   const itensNav = document.querySelectorAll('.sidebar__nav .nav__item');
   itensNav.forEach(item => {
     item.addEventListener('click', () => {
-      itensNav.forEach(i => {
-        i.classList.remove('nav__item--ativo');
-        i.removeAttribute('aria-current');
-      });
-      item.classList.add('nav__item--ativo');
-      item.setAttribute('aria-current', 'page');
-
       const secao = item.getAttribute('data-secao');
-      const tituloMain = document.querySelector('.main__titulo');
-
-      if (tituloMain) {
-        if (secao === 'mapa') tituloMain.textContent = 'Monitoramento de Frota em Tempo Real';
-        else if (secao === 'linhas') tituloMain.textContent = 'Gestão e Horários das Linhas';
-        else if (secao === 'onibus') tituloMain.textContent = 'Telemetria dos Veículos (8 Unidades)';
-        else if (secao === 'paradas') tituloMain.textContent = 'Pontos de Parada e Abrigos';
-        else if (secao === 'alertas') tituloMain.textContent = 'Central de Alertas Operacionais';
-        else if (secao === 'relatorios') tituloMain.textContent = 'Relatórios de Pontualidade e Demanda';
-        else if (secao === 'config') tituloMain.textContent = 'Configurações do Sistema CCO';
+      if (secao) {
+        navegarParaSecao(secao);
       }
+    });
+  });
 
-      if (window.innerWidth < 1100) {
-        fecharSidebar();
+
+  /* ──────────────────────────────────────────────────────────
+     8.1. SISTEMA DE BUSCA DE DESTINO E FILTRO POR NOME DA LINHA
+     ────────────────────────────────────────────────────────── */
+  const inputBusca = document.getElementById('input-busca-linha');
+  const btnLimparBusca = document.getElementById('btn-limpar-busca');
+  const chipsFiltro = document.querySelectorAll('#chips-destinos .chip-filtro');
+  const cardsLinhasBusca = document.querySelectorAll('#grade-linhas-busca .linha-card');
+  const contadorResultado = document.getElementById('busca-contador-resultado');
+
+  function normalizarTexto(txt) {
+    return (txt || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  function executarBuscaDestino(termo) {
+    const termoNorm = normalizarTexto(termo);
+    let visiveis = 0;
+
+    if (btnLimparBusca) {
+      btnLimparBusca.style.display = termoNorm ? 'flex' : 'none';
+    }
+
+    cardsLinhasBusca.forEach(card => {
+      const dadosBusca = normalizarTexto(card.getAttribute('data-busca') || '');
+      const textoCard = normalizarTexto(card.innerText || '');
+      const matches = !termoNorm || dadosBusca.includes(termoNorm) || textoCard.includes(termoNorm);
+
+      if (matches) {
+        card.style.display = 'flex';
+        visiveis++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (contadorResultado) {
+      if (!termoNorm) {
+        contadorResultado.textContent = `Exibindo todas as ${cardsLinhasBusca.length} linhas disponíveis em Santa Rita do Sapucaí`;
+      } else if (visiveis === 0) {
+        contadorResultado.textContent = `Nenhuma linha encontrada para "${termo}". Tente outro termo ou atalho.`;
+      } else {
+        contadorResultado.textContent = `Exibindo ${visiveis} linha(s) encontrada(s) para "${termo}"`;
+      }
+    }
+  }
+
+  if (inputBusca) {
+    inputBusca.addEventListener('input', (e) => {
+      // Remove ativação de chips ao digitar livremente
+      chipsFiltro.forEach(c => c.classList.remove('chip-filtro--ativo'));
+      executarBuscaDestino(e.target.value);
+    });
+  }
+
+  if (btnLimparBusca) {
+    btnLimparBusca.addEventListener('click', () => {
+      if (inputBusca) {
+        inputBusca.value = '';
+        inputBusca.focus();
+      }
+      chipsFiltro.forEach((c, idx) => {
+        c.classList.toggle('chip-filtro--ativo', idx === 0);
+      });
+      executarBuscaDestino('');
+    });
+  }
+
+  chipsFiltro.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chipsFiltro.forEach(c => c.classList.remove('chip-filtro--ativo'));
+      chip.classList.add('chip-filtro--ativo');
+
+      const filtro = chip.getAttribute('data-filtro') || '';
+      if (inputBusca) {
+        inputBusca.value = filtro;
+      }
+      executarBuscaDestino(filtro);
+    });
+  });
+
+  // Botões "Ver no Mapa" dentro da busca e horários
+  const botoesVerLinhaMapa = document.querySelectorAll('.btn-ver-linha-mapa');
+  botoesVerLinhaMapa.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const chaveLinha = btn.getAttribute('data-linha');
+      if (chaveLinha) {
+        // 1. Muda para a visualização do mapa
+        navegarParaSecao('mapa');
+
+        // 2. Aciona o filtro correspondente na legenda do mapa
+        const btnFiltroLegenda = document.querySelector(`#filtros-legenda [data-linha="${chaveLinha}"]`);
+        if (btnFiltroLegenda) {
+          btnFiltroLegenda.click();
+        }
+
+        // 3. Foca o mapa no ônibus da linha com animação suave e abre o popup
+        setTimeout(() => {
+          focarOnibusPorLinha(chaveLinha);
+        }, 350);
       }
     });
   });

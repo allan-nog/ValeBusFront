@@ -560,50 +560,617 @@
 /* Popups do Leaflet Customizados */
 .leaflet-popup-content-wrapper {
   border-radius: var(--raio-medio) !important;
-  padding: 4px !important;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+  padding: 0 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22) !important;
+  overflow: hidden;
+  border: 1px solid var(--borda-cor);
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
 }
 
 .popup-onibus {
-  padding: 8px 10px;
+  padding: 12px 14px;
   font-family: inherit;
+  min-width: 250px;
+  max-width: 320px;
 }
 
 .popup-onibus__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   border-bottom: 1px solid var(--borda-cor);
-  padding-bottom: 6px;
-  margin-bottom: 6px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.popup-onibus__badge {
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #ffffff;
+.popup-onibus__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.popup-onibus__titulo {
+  font-size: 15px;
   font-weight: 800;
-  font-size: 11px;
+  color: var(--texto-principal);
+  line-height: 1.25;
+  margin: 0;
 }
 
-.popup-onibus__id {
+.popup-onibus__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup-onibus__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.popup-onibus__rotulo {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--texto-secundario);
+}
+
+.popup-onibus__valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-principal);
+  line-height: 1.35;
+}
+
+.popup-onibus__footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--borda-cor);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.popup-onibus__velocidade {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-marca);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.popup-onibus__gps-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background-color: #dcfce7;
+  color: #166534;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.popup-onibus__gps-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #22c55e;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   5.1. SEÇÕES MODULARES (VIEWS: BUSCAR, HORÁRIOS, ALERTAS, SOBRE)
+   ═══════════════════════════════════════════════════════════ */
+
+.secao-view {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-bloco-conteudo {
+  background-color: var(--fundo-card);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-grande);
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* ──────────────────────────────────────────────────────────
+   ABA BUSCAR DESTINO & LINHAS
+   ────────────────────────────────────────────────────────── */
+.busca-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+
+.busca-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.busca-input-icone {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  stroke: var(--texto-secundario);
+  pointer-events: none;
+}
+
+.busca-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 44px 0 48px;
+  background-color: var(--fundo-card);
+  border: 1.5px solid var(--borda-cor);
+  border-radius: var(--raio-medio);
   font-size: 14px;
+  color: var(--texto-principal);
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.busca-input:focus {
+  outline: none;
+  border-color: var(--cor-marca);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.busca-btn-limpar {
+  position: absolute;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--texto-secundario);
+}
+
+.busca-btn-limpar svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+
+/* Chips de Atalhos de Busca */
+.busca-chips-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.busca-chips-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--texto-secundario);
+}
+
+.busca-chips-lista {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip-filtro {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--borda-cor);
+  background-color: var(--fundo-card);
+  color: var(--texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transicao);
+}
+
+.chip-filtro:hover {
+  background-color: var(--fundo-campo);
+  color: var(--texto-principal);
+}
+
+.chip-filtro--ativo {
+  background-color: var(--cor-marca) !important;
+  color: #ffffff !important;
+  border-color: var(--cor-marca) !important;
+}
+
+.busca-contador-wrapper {
+  padding: 2px 4px;
+}
+
+.busca-contador {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+/* Grid de Linhas na Busca */
+.linhas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.linha-card {
+  background-color: var(--fundo-card);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-medio);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.linha-card:hover {
+  transform: translateY(-2px);
+  border-color: #94a3b8;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.linha-card__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.linha-card__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.linha-card__titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--texto-principal);
+  flex: 1;
+}
+
+.linha-card__status-tag {
+  font-size: 10px;
+  font-weight: 700;
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.linha-card__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.linha-card__dado {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.linha-card__rotulo {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--texto-secundario);
+}
+
+.linha-card__texto {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-principal);
+  line-height: 1.35;
+}
+
+.linha-card__btn-acao {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: var(--raio-pequeno);
+  border: 1.5px solid var(--cor-btn, var(--cor-marca));
+  background-color: #ffffff;
+  color: var(--cor-btn, var(--cor-marca));
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transicao);
+}
+
+.linha-card__btn-acao:hover {
+  background-color: var(--cor-btn, var(--cor-marca));
+  color: #ffffff;
+}
+
+.linha-card__btn-acao svg {
+  stroke: currentColor;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   ABA QUADRO DE HORÁRIOS
+   ────────────────────────────────────────────────────────── */
+.horarios-cabecalho {
+  margin-bottom: 16px;
+}
+
+.horarios-info-texto {
+  font-size: 14px;
+  color: var(--texto-secundario);
+  line-height: 1.5;
+}
+
+.horarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.horario-card {
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-top-width: 4px;
+  border-radius: var(--raio-medio);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.horario-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.horario-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.horario-card__header h4 {
+  font-size: 15px;
   font-weight: 800;
   color: var(--texto-principal);
 }
 
-.popup-onibus__linha {
-  font-size: 13px;
+.horario-card__partida {
+  font-size: 12px;
   font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.horario-card__grade {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--texto-principal);
+  background-color: var(--fundo-card);
+  padding: 10px 12px;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid var(--borda-cor);
+}
+
+.btn-link-mapa {
+  margin-top: 4px;
+  align-self: flex-start;
+  background: none;
+  border: none;
   color: var(--cor-marca);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  transition: opacity var(--transicao);
+}
+
+.btn-link-mapa:hover {
+  opacity: 0.8;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   ABA ALERTAS OPERACIONAIS
+   ────────────────────────────────────────────────────────── */
+.alertas-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.alerta-item {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--raio-medio);
+  border: 1px solid var(--borda-cor);
+  background-color: var(--fundo-card);
+}
+
+.alerta-item--atencao {
+  border-left: 4px solid var(--cor-alerta);
+  background-color: #fffbeb;
+}
+
+.alerta-item--sucesso {
+  border-left: 4px solid var(--cor-sucesso);
+  background-color: #f0fdf4;
+}
+
+.alerta-item--info {
+  border-left: 4px solid #2563eb;
+  background-color: #eff6ff;
+}
+
+.alerta-item__icone {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.alerta-item__info h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--texto-principal);
   margin-bottom: 4px;
 }
 
-.popup-onibus__detalhe {
-  font-size: 12px;
+.alerta-item__info p {
+  font-size: 13px;
   color: var(--texto-secundario);
-  line-height: 1.4;
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+
+.alerta-item__tempo {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+
+/* ──────────────────────────────────────────────────────────
+   ABA SOBRE NÓS
+   ────────────────────────────────────────────────────────── */
+.sobre-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sobre-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sobre-hero__badge {
+  align-self: flex-start;
+  background-color: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sobre-hero__titulo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--texto-principal);
+  line-height: 1.3;
+}
+
+.sobre-hero__descricao {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--texto-secundario);
+}
+
+.sobre-pilares-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.sobre-pilar-card {
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-medio);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sobre-pilar-card__icone {
+  font-size: 24px;
+}
+
+.sobre-pilar-card h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+.sobre-pilar-card p {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  line-height: 1.45;
+}
+
+.sobre-placeholder-box {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px dashed #cbd5e1;
+  border-radius: var(--raio-medio);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sobre-placeholder-box__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sobre-placeholder-tag {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cor-marca);
+}
+
+.sobre-placeholder-sub {
+  font-size: 11px;
+  color: var(--texto-secundario);
+}
+
+.sobre-placeholder-texto {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  line-height: 1.5;
 }
 
 

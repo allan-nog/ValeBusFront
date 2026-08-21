@@ -55,12 +55,25 @@
       <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
     </symbol>
 
-    <!-- Relatórios -->
+    <!-- Relatório / Documento -->
     <symbol id="icone-relatorios" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2"/>
       <line x1="3"  y1="9"  x2="21" y2="9"/>
       <line x1="3"  y1="15" x2="21" y2="15"/>
       <line x1="9"  y1="9"  x2="9"  y2="21"/>
+    </symbol>
+
+    <!-- Buscar / Lupa -->
+    <symbol id="icone-buscar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </symbol>
+
+    <!-- Sobre / Info -->
+    <symbol id="icone-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
     </symbol>
 
     <!-- Configurações -->
@@ -138,38 +151,28 @@
 
         <button type="button" class="nav__item nav__item--ativo" data-secao="mapa" aria-current="page">
           <svg aria-hidden="true"><use href="#icone-mapa"/></svg>
-          <span class="nav__label">Mapa</span>
+          <span class="nav__label">Mapa em Tempo Real</span>
         </button>
 
-        <button type="button" class="nav__item" data-secao="linhas">
-          <svg aria-hidden="true"><use href="#icone-linhas"/></svg>
-          <span class="nav__label">Linhas</span>
+        <button type="button" class="nav__item" data-secao="buscar">
+          <svg aria-hidden="true"><use href="#icone-buscar"/></svg>
+          <span class="nav__label">Buscar Destino</span>
         </button>
 
-        <button type="button" class="nav__item" data-secao="onibus">
-          <svg aria-hidden="true"><use href="#icone-onibus"/></svg>
-          <span class="nav__label">Ônibus</span>
-        </button>
-
-        <button type="button" class="nav__item" data-secao="paradas">
-          <svg aria-hidden="true"><use href="#icone-paradas"/></svg>
-          <span class="nav__label">Paradas</span>
+        <button type="button" class="nav__item" data-secao="horarios">
+          <svg aria-hidden="true"><use href="#icone-relogio"/></svg>
+          <span class="nav__label">Horários das Linhas</span>
         </button>
 
         <button type="button" class="nav__item" data-secao="alertas">
           <svg aria-hidden="true"><use href="#icone-sino"/></svg>
-          <span class="nav__label">Alertas</span>
+          <span class="nav__label">Alertas da Frota</span>
           <span class="nav__badge" aria-label="2 alertas ativos">2</span>
         </button>
 
-        <button type="button" class="nav__item" data-secao="relatorios">
-          <svg aria-hidden="true"><use href="#icone-relatorios"/></svg>
-          <span class="nav__label">Relatórios</span>
-        </button>
-
-        <button type="button" class="nav__item" data-secao="config">
-          <svg aria-hidden="true"><use href="#icone-config"/></svg>
-          <span class="nav__label">Configurações</span>
+        <button type="button" class="nav__item" data-secao="sobre">
+          <svg aria-hidden="true"><use href="#icone-info"/></svg>
+          <span class="nav__label">Sobre Nós</span>
         </button>
 
       </nav>
@@ -226,60 +229,551 @@
 
 
     <!-- ──────────────────────────────────────────────────────
-         ÁREA PRINCIPAL — Mapa
+         ÁREA PRINCIPAL (VIEWS MODULARES)
          ────────────────────────────────────────────────────── -->
-    <main class="main" id="secao-mapa">
+    <main class="main" id="main-area">
 
       <div class="main__header">
-        <h1 class="main__titulo">Monitoramento de Frota em Tempo Real</h1>
-        <p class="main__subtitulo">Santa Rita do Sapucaí — Simulação GPS Telemetria</p>
+        <h1 class="main__titulo" id="main-titulo">Monitoramento de Frota em Tempo Real</h1>
+        <p class="main__subtitulo" id="main-subtitulo">Santa Rita do Sapucaí — Simulação GPS Telemetria</p>
       </div>
 
-      <!-- Container do mapa -->
-      <div class="mapa-container" role="region" aria-label="Mapa interativo de monitoramento de ônibus">
+      <!-- VIEW 1: MAPA EM TEMPO REAL -->
+      <div class="secao-view secao-view--ativa" id="view-mapa">
+        <!-- Container do mapa -->
+        <div class="mapa-container" role="region" aria-label="Mapa interativo de monitoramento de ônibus">
 
-        <div id="mapa"></div>
+          <div id="mapa"></div>
 
-        <!-- Legenda com Filtro Interativo por Linha -->
-        <div class="mapa-legenda">
+          <!-- Legenda com Filtro Interativo por Linha -->
+          <div class="mapa-legenda">
 
-          <div class="mapa-legenda__header">
-            <span class="mapa-legenda__titulo">Linhas Monitoradas</span>
-            <span class="mapa-legenda__dica">Clique para filtrar</span>
+            <div class="mapa-legenda__header">
+              <span class="mapa-legenda__titulo">Linhas Monitoradas</span>
+              <span class="mapa-legenda__dica">Clique para filtrar</span>
+            </div>
+
+            <div class="mapa-legenda__filtros" id="filtros-legenda">
+
+              <button type="button" class="mapa-legenda__item mapa-legenda__item--ativo" data-linha="todas">
+                <span class="mapa-legenda__dot" style="background:#0f172a;"></span>
+                <strong>Todas as Linhas</strong>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="anchieta">
+                <span class="mapa-legenda__dot" style="background:#16a34a;"></span>
+                <span>Anchieta</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="fernandes">
+                <span class="mapa-legenda__dot" style="background:#2563eb;"></span>
+                <span>Fernandes</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="fortaleza">
+                <span class="mapa-legenda__dot" style="background:#9333ea;"></span>
+                <span>Fortaleza</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="industrial">
+                <span class="mapa-legenda__dot" style="background:#ea580c;"></span>
+                <span>Industrial</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="porto_sapucai">
+                <span class="mapa-legenda__dot" style="background:#0891b2;"></span>
+                <span>Porto Sapucaí</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="reforco_jose_gm">
+                <span class="mapa-legenda__dot" style="background:#dc2626;"></span>
+                <span>Reforço José G.M</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora_meia">
+                <span class="mapa-legenda__dot" style="background:#db2777;"></span>
+                <span>São Benedito (Hora e Meia)</span>
+              </button>
+
+              <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora">
+                <span class="mapa-legenda__dot" style="background:#eab308;"></span>
+                <span>São Benedito (Hora)</span>
+              </button>
+
+            </div>
+
+          </div><!-- /mapa-legenda -->
+
+        </div><!-- /mapa-container -->
+      </div><!-- /view-mapa -->
+
+
+      <!-- VIEW 2: BUSCAR DESTINO & LINHAS -->
+      <div class="secao-view" id="view-buscar" style="display: none;">
+        <div class="busca-painel">
+          
+          <!-- Barra de Pesquisa Interativa -->
+          <div class="busca-input-wrapper">
+            <svg class="busca-input-icone" aria-hidden="true"><use href="#icone-buscar"/></svg>
+            <input 
+              type="text" 
+              id="input-busca-linha" 
+              class="busca-input" 
+              placeholder="Digite o nome da linha, destino, bairro ou rua (ex: Inatel, Copasa, Fernandes, BR-459...)" 
+              aria-label="Buscar linha ou destino"
+              autocomplete="off"
+            >
+            <button type="button" id="btn-limpar-busca" class="busca-btn-limpar" aria-label="Limpar pesquisa" style="display:none;">
+              <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
+            </button>
           </div>
 
-          <div class="mapa-legenda__filtros" id="filtros-legenda">
-
-            <button type="button" class="mapa-legenda__item mapa-legenda__item--ativo" data-linha="todas">
-              <span class="mapa-legenda__dot" style="background:#0f172a;"></span>
-              <strong>Todas as Linhas</strong>
-            </button>
-
-            <button type="button" class="mapa-legenda__item" data-linha="centro">
-              <span class="mapa-legenda__dot" style="background:#22c55e;"></span>
-              <span>L03 Centro / INATEL</span>
-            </button>
-
-            <button type="button" class="mapa-legenda__item" data-linha="campus">
-              <span class="mapa-legenda__dot" style="background:#2563eb;"></span>
-              <span>L07 Campus / FAI</span>
-            </button>
-
-            <button type="button" class="mapa-legenda__item" data-linha="industrial">
-              <span class="mapa-legenda__dot" style="background:#f97316;"></span>
-              <span>L12 Pq. Industrial</span>
-            </button>
-
-            <button type="button" class="mapa-legenda__item" data-linha="rodoviaria">
-              <span class="mapa-legenda__dot" style="background:#a855f7;"></span>
-              <span>L15 Rodoviária</span>
-            </button>
-
+          <!-- Filtros Rápidos (Chips) -->
+          <div class="busca-chips-wrapper">
+            <span class="busca-chips-label">Atalhos rápidos:</span>
+            <div class="busca-chips-lista" id="chips-destinos">
+              <button type="button" class="chip-filtro chip-filtro--ativo" data-filtro="">Todos</button>
+              <button type="button" class="chip-filtro" data-filtro="Inatel">Inatel</button>
+              <button type="button" class="chip-filtro" data-filtro="Ginásio">Ginásio Poliesportivo</button>
+              <button type="button" class="chip-filtro" data-filtro="Copasa">Copasa / Rosas</button>
+              <button type="button" class="chip-filtro" data-filtro="Linear">Linear / BR-459</button>
+              <button type="button" class="chip-filtro" data-filtro="Porto Sapucaí">Porto Sapucaí</button>
+              <button type="button" class="chip-filtro" data-filtro="Murilo">Praça do Murilo</button>
+            </div>
           </div>
 
-        </div><!-- /mapa-legenda -->
+          <div class="busca-contador-wrapper">
+            <span id="busca-contador-resultado" class="busca-contador">Exibindo 8 linhas disponíveis em Santa Rita do Sapucaí</span>
+          </div>
 
-      </div><!-- /mapa-container -->
+          <!-- Grade de Linhas para Busca -->
+          <div class="linhas-grid" id="grade-linhas-busca">
+            
+            <!-- Anchieta -->
+            <article class="linha-card" data-linha="anchieta" data-busca="linha anchieta praca urbana carolina praca do murilo inatel recanto">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #16a34a;"></span>
+                <h3 class="linha-card__titulo">Linha Anchieta</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Praça Urbana Carolina | Praça Do Murilo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua José Ribeiro De Barros, 59 | Inatel - Sentido Recanto</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 15 minutos (Horário de Pico)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="anchieta" style="--cor-btn:#16a34a;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- Fernandes -->
+            <article class="linha-card" data-linha="fernandes" data-busca="linha fernandes rua das rosas caixa dagua copasa ginasio poliesportivo">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #2563eb;"></span>
+                <h3 class="linha-card__titulo">Linha Fernandes</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 300 | Caixa D'Água Da Copasa</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 400 | Ginásio Poliesportivo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 10 minutos (Horário de Pico)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="fernandes" style="--cor-btn:#2563eb;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- Fortaleza -->
+            <article class="linha-card" data-linha="fortaleza" data-busca="linha fortaleza rua das rosas caixa dagua copasa ginasio poliesportivo">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #9333ea;"></span>
+                <h3 class="linha-card__titulo">Linha Fortaleza</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 300 | Caixa D'Água Da Copasa</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 400 | Ginásio Poliesportivo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 20 minutos</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="fortaleza" style="--cor-btn:#9333ea;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- Industrial -->
+            <article class="linha-card" data-linha="industrial" data-busca="linha industrial br-459 rod jk cachoeira de minas linear distrito industrial">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #ea580c;"></span>
+                <h3 class="linha-card__titulo">Linha Industrial</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Br-459 Rod. Jk, Km 119,8 Leste | Entr. Mg-173</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Br-459 Rod. Jk, Km 120,7 Leste | Linear</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 15 minutos (Turnos industriais)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="industrial" style="--cor-btn:#ea580c;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- Porto Sapucaí -->
+            <article class="linha-card" data-linha="porto_sapucai" data-busca="linha porto sapucai br-459 rod jk acesso ao porto sapucai">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #0891b2;"></span>
+                <h3 class="linha-card__titulo">Linha Porto Sapucaí</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Br-459 Rod. Jk, Km 116 Leste</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Br-459 Rod. Jk, Km 116,3 Leste | Acesso Ao Porto Sapucaí</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 25 minutos</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="porto_sapucai" style="--cor-btn:#0891b2;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- Reforço José G.M (via MCM) -->
+            <article class="linha-card" data-linha="reforco_jose_gm" data-busca="linha reforco jose gm via mcm rua das rosas copasa ginasio poliesportivo">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #dc2626;"></span>
+                <h3 class="linha-card__titulo">Linha Reforço José G.M (via MCM)</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 300 | Caixa D'Água Da Copasa</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 400 | Ginásio Poliesportivo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">A cada 15 minutos (Linha de Reforço)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="reforco_jose_gm" style="--cor-btn:#dc2626;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- São Benedito (Hora e Meia) -->
+            <article class="linha-card" data-linha="sao_benedito_hora_meia" data-busca="linha sao benedito hora e meia rua das rosas copasa ginasio poliesportivo">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #db2777;"></span>
+                <h3 class="linha-card__titulo">Linha São Benedito (Hora e Meia)</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 300 | Caixa D'Água Da Copasa</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 400 | Ginásio Poliesportivo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">Intervalo de 90 minutos (Hora e Meia)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="sao_benedito_hora_meia" style="--cor-btn:#db2777;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+            <!-- São Benedito (Hora) -->
+            <article class="linha-card" data-linha="sao_benedito_hora" data-busca="linha sao benedito hora rua das rosas copasa ginasio poliesportivo">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #eab308;"></span>
+                <h3 class="linha-card__titulo">Linha São Benedito (Hora)</h3>
+                <span class="linha-card__status-tag">GPS Ativo</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 300 | Caixa D'Água Da Copasa</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada / Trajeto:</span>
+                  <span class="linha-card__texto">Rua Das Rosas, 400 | Ginásio Poliesportivo</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">⏱️ Frequência:</span>
+                  <span class="linha-card__texto">Intervalo de 60 minutos (A cada hora)</span>
+                </div>
+              </div>
+              <button type="button" class="linha-card__btn-acao btn-ver-linha-mapa" data-linha="sao_benedito_hora" style="--cor-btn:#eab308;">
+                <svg width="16" height="16" aria-hidden="true"><use href="#icone-mapa"/></svg>
+                <span>Ver no Mapa em Tempo Real</span>
+              </button>
+            </article>
+
+          </div><!-- /grade-linhas-busca -->
+
+        </div><!-- /busca-painel -->
+      </div><!-- /view-buscar -->
+
+
+      <!-- VIEW 3: QUADRO DE HORÁRIOS -->
+      <div class="secao-view" id="view-horarios" style="display: none;">
+        <div class="view-bloco-conteudo">
+          <div class="horarios-cabecalho">
+            <p class="horarios-info-texto">Consulte as tabelas de horários programados para dias úteis, sábados e domingos em Santa Rita do Sapucaí.</p>
+          </div>
+          <div class="horarios-grid">
+
+            <div class="horario-card" style="border-top-color: #16a34a;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#16a34a;"></span>
+                <h4>Linha Anchieta</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Praça Urbana Carolina</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:00 às 22:30 (a cada 15 min)</div>
+                <div><strong>Sábados:</strong> 06:30 às 20:00 (a cada 30 min)</div>
+                <div><strong>Domingos:</strong> 07:00 às 19:00 (a cada 45 min)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="anchieta">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #2563eb;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#2563eb;"></span>
+                <h4>Linha Fernandes</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Rua Das Rosas (Copasa)</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 05:45 às 23:00 (a cada 10-15 min)</div>
+                <div><strong>Sábados:</strong> 06:00 às 21:00 (a cada 20 min)</div>
+                <div><strong>Domingos:</strong> 07:00 às 19:30 (a cada 30 min)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="fernandes">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #9333ea;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#9333ea;"></span>
+                <h4>Linha Fortaleza</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Rua Das Rosas (Copasa)</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:15 às 22:00 (a cada 20 min)</div>
+                <div><strong>Sábados:</strong> 06:45 às 19:30 (a cada 40 min)</div>
+                <div><strong>Domingos:</strong> 08:00 às 18:00 (a cada 60 min)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="fortaleza">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #ea580c;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#ea580c;"></span>
+                <h4>Linha Industrial</h4>
+              </div>
+              <p class="horario-card__partida">Partida: BR-459 / Trevo MG-173</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 05:30 às 23:30 (Turnos industriais)</div>
+                <div><strong>Sábados:</strong> 06:00 às 18:30 (a cada 30 min)</div>
+                <div><strong>Domingos:</strong> Horários especiais de turno</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="industrial">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #0891b2;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#0891b2;"></span>
+                <h4>Linha Porto Sapucaí</h4>
+              </div>
+              <p class="horario-card__partida">Partida: BR-459 Km 116</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:00 às 21:45 (a cada 25 min)</div>
+                <div><strong>Sábados:</strong> 06:30 às 19:00 (a cada 45 min)</div>
+                <div><strong>Domingos:</strong> 07:30 às 18:00 (a cada 60 min)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="porto_sapucai">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #dc2626;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#dc2626;"></span>
+                <h4>Linha Reforço José G.M (via MCM)</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Rua Das Rosas (Copasa)</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:30 às 19:30 (Horários de pico)</div>
+                <div><strong>Sábados:</strong> 07:00 às 14:00 (a cada 30 min)</div>
+                <div><strong>Domingos:</strong> Não opera (atendida por outras linhas)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="reforco_jose_gm">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #db2777;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#db2777;"></span>
+                <h4>Linha São Benedito (Hora e Meia)</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Rua Das Rosas (Copasa)</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:00 às 21:00 (Intervalos de 1h30)</div>
+                <div><strong>Sábados:</strong> 07:00 às 17:30 (Intervalos de 1h30)</div>
+                <div><strong>Domingos:</strong> 08:00 às 17:00 (Intervalos de 1h30)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="sao_benedito_hora_meia">Localizar Ônibus no Mapa →</button>
+            </div>
+
+            <div class="horario-card" style="border-top-color: #eab308;">
+              <div class="horario-card__header">
+                <span class="horario-card__dot" style="background:#eab308;"></span>
+                <h4>Linha São Benedito (Hora)</h4>
+              </div>
+              <p class="horario-card__partida">Partida: Rua Das Rosas (Copasa)</p>
+              <div class="horario-card__grade">
+                <div><strong>Dias Úteis:</strong> 06:00 às 22:00 (A cada 1 hora)</div>
+                <div><strong>Sábados:</strong> 06:30 às 20:00 (A cada 1 hora)</div>
+                <div><strong>Domingos:</strong> 07:30 às 18:30 (A cada 1 hora)</div>
+              </div>
+              <button type="button" class="btn-link-mapa btn-ver-linha-mapa" data-linha="sao_benedito_hora">Localizar Ônibus no Mapa →</button>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /view-horarios -->
+
+
+      <!-- VIEW 4: ALERTAS OPERACIONAIS -->
+      <div class="secao-view" id="view-alertas" style="display: none;">
+        <div class="view-bloco-conteudo">
+          <div class="alertas-feed">
+            <article class="alerta-item alerta-item--atencao">
+              <div class="alerta-item__icone">⚠️</div>
+              <div class="alerta-item__info">
+                <h4>Trânsito Moderado — Próximo ao Ginásio Poliesportivo</h4>
+                <p>Linha Fernandes e São Benedito com acréscimo estimado de 3 a 5 minutos devido a fluxo escolar e universitário na região central.</p>
+                <span class="alerta-item__tempo">Publicado há 12 minutos • CCO Operacional</span>
+              </div>
+            </article>
+
+            <article class="alerta-item alerta-item--sucesso">
+              <div class="alerta-item__icone">✅</div>
+              <div class="alerta-item__info">
+                <h4>Operação 100% Normal na Rodovia BR-459</h4>
+                <p>Linha Industrial e Linha Porto Sapucaí transitando sem retenções nos acessos à Linear e trevo de Cachoeira de Minas.</p>
+                <span class="alerta-item__tempo">Publicado há 35 minutos • CCO Operacional</span>
+              </div>
+            </article>
+
+            <article class="alerta-item alerta-item--info">
+              <div class="alerta-item__icone">📢</div>
+              <div class="alerta-item__info">
+                <h4>Linha Anchieta — Rota Especial Sentido Recanto / Inatel</h4>
+                <p>Embarque e desembarque operando pontualmente na Praça Urbana Carolina e Rua José Ribeiro de Barros.</p>
+                <span class="alerta-item__tempo">Hoje às 07:00 • Telemetria ValeBus</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div><!-- /view-alertas -->
+
+
+      <!-- VIEW 5: SOBRE NÓS -->
+      <div class="secao-view" id="view-sobre" style="display: none;">
+        <div class="view-bloco-conteudo sobre-container">
+          
+          <div class="sobre-hero">
+            <span class="sobre-hero__badge">Mobilidade Inteligente em Santa Rita do Sapucaí</span>
+            <h2 class="sobre-hero__titulo">ValeBus — Plataforma de Monitoramento Urbano</h2>
+            <p class="sobre-hero__descricao">
+              O <strong>ValeBus</strong> é um sistema inovador de rastreamento e telemetria de transporte coletivo em tempo real, desenvolvido para conectar os passageiros, estudantes, trabalhadores e operadores de Santa Rita do Sapucaí a informações precisas sobre itinerários, chegadas e localização de frota.
+            </p>
+          </div>
+
+          <div class="sobre-pilares-grid">
+            <div class="sobre-pilar-card">
+              <div class="sobre-pilar-card__icone">📡</div>
+              <h3>GPS em Tempo Real</h3>
+              <p>Transmissão contínua da posição e velocidade de todas as 8 linhas em circulação no município.</p>
+            </div>
+            <div class="sobre-pilar-card">
+              <div class="sobre-pilar-card__icone">⏱️</div>
+              <h3>Previsão de Chegada</h3>
+              <p>Estimativa de tempo e paradas nos principais pontos de interesse como Inatel, Copasa, Ginásio e Distrito Industrial.</p>
+            </div>
+            <div class="sobre-pilar-card">
+              <div class="sobre-pilar-card__icone">🏙️</div>
+              <h3>Feito para a Cidade</h3>
+              <p>Planejado especialmente para a geografia e dinâmica urbana do Vale da Eletrônica.</p>
+            </div>
+          </div>
+
+          <!-- ESPAÇO RESERVADO PARA CONTEÚDO DO USUÁRIO -->
+          <div class="sobre-placeholder-box">
+            <div class="sobre-placeholder-box__header">
+              <span class="sobre-placeholder-tag">Espaço para Conteúdo Oficial</span>
+              <span class="sobre-placeholder-sub">Pronto para receber os textos e detalhes da sua equipe / projeto</span>
+            </div>
+            <p class="sobre-placeholder-texto">
+              Esta seção está estruturada e formatada para receber a história da iniciativa, apresentação dos integrantes da equipe, orientações da Feira Tecnológica ou informações institucionais adicionais.
+            </p>
+          </div>
+
+        </div>
+      </div><!-- /view-sobre -->
 
     </main><!-- /main -->
 
@@ -300,41 +794,122 @@
 
         <div class="proximos-lista">
 
-          <!-- L03 Centro (Clique centraliza no ônibus VB-101) -->
-          <article class="proximo-card" data-bus-id="VB-101" role="button" tabindex="0" aria-label="Linha L03 Centro, chegando em 2 minutos. Clique para ver no mapa.">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l03">L03</div>
+          <!-- Anchieta -->
+          <article class="proximo-card" data-linha="anchieta" role="button" tabindex="0" aria-label="Linha Anchieta. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #16a34a;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
             <div class="proximo-card__info">
-              <span class="proximo-card__nome-linha">Centro / ETE</span>
-              <span class="proximo-card__parada">Parada INATEL <strong class="proximo-distancia">(350m)</strong></span>
+              <span class="proximo-card__nome-linha">Linha Anchieta</span>
+              <span class="proximo-card__parada">Rua José Ribeiro De Barros | Inatel</span>
             </div>
             <div class="proximo-card__lado-direito">
-              <span class="proximo-card__tempo" id="tempo-l03">2 min</span>
+              <span class="proximo-card__tempo">2 min</span>
               <span class="status-badge status-badge--horario">No horário</span>
             </div>
           </article>
 
-          <!-- L07 Campus -->
-          <article class="proximo-card" data-bus-id="VB-201" role="button" tabindex="0" aria-label="Linha L07 São João, chegando em 4 minutos. Clique para ver no mapa.">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l07">L07</div>
+          <!-- Fernandes -->
+          <article class="proximo-card" data-linha="fernandes" role="button" tabindex="0" aria-label="Linha Fernandes. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #2563eb;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
             <div class="proximo-card__info">
-              <span class="proximo-card__nome-linha">Campus / FAI</span>
-              <span class="proximo-card__parada">Praça da Bandeira <strong class="proximo-distancia">(500m)</strong></span>
+              <span class="proximo-card__nome-linha">Linha Fernandes</span>
+              <span class="proximo-card__parada">Rua Das Rosas | Ginásio Poliesportivo</span>
             </div>
             <div class="proximo-card__lado-direito">
-              <span class="proximo-card__tempo" id="tempo-l07">4 min</span>
+              <span class="proximo-card__tempo">4 min</span>
               <span class="status-badge status-badge--atrasado">Atrasado</span>
             </div>
           </article>
 
-          <!-- L12 Bairro Alto -->
-          <article class="proximo-card" data-bus-id="VB-301" role="button" tabindex="0" aria-label="Linha L12 Pq. Industrial, chegando em 6 minutos. Clique para ver no mapa.">
-            <div class="proximo-card__linha-badge proximo-card__linha-badge--l12">L12</div>
+          <!-- Fortaleza -->
+          <article class="proximo-card" data-linha="fortaleza" role="button" tabindex="0" aria-label="Linha Fortaleza. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #9333ea;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
             <div class="proximo-card__info">
-              <span class="proximo-card__nome-linha">Industrial</span>
-              <span class="proximo-card__parada">Distrito Industrial <strong class="proximo-distancia">(800m)</strong></span>
+              <span class="proximo-card__nome-linha">Linha Fortaleza</span>
+              <span class="proximo-card__parada">Rua Das Rosas | Ginásio Poliesportivo</span>
             </div>
             <div class="proximo-card__lado-direito">
-              <span class="proximo-card__tempo" id="tempo-l12">6 min</span>
+              <span class="proximo-card__tempo">5 min</span>
+              <span class="status-badge status-badge--horario">No horário</span>
+            </div>
+          </article>
+
+          <!-- Industrial -->
+          <article class="proximo-card" data-linha="industrial" role="button" tabindex="0" aria-label="Linha Industrial. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #ea580c;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Linha Industrial</span>
+              <span class="proximo-card__parada">Br-459 Rod. JK | Linear</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">6 min</span>
+              <span class="status-badge status-badge--adiantado">Adiantado</span>
+            </div>
+          </article>
+
+          <!-- Porto Sapucaí -->
+          <article class="proximo-card" data-linha="porto_sapucai" role="button" tabindex="0" aria-label="Linha Porto Sapucaí. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #0891b2;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Linha Porto Sapucaí</span>
+              <span class="proximo-card__parada">Br-459 Rod. JK | Acesso Porto</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">8 min</span>
+              <span class="status-badge status-badge--horario">No horário</span>
+            </div>
+          </article>
+
+          <!-- Reforço José G.M (via MCM) -->
+          <article class="proximo-card" data-linha="reforco_jose_gm" role="button" tabindex="0" aria-label="Linha Reforço José G.M. Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #dc2626;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Reforço José G.M</span>
+              <span class="proximo-card__parada">Rua Das Rosas | Ginásio</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">10 min</span>
+              <span class="status-badge status-badge--horario">No horário</span>
+            </div>
+          </article>
+
+          <!-- São Benedito (Hora e Meia) -->
+          <article class="proximo-card" data-linha="sao_benedito_hora_meia" role="button" tabindex="0" aria-label="Linha São Benedito (Hora e Meia). Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #db2777;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">São Benedito (1h30)</span>
+              <span class="proximo-card__parada">Rua Das Rosas | Ginásio</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">12 min</span>
+              <span class="status-badge status-badge--horario">No horário</span>
+            </div>
+          </article>
+
+          <!-- São Benedito (Hora) -->
+          <article class="proximo-card" data-linha="sao_benedito_hora" role="button" tabindex="0" aria-label="Linha São Benedito (Hora). Clique para ver no mapa.">
+            <div class="proximo-card__linha-badge" style="background-color: #eab308;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">São Benedito (1h)</span>
+              <span class="proximo-card__parada">Rua Das Rosas | Ginásio</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">15 min</span>
               <span class="status-badge status-badge--adiantado">Adiantado</span>
             </div>
           </article>
@@ -342,7 +917,7 @@
         </div><!-- /proximos-lista -->
 
         <button class="painel__ver-todos" id="btn-ver-todos" aria-label="Ver todas as linhas e frota completa">
-          Ver todas as 8 unidades da frota
+          Ver todas as 8 linhas da frota
           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 6h10M9 2l4 4-4 4"/>
           </svg>
@@ -374,7 +949,7 @@
             </div>
             <div class="resumo-item__info">
               <p class="resumo-item__label">Linhas ativas</p>
-              <p class="resumo-item__valor">4</p>
+              <p class="resumo-item__valor">8</p>
             </div>
             <span class="resumo-item__tag resumo-item__tag--operacao">Em operação</span>
           </div>
