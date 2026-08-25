@@ -14,7 +14,7 @@
   'use strict';
 
   /* ──────────────────────────────────────────────────────────
-     1. RELÓGIO DO SISTEMA
+     1. RELÓGIO DO SISTEMA & USUÁRIO LOGADO
      ────────────────────────────────────────────────────────── */
   function atualizarRelogio() {
     const el = document.getElementById('topbar-hora');
@@ -25,8 +25,37 @@
     el.textContent = `${h}:${m}`;
   }
 
+  function carregarUsuarioLogado() {
+    try {
+      const salvo = localStorage.getItem('valebus_usuario');
+      if (!salvo) return;
+      const usuario = JSON.parse(salvo);
+      if (!usuario || !usuario.nome) return;
+
+      const elNome   = document.querySelector('.topbar__usuario-nome');
+      const elCargo  = document.querySelector('.topbar__usuario-cargo');
+      const elAvatar = document.querySelector('.topbar__avatar');
+
+      if (elNome) elNome.textContent = usuario.nome;
+      if (elCargo) {
+        elCargo.textContent = usuario.email || 'Usuário Autenticado';
+      }
+      if (elAvatar) {
+        const partes = usuario.nome.trim().split(' ');
+        let iniciais = partes[0].charAt(0).toUpperCase();
+        if (partes.length > 1) {
+          iniciais += partes[partes.length - 1].charAt(0).toUpperCase();
+        }
+        elAvatar.textContent = iniciais;
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar usuário autenticado:', e);
+    }
+  }
+
   atualizarRelogio();
   setInterval(atualizarRelogio, 5000);
+  carregarUsuarioLogado();
 
 
   /* ──────────────────────────────────────────────────────────

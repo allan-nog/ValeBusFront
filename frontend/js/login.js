@@ -129,18 +129,20 @@
   /* ──────────────────────────────────────────────────────────
      4. AUTENTICAÇÃO COM O GOOGLE (SIMULAÇÃO REALISTA)
      ────────────────────────────────────────────────────────── */
-  const btnLoginGoogle = document.getElementById('btn-login-google');
-  const modalGoogle    = document.getElementById('modal-google');
-  const btnCancelarG   = document.getElementById('btn-cancelar-google');
-  const contasGoogle   = document.querySelectorAll('.modal-google__conta-item');
-  const botaoEntrar    = document.getElementById('botao-entrar');
-  const textoBotao     = document.getElementById('texto-botao');
-  const iconePadrao    = document.getElementById('icone-padrao');
-  const iconeLoading   = document.getElementById('icone-loading');
-  const iconeSucesso   = document.getElementById('icone-sucesso');
+  const btnLoginGoogle   = document.getElementById('btn-login-google');
+  const modalGoogle      = document.getElementById('modal-google');
+  const btnCancelarG     = document.getElementById('btn-cancelar-google');
+  const btnFecharXGoogle = document.getElementById('btn-fechar-x-google');
+  const contasGoogle     = document.querySelectorAll('.modal-google__conta-item');
+  const botaoEntrar      = document.getElementById('botao-entrar');
+  const textoBotao       = document.getElementById('texto-botao');
+  const iconePadrao      = document.getElementById('icone-padrao');
+  const iconeLoading     = document.getElementById('icone-loading');
+  const iconeSucesso     = document.getElementById('icone-sucesso');
 
   function abrirModalGoogle() {
     if (modalGoogle) {
+      modalGoogle.classList.remove('fechando');
       modalGoogle.classList.add('ativo');
       modalGoogle.setAttribute('aria-hidden', 'false');
       // Foco na primeira conta para acessibilidade
@@ -150,10 +152,10 @@
   }
 
   function fecharModalGoogle() {
-    if (modalGoogle) {
-      modalGoogle.classList.remove('ativo');
-      modalGoogle.setAttribute('aria-hidden', 'true');
-      if (btnLoginGoogle) btnLoginGoogle.focus();
+    if (modalGoogle && modalGoogle.classList.contains('ativo')) {
+      fecharModal(modalGoogle, () => {
+        if (btnLoginGoogle) btnLoginGoogle.focus();
+      });
     }
   }
 
@@ -163,6 +165,10 @@
 
   if (btnCancelarG) {
     btnCancelarG.addEventListener('click', fecharModalGoogle);
+  }
+
+  if (btnFecharXGoogle) {
+    btnFecharXGoogle.addEventListener('click', fecharModalGoogle);
   }
 
   // Fecha modal com tecla ESC
@@ -224,7 +230,7 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     5. SELEÇÃO DE ELEMENTOS DO FORMULÁRIO PADRÃO
+     5. SELEÇÃO DE ELEMENTOS DO FORMULÁRIO PADRÃO & MODAIS
      ────────────────────────────────────────────────────────── */
   const formulario    = document.getElementById('form-login');
   const inputEmail    = document.getElementById('input-email');
@@ -235,6 +241,45 @@
   const checkLembrar  = document.getElementById('lembrar-me');
   const botaoCadastro = document.getElementById('botao-cadastro');
   const linkEsqueceu  = document.getElementById('link-esqueceu');
+  const linkTermos    = document.getElementById('link-termos');
+  const linkPrivacidade = document.getElementById('link-privacidade');
+
+  // Modal Esqueceu a Senha
+  const modalEsqueceu      = document.getElementById('modal-esqueceu');
+  const formRecuperar      = document.getElementById('form-recuperar-senha');
+  const inputRecuperar     = document.getElementById('input-recuperar-email');
+  const btnCancelarRecup   = document.getElementById('btn-cancelar-recuperar');
+  const btnFecharXEsqueceu = document.getElementById('btn-fechar-x-esqueceu');
+  const btnEnviarRecup     = document.getElementById('btn-enviar-recuperar');
+  const txtBtnRecuperar    = document.getElementById('texto-btn-recuperar');
+  const recuperarSucesso   = document.getElementById('recuperar-sucesso');
+  const recuperarErro      = document.getElementById('recuperar-erro');
+  const recuperarErroTxt   = document.getElementById('recuperar-erro-texto');
+
+  // Modal Cadastro Rápido
+  const modalCadastro      = document.getElementById('modal-cadastro');
+  const formCadastro       = document.getElementById('form-cadastro-rapido');
+  const inputCadNome       = document.getElementById('input-cadastro-nome');
+  const inputCadEmail      = document.getElementById('input-cadastro-email');
+  const inputCadSenha      = document.getElementById('input-cadastro-senha');
+  const botaoOlhoCadastro  = document.getElementById('botao-olho-cadastro');
+  const btnCancelarCad     = document.getElementById('btn-cancelar-cadastro');
+  const btnFecharXCadastro = document.getElementById('btn-fechar-x-cadastro');
+  const btnConfirmarCad    = document.getElementById('btn-confirmar-cadastro');
+  const txtBtnCadastro     = document.getElementById('texto-btn-cadastro');
+  const cadastroSucesso    = document.getElementById('cadastro-sucesso');
+  const cadastroErro       = document.getElementById('cadastro-erro');
+  const cadastroErroTxt    = document.getElementById('cadastro-erro-texto');
+
+  // Indicador de Requisitos de Senha (Cadastro)
+  const reqMinChars        = document.getElementById('req-min-chars');
+  const reqMaiuscula       = document.getElementById('req-maiuscula');
+  const reqSimbolo         = document.getElementById('req-simbolo');
+
+  // Modal Termos
+  const modalTermos        = document.getElementById('modal-termos');
+  const btnFecharTermos    = document.getElementById('btn-fechar-termos');
+  const btnFecharXTermos   = document.getElementById('btn-fechar-x-termos');
 
 
   /* ──────────────────────────────────────────────────────────
@@ -277,18 +322,17 @@
       const email = inputEmail.value.trim();
       const senha = inputSenha.value;
 
-      // Validação de E-mail
-      if (!emailValido(email)) {
-        mostrarErro('Informe um e-mail válido.', inputEmail);
-        inputEmail.focus();
-        return;
-      }
+      // Validação combinada de credenciais de login
+      const emailOk = emailValido(email);
+      const senhaErro = validarSenha(senha);
 
-      // Validação de Senha
-      const erroSenha = validarSenha(senha);
-      if (erroSenha) {
-        mostrarErro(erroSenha, inputSenha);
-        inputSenha.focus();
+      if (!emailOk || senhaErro) {
+        mostrarErro('Não foi possível entrar. Revise seu e-mail e senha e tente novamente.');
+        if (!emailOk) {
+          inputEmail.focus();
+        } else {
+          inputSenha.focus();
+        }
         return;
       }
 
@@ -320,20 +364,240 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     9. EVENTOS DOS BOTÕES SECUNDÁRIOS
+     9. MODAIS: RECUPERAÇÃO DE SENHA, CADASTRO E TERMOS
      ────────────────────────────────────────────────────────── */
-  if (botaoCadastro) {
-    botaoCadastro.addEventListener('click', function() {
-      alert('Módulo de Cadastro: O fluxo de criação de conta será desenvolvido na Etapa 5.');
+  function abrirModal(modal, primeiroInput = null) {
+    if (!modal) return;
+    modal.classList.remove('fechando');
+    modal.classList.add('ativo');
+    modal.setAttribute('aria-hidden', 'false');
+    if (primeiroInput) {
+      setTimeout(() => primeiroInput.focus(), 60);
+    }
+  }
+
+  function fecharModal(modal, callback) {
+    if (!modal || !modal.classList.contains('ativo')) return;
+    if (modal.classList.contains('fechando')) return;
+
+    modal.classList.add('fechando');
+    setTimeout(() => {
+      modal.classList.remove('ativo', 'fechando');
+      modal.setAttribute('aria-hidden', 'true');
+      if (typeof callback === 'function') callback();
+    }, 180);
+  }
+
+  // Modal: Esqueceu a Senha
+  if (linkEsqueceu) {
+    linkEsqueceu.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (recuperarSucesso) recuperarSucesso.style.display = 'none';
+      if (recuperarErro) recuperarErro.style.display = 'none';
+      if (inputRecuperar && inputEmail && inputEmail.value) {
+        inputRecuperar.value = inputEmail.value.trim();
+      }
+      abrirModal(modalEsqueceu, inputRecuperar);
     });
   }
 
-  if (linkEsqueceu) {
-    linkEsqueceu.addEventListener('click', function(e) {
+  if (btnCancelarRecup) {
+    btnCancelarRecup.addEventListener('click', () => fecharModal(modalEsqueceu));
+  }
+
+  if (btnFecharXEsqueceu) {
+    btnFecharXEsqueceu.addEventListener('click', () => fecharModal(modalEsqueceu));
+  }
+
+  if (formRecuperar) {
+    formRecuperar.addEventListener('submit', async (e) => {
       e.preventDefault();
-      alert('Recuperação de Senha: Um link de redefinição será enviado para o seu e-mail cadastrado.');
+      const email = inputRecuperar.value.trim();
+      if (!emailValido(email)) {
+        if (recuperarErro) {
+          recuperarErroTxt.textContent = 'Informe um e-mail válido para envio.';
+          recuperarErro.style.display = 'flex';
+        }
+        if (recuperarSucesso) recuperarSucesso.style.display = 'none';
+        return;
+      }
+
+      if (recuperarErro) recuperarErro.style.display = 'none';
+      if (btnEnviarRecup) btnEnviarRecup.disabled = true;
+      if (txtBtnRecuperar) txtBtnRecuperar.textContent = 'Enviando...';
+
+      await esperar(800);
+
+      if (btnEnviarRecup) btnEnviarRecup.disabled = false;
+      if (txtBtnRecuperar) txtBtnRecuperar.textContent = 'Enviar link';
+      if (recuperarSucesso) recuperarSucesso.style.display = 'flex';
+
+      setTimeout(() => {
+        fecharModal(modalEsqueceu);
+      }, 1600);
     });
   }
+
+  // Modal: Criar Nova Conta
+  if (botaoOlhoCadastro && inputCadSenha) {
+    botaoOlhoCadastro.addEventListener('click', function () {
+      const estaOculta = inputCadSenha.type === 'password';
+      inputCadSenha.type = estaOculta ? 'text' : 'password';
+
+      const useEl = botaoOlhoCadastro.querySelector('use');
+      if (useEl) {
+        useEl.setAttribute('href', estaOculta ? '#icone-olho-off' : '#icone-olho');
+      }
+
+      botaoOlhoCadastro.setAttribute('aria-label', estaOculta ? 'Ocultar senha' : 'Mostrar senha');
+    });
+  }
+
+  function validarNomeCompleto(nome) {
+    const partes = nome.trim().split(/\s+/).filter(p => p.length >= 2);
+    return partes.length >= 2;
+  }
+
+  function atualizarIndicadorSenha(senha = '') {
+    const temMinChars = senha.length >= 8;
+    const temMaiuscula = /[A-Z]/.test(senha);
+    const temSimbolo = /[^A-Za-z0-9]/.test(senha);
+
+    if (reqMinChars) {
+      reqMinChars.classList.toggle('requisito-item--atendido', temMinChars);
+    }
+    if (reqMaiuscula) {
+      reqMaiuscula.classList.toggle('requisito-item--atendido', temMaiuscula);
+    }
+    if (reqSimbolo) {
+      reqSimbolo.classList.toggle('requisito-item--atendido', temSimbolo);
+    }
+  }
+
+  if (botaoCadastro) {
+    botaoCadastro.addEventListener('click', () => {
+      if (cadastroSucesso) cadastroSucesso.style.display = 'none';
+      if (cadastroErro) cadastroErro.style.display = 'none';
+      atualizarIndicadorSenha(inputCadSenha ? inputCadSenha.value : '');
+      abrirModal(modalCadastro, inputCadNome);
+    });
+  }
+
+  if (btnCancelarCad) {
+    btnCancelarCad.addEventListener('click', () => fecharModal(modalCadastro));
+  }
+
+  if (btnFecharXCadastro) {
+    btnFecharXCadastro.addEventListener('click', () => fecharModal(modalCadastro));
+  }
+
+  if (formCadastro) {
+    formCadastro.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nome = inputCadNome.value.trim();
+      const email = inputCadEmail.value.trim();
+      const senha = inputCadSenha.value;
+
+      // 1. Validação de Nome e Sobrenome
+      if (!nome) {
+        if (cadastroErro) {
+          cadastroErroTxt.textContent = 'Informe o seu nome completo.';
+          cadastroErro.style.display = 'flex';
+        }
+        if (cadastroSucesso) cadastroSucesso.style.display = 'none';
+        inputCadNome.focus();
+        return;
+      }
+
+      if (!validarNomeCompleto(nome)) {
+        if (cadastroErro) {
+          cadastroErroTxt.textContent = 'Por favor, informe nome e sobrenome (mínimo 2 letras cada).';
+          cadastroErro.style.display = 'flex';
+        }
+        if (cadastroSucesso) cadastroSucesso.style.display = 'none';
+        inputCadNome.focus();
+        return;
+      }
+
+      // 2. Validação de E-mail
+      if (!emailValido(email)) {
+        if (cadastroErro) {
+          cadastroErroTxt.textContent = 'Informe um endereço de e-mail válido.';
+          cadastroErro.style.display = 'flex';
+        }
+        if (cadastroSucesso) cadastroSucesso.style.display = 'none';
+        inputCadEmail.focus();
+        return;
+      }
+
+      // 3. Validação de Senha (mesmas regras do login: mín 8 chars, 1 maiúscula, 1 símbolo)
+      const erroSenha = validarSenha(senha);
+      if (erroSenha) {
+        if (cadastroErro) {
+          cadastroErroTxt.textContent = erroSenha;
+          cadastroErro.style.display = 'flex';
+        }
+        if (cadastroSucesso) cadastroSucesso.style.display = 'none';
+        inputCadSenha.focus();
+        return;
+      }
+
+      if (cadastroErro) cadastroErro.style.display = 'none';
+      if (btnConfirmarCad) btnConfirmarCad.disabled = true;
+      if (txtBtnCadastro) txtBtnCadastro.textContent = 'Cadastrando...';
+
+      await esperar(850);
+
+      try {
+        localStorage.setItem('valebus_usuario', JSON.stringify({
+          nome: nome,
+          email: email,
+          metodo: 'Cadastro Direto'
+        }));
+      } catch (e) {}
+
+      if (cadastroSucesso) cadastroSucesso.style.display = 'flex';
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 900);
+    });
+  }
+
+  // Modal: Termos e Privacidade
+  function abrirTermos(e) {
+    e.preventDefault();
+    abrirModal(modalTermos);
+  }
+  if (linkTermos) linkTermos.addEventListener('click', abrirTermos);
+  if (linkPrivacidade) linkPrivacidade.addEventListener('click', abrirTermos);
+  if (btnFecharTermos) btnFecharTermos.addEventListener('click', () => fecharModal(modalTermos));
+  if (btnFecharXTermos) btnFecharXTermos.addEventListener('click', () => fecharModal(modalTermos));
+
+  // Fechar modais ao clicar no overlay
+  [modalGoogle, modalEsqueceu, modalCadastro, modalTermos].forEach(modal => {
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          if (modal === modalGoogle) {
+            fecharModalGoogle();
+          } else {
+            fecharModal(modal);
+          }
+        }
+      });
+    }
+  });
+
+  // Fechar modais com ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      fecharModalGoogle();
+      fecharModal(modalEsqueceu);
+      fecharModal(modalCadastro);
+      fecharModal(modalTermos);
+    }
+  });
 
 
   /* ──────────────────────────────────────────────────────────
@@ -363,7 +627,7 @@
     } catch (erro) {
       setCarregando(false);
       resetarBotao();
-      mostrarErro('Ocorreu um erro ao entrar. Tente novamente.', inputEmail);
+      mostrarErro('Não foi possível entrar. Revise seu e-mail e senha e tente novamente.');
     }
   }
 
@@ -460,5 +724,17 @@
 
   if (inputEmail) inputEmail.addEventListener('input', ocultarErro);
   if (inputSenha) inputSenha.addEventListener('input', ocultarErro);
+
+  function ocultarErroCadastro() {
+    if (cadastroErro) cadastroErro.style.display = 'none';
+  }
+  if (inputCadNome) inputCadNome.addEventListener('input', ocultarErroCadastro);
+  if (inputCadEmail) inputCadEmail.addEventListener('input', ocultarErroCadastro);
+  if (inputCadSenha) {
+    inputCadSenha.addEventListener('input', () => {
+      ocultarErroCadastro();
+      atualizarIndicadorSenha(inputCadSenha.value);
+    });
+  }
 
 })();
