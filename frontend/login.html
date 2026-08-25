@@ -52,12 +52,12 @@
           </svg>
         </div>
         <h1 class="form-logo__nome">ValeBus</h1>
-        <p class="form-logo__subtitulo">Seu ônibus, em tempo real.</p>
+        <p class="form-logo__subtitulo">Mobilidade urbana em tempo real.</p>
         <div class="form-logo__separador" aria-hidden="true"></div>
       </div>
 
-      <h2 class="form-titulo">Bem-vindo de volta</h2>
-      <p class="form-subtitulo">Acesse o painel de monitoramento</p>
+      <h2 class="form-titulo">Bem-vindo</h2>
+      <p class="form-subtitulo">Acesse o painel de monitoramento em tempo real</p>
 
       <form id="form-login" novalidate>
 
@@ -83,10 +83,10 @@
             <svg class="campo__icone" aria-hidden="true">
               <use href="#icone-cadeado"/>
             </svg>
-            <input class="campo__input"
+            <input class="campo__input campo__input--com-botao"
                    type="password" id="input-senha" name="senha"
                    placeholder="••••••••"
-                   autocomplete="current-password" required minlength="6"
+                   autocomplete="current-password" required minlength="8"
                    aria-invalid="false" aria-describedby="erro-mensagem">
             <button
                 type="button"
@@ -102,9 +102,9 @@
 
         <!-- Lembrar-me + Esqueci a senha -->
         <div class="form-linha-opcoes">
-          <label class="checkbox-label">
-            <input type="checkbox" id="lembrar-me" name="lembrar">
-            Lembrar-me
+          <label class="checkbox-label" for="lembrar-me">
+            <input type="checkbox" id="lembrar-me" name="lembrar" class="checkbox-custom">
+            <span>Lembrar-me</span>
           </label>
           <a href="#" class="link-esqueceu" id="link-esqueceu">Esqueceu a senha?</a>
         </div>
@@ -130,7 +130,13 @@
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25" fill="none"/>
             <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" fill="none"/>
           </svg>
-          <span id="texto-botao">Entrar no sistema</span>
+          <svg id="icone-sucesso" class="botao-entrar__icone-sucesso"
+               viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+               style="display:none" aria-hidden="true">
+            <use href="#icone-check"/>
+          </svg>
+          <span id="texto-botao">Entrar</span>
         </button>
 
       </form>
@@ -188,13 +194,12 @@
 
       <div class="modal-google__contas">
         <!-- Conta Principal 1 -->
-        <button type="button" class="modal-google__conta-item" data-email="allannog.dev@gmail.com" data-nome="Allan Nogueira">
-          <div class="modal-google__avatar" style="background:#1a6fd4;">AN</div>
+        <button type="button" class="modal-google__conta-item" data-email="usuario.demo@gmail.com" data-nome="Usuário Demo">
+          <div class="modal-google__avatar" style="background:#1a6fd4;">UD</div>
           <div class="modal-google__info">
-            <span class="modal-google__nome">Allan Nogueira</span>
-            <span class="modal-google__email">allannog.dev@gmail.com</span>
+            <span class="modal-google__nome">Usuário Demo</span>
+            <span class="modal-google__email">usuario.demo@gmail.com</span>
           </div>
-          <span class="modal-google__tag-sessao">Sessão ativa</span>
         </button>
 
         <!-- Conta Principal 2 (Avaliador da Feira) -->

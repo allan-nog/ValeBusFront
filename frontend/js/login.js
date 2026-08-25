@@ -41,6 +41,9 @@
     <symbol id="icone-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
     </symbol>
+    <symbol id="icone-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
   </svg>`;
 
   const containerSprite = document.createElement('div');
@@ -134,11 +137,15 @@
   const textoBotao     = document.getElementById('texto-botao');
   const iconePadrao    = document.getElementById('icone-padrao');
   const iconeLoading   = document.getElementById('icone-loading');
+  const iconeSucesso   = document.getElementById('icone-sucesso');
 
   function abrirModalGoogle() {
     if (modalGoogle) {
       modalGoogle.classList.add('ativo');
       modalGoogle.setAttribute('aria-hidden', 'false');
+      // Foco na primeira conta para acessibilidade
+      const primeiraConta = modalGoogle.querySelector('.modal-google__conta-item');
+      if (primeiraConta) primeiraConta.focus();
     }
   }
 
@@ -146,6 +153,7 @@
     if (modalGoogle) {
       modalGoogle.classList.remove('ativo');
       modalGoogle.setAttribute('aria-hidden', 'true');
+      if (btnLoginGoogle) btnLoginGoogle.focus();
     }
   }
 
@@ -179,31 +187,38 @@
       const email = conta.getAttribute('data-email');
       const nome  = conta.getAttribute('data-nome');
 
-      fecharModalGoogle();
-
-      // Salva usuário logado no localStorage
-      try {
-        localStorage.setItem('valebus_usuario', JSON.stringify({
-          nome: nome,
-          email: email,
-          metodo: 'Google'
-        }));
-      } catch (e) {
-        console.warn('Erro ao salvar no localStorage:', e);
-      }
-
-      // Feedback visual no botão principal
-      if (botaoEntrar) {
-        botaoEntrar.disabled = true;
-        botaoEntrar.style.background = 'var(--cor-sucesso)';
-      }
-      if (iconePadrao) iconePadrao.style.display = 'none';
-      if (iconeLoading) iconeLoading.style.display = 'none';
-      if (textoBotao) textoBotao.textContent = `Olá, ${nome.split(' ')[0]}! Entrando...`;
+      conta.classList.add('modal-google__conta-item--selecionada');
 
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1000);
+        fecharModalGoogle();
+        conta.classList.remove('modal-google__conta-item--selecionada');
+
+        // Salva usuário logado no localStorage
+        try {
+          localStorage.setItem('valebus_usuario', JSON.stringify({
+            nome: nome,
+            email: email,
+            metodo: 'Google'
+          }));
+        } catch (e) {
+          console.warn('Erro ao salvar no localStorage:', e);
+        }
+
+        // Feedback visual no botão principal
+        if (botaoEntrar) {
+          botaoEntrar.disabled = true;
+          botaoEntrar.classList.remove('botao-entrar--carregando');
+          botaoEntrar.classList.add('botao-entrar--sucesso');
+        }
+        if (iconePadrao) iconePadrao.style.display = 'none';
+        if (iconeLoading) iconeLoading.style.display = 'none';
+        if (iconeSucesso) iconeSucesso.style.display = 'inline-block';
+        if (textoBotao) textoBotao.textContent = 'Acesso autorizado!';
+
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 750);
+      }, 150);
     });
   });
 
@@ -270,8 +285,9 @@
       }
 
       // Validação de Senha
-      if (senha.length < 6) {
-        mostrarErro('A senha deve ter pelo menos 6 caracteres.', inputSenha);
+      const erroSenha = validarSenha(senha);
+      if (erroSenha) {
+        mostrarErro(erroSenha, inputSenha);
         inputSenha.focus();
         return;
       }
@@ -327,17 +343,19 @@
     setCarregando(true);
 
     try {
-      await esperar(1100);
+      await esperar(950);
 
       setCarregando(false);
       if (botaoEntrar) {
-        botaoEntrar.style.background = 'var(--cor-sucesso)';
-      }
-      if (textoBotao) {
-        textoBotao.textContent = 'Acesso autorizado!';
+        botaoEntrar.disabled = true;
+        botaoEntrar.classList.add('botao-entrar--sucesso');
       }
       if (iconePadrao) iconePadrao.style.display = 'none';
       if (iconeLoading) iconeLoading.style.display = 'none';
+      if (iconeSucesso) iconeSucesso.style.display = 'inline-block';
+      if (textoBotao) {
+        textoBotao.textContent = 'Acesso autorizado!';
+      }
 
       await esperar(700);
       window.location.href = 'dashboard.html';
@@ -388,6 +406,19 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  function validarSenha(senha) {
+    if (senha.length < 8) {
+      return 'A senha deve ter no mínimo 8 caracteres.';
+    }
+    if (!/[A-Z]/.test(senha)) {
+      return 'A senha deve conter pelo menos uma letra maiúscula.';
+    }
+    if (!/[^A-Za-z0-9]/.test(senha)) {
+      return 'A senha deve conter pelo menos um símbolo (ex: @, #, $, !).';
+    }
+    return null;
+  }
+
   function esperar(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -397,6 +428,7 @@
       botaoEntrar.disabled = ativo;
       if (ativo) {
         botaoEntrar.classList.add('botao-entrar--carregando');
+        botaoEntrar.classList.remove('botao-entrar--sucesso');
       } else {
         botaoEntrar.classList.remove('botao-entrar--carregando');
       }
@@ -407,20 +439,23 @@
     if (iconeLoading) {
       iconeLoading.style.display = ativo ? 'inline-block' : 'none';
     }
+    if (iconeSucesso) {
+      iconeSucesso.style.display = 'none';
+    }
     if (textoBotao) {
-      textoBotao.textContent = ativo ? 'Entrando no sistema...' : 'Entrar no sistema';
+      textoBotao.textContent = ativo ? 'Entrando...' : 'Entrar';
     }
   }
 
   function resetarBotao() {
     if (botaoEntrar) {
-      botaoEntrar.style.background = '';
       botaoEntrar.disabled = false;
-      botaoEntrar.classList.remove('botao-entrar--carregando');
+      botaoEntrar.classList.remove('botao-entrar--carregando', 'botao-entrar--sucesso');
     }
     if (iconePadrao) iconePadrao.style.display = 'inline-block';
     if (iconeLoading) iconeLoading.style.display = 'none';
-    if (textoBotao) textoBotao.textContent = 'Entrar no sistema';
+    if (iconeSucesso) iconeSucesso.style.display = 'none';
+    if (textoBotao) textoBotao.textContent = 'Entrar';
   }
 
   if (inputEmail) inputEmail.addEventListener('input', ocultarErro);
