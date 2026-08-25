@@ -1480,8 +1480,9 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 260px;
+    width: 270px;
     height: 100vh;
+    height: 100dvh;
     transform: translateX(-100%);
   }
 
@@ -1489,13 +1490,14 @@
     transform: translateX(0);
   }
 
-  /* Painel como Drawer Direito */
+  /* Painel como Drawer Direito no Tablet */
   .painel {
     position: fixed;
     top: 0;
     right: 0;
-    width: 320px;
+    width: 340px;
     height: 100vh;
+    height: 100dvh;
     z-index: 210;
     transform: translateX(100%);
     box-shadow: -6px 0 24px rgba(0, 0, 0, 0.15);
@@ -1508,6 +1510,16 @@
 
   .painel__fechar {
     display: flex;
+  }
+
+  .painel__handle-mobile {
+    display: block;
+    width: 42px;
+    height: 4px;
+    background-color: #cbd5e1;
+    border-radius: 999px;
+    margin: 4px auto 14px auto;
+    flex-shrink: 0;
   }
 
   .btn-painel-flutuante {
@@ -1523,11 +1535,11 @@
 @media (max-width: 767px) {
 
   :root {
-    --topbar-altura: 56px;
+    --topbar-altura: 54px;
   }
 
   .topbar {
-    padding: 0 16px;
+    padding: 0 12px;
   }
 
   .topbar__usuario-info,
@@ -1536,45 +1548,129 @@
     display: none;
   }
 
+  .topbar__usuario {
+    padding: 4px;
+  }
+
   .main {
-    padding: 14px 16px;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .main__header {
+    gap: 2px;
+    margin-bottom: 2px;
   }
 
   .main__titulo {
-    font-size: 18px;
+    font-size: 17px;
   }
 
+  .main__subtitulo {
+    font-size: 12px;
+  }
+
+  /* Container do Mapa em Mobile */
   .mapa-container {
-    min-height: 320px;
+    min-height: 380px;
+    height: calc(100dvh - 165px);
+    border-radius: var(--raio-medio);
   }
 
-  /* Reposiciona Filtro de Legenda no Mobile (Não sobrepõe o menu nem o zoom do Leaflet) */
+  /* ──────────────────────────────────────────────────────────
+     LEGENDA DO MAPA NO MOBILE:
+     Transformada em uma barra horizontal de rolagem suave (chips)
+     Ocupa apenas ~40px no topo, liberando 95% do mapa!
+     ────────────────────────────────────────────────────────── */
   .mapa-legenda {
-    top: 10px;
-    right: 10px;
-    left: 54px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
     max-width: none;
-    padding: 8px 12px;
-    z-index: 20;
+    padding: 5px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
   }
 
   .mapa-legenda__header {
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .mapa-legenda.recolhida .mapa-legenda__filtros {
-    display: none;
+    display: none; /* Oculta cabeçalho textual vertical no mobile para economizar altura */
   }
 
   .mapa-legenda__filtros {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    margin-top: 4px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding: 1px 2px;
   }
 
-  /* Painel como Bottom Sheet no Mobile */
+  .mapa-legenda__filtros::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mapa-legenda__item {
+    flex-shrink: 0;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: var(--texto-principal);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .mapa-legenda__item:active {
+    transform: scale(0.95);
+  }
+
+  .mapa-legenda__item--ativo {
+    background-color: var(--cor-marca) !important;
+    color: #ffffff !important;
+    border-color: var(--cor-marca) !important;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+  }
+
+  .mapa-legenda__item--ativo .mapa-legenda__dot {
+    border: 1.5px solid #ffffff;
+  }
+
+  /* Reposiciona Controles de Zoom do Leaflet no Mobile para não colidir com o carrossel */
+  .leaflet-top.leaflet-left {
+    top: 56px !important;
+    left: 8px !important;
+  }
+
+  /* Popups responsivos no Mobile */
+  .popup-onibus {
+    min-width: 220px;
+    max-width: calc(100vw - 40px);
+    padding: 10px 12px;
+  }
+
+  .popup-onibus__titulo {
+    font-size: 14px;
+  }
+
+  /* Painel como Bottom Sheet Elegante no Mobile */
   .painel {
     position: fixed;
     top: auto;
@@ -1582,20 +1678,101 @@
     left: 0;
     right: 0;
     width: 100%;
-    height: 80vh;
-    border-radius: var(--raio-grande) var(--raio-grande) 0 0;
+    height: 75vh;
+    height: 75dvh;
+    max-height: 75dvh;
+    border-radius: 20px 20px 0 0;
     border-left: none;
     border-top: 1px solid var(--borda-cor);
     transform: translateY(100%);
+    padding: 10px 16px 20px 16px;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
   }
 
   .painel.aberto {
     transform: translateY(0);
   }
 
+  .painel__handle-mobile {
+    display: block;
+    width: 44px;
+    height: 5px;
+    background-color: #cbd5e1;
+    border-radius: 999px;
+    margin: 2px auto 12px auto;
+    flex-shrink: 0;
+  }
+
+  /* Adaptação das outras Views no Mobile */
+  .view-bloco-conteudo {
+    padding: 14px 14px;
+  }
+
+  .busca-input-wrapper {
+    width: 100%;
+  }
+
+  .busca-input {
+    height: 44px;
+    font-size: 13px;
+    padding: 0 38px 0 40px;
+  }
+
+  .busca-input-icone {
+    left: 12px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .busca-chips-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .busca-chips-lista {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+
+  .busca-chips-lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip-filtro {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  .linhas-grid,
+  .horarios-grid,
+  .sobre-pilares-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .linha-card {
+    padding: 14px;
+  }
+
+  .linha-card__btn-acao {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .sobre-hero__titulo {
+    font-size: 18px;
+  }
+
   .rodape {
     flex-direction: column;
     gap: 6px;
     text-align: center;
+    padding: 10px 14px;
   }
 }

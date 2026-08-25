@@ -242,6 +242,11 @@
       botoesFiltro.forEach(b => b.classList.remove('mapa-legenda__item--ativo'));
       botao.classList.add('mapa-legenda__item--ativo');
 
+      // Rola suavemente o chip ativo para o centro no mobile
+      if (window.innerWidth < 768) {
+        botao.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+
       const linhaSelecionada = botao.getAttribute('data-linha');
       let totalVisivel = 0;
 
