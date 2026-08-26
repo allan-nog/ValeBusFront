@@ -99,11 +99,13 @@
   function aplicarTemaFundo(periodo) {
     if (!elFundo) return;
 
-    // Remove temas anteriores
+    // Remove temas anteriores do fundo e do body
     elFundo.classList.remove('login-fundo--manha', 'login-fundo--tarde', 'login-fundo--noite');
+    document.body.classList.remove('tema-manha', 'tema-tarde', 'tema-noite');
 
     // Adiciona o tema atual
     elFundo.classList.add(`login-fundo--${periodo}`);
+    document.body.classList.add(`tema-${periodo}`);
 
     const info = periodo === 'manha' ? { icone: '🌅' }
                : periodo === 'tarde' ? { icone: '☀️' }
@@ -121,9 +123,9 @@
     aplicarTemaFundo(real.periodo);
   }
 
-  // Inicializa tema de acordo com horário real e atualiza a cada 30 segundos
+  // Inicializa tema de acordo com horário real e atualiza a cada 60 segundos
   atualizarAmbiente();
-  setInterval(atualizarAmbiente, 30000);
+  setInterval(atualizarAmbiente, 60000);
 
 
   /* ──────────────────────────────────────────────────────────

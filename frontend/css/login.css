@@ -302,16 +302,332 @@
 
 .form-card {
   width: 100%;
-  max-width: 430px;
+  max-width: 440px;
   background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
   border-radius: var(--raio-grande);
-  padding: 32px 28px 28px;
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.4),
-              0 0 0 1px rgba(255, 255, 255, 0.2);
+  padding: 34px 30px 28px;
+  box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.16),
+              0 6px 16px -4px rgba(15, 23, 42, 0.08),
+              0 0 0 1px rgba(255, 255, 255, 0.7);
   animation: subir-card 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
   box-sizing: border-box;
+  transition: background-color 0.8s ease,
+              border-color 0.8s ease,
+              box-shadow 0.8s ease,
+              color 0.8s ease;
+}
+
+/* 🌅 Integração com Tema Manhã */
+body.tema-manha .form-card,
+.login-fundo--manha ~ .login-wrapper .form-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 18px 44px -8px rgba(20, 52, 92, 0.22),
+              0 6px 16px -4px rgba(20, 52, 92, 0.1),
+              0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+
+body.tema-manha .link-esqueceu,
+.login-fundo--manha ~ .login-wrapper .link-esqueceu {
+  color: #1a6fd4;
+  font-weight: 600;
+}
+
+body.tema-manha .link-esqueceu:hover,
+.login-fundo--manha ~ .login-wrapper .link-esqueceu:hover {
+  color: #1456a8;
+}
+
+body.tema-manha .botao-cadastro,
+.login-fundo--manha ~ .login-wrapper .botao-cadastro {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+body.tema-manha .botao-cadastro:hover,
+.login-fundo--manha ~ .login-wrapper .botao-cadastro:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* ☀️ Integração com Tema Tarde */
+body.tema-tarde .form-card,
+.login-fundo--tarde ~ .login-wrapper .form-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-color: rgba(226, 232, 240, 0.9);
+  box-shadow: 0 16px 40px -8px rgba(2, 132, 199, 0.15),
+              0 6px 16px -4px rgba(15, 23, 42, 0.08),
+              0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+body.tema-tarde .link-esqueceu,
+.login-fundo--tarde ~ .login-wrapper .link-esqueceu {
+  color: #0284c7;
+  font-weight: 600;
+}
+
+body.tema-tarde .link-esqueceu:hover,
+.login-fundo--tarde ~ .login-wrapper .link-esqueceu:hover {
+  color: #0369a1;
+}
+
+body.tema-tarde .botao-cadastro,
+.login-fundo--tarde ~ .login-wrapper .botao-cadastro {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+body.tema-tarde .botao-cadastro:hover,
+.login-fundo--tarde ~ .login-wrapper .botao-cadastro:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* 🌙 Integração com Tema Noite (Dark Glassmorphism Premium) */
+body.tema-noite .form-card,
+.login-fundo--noite ~ .login-wrapper .form-card {
+  background: rgba(15, 23, 42, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.58),
+              0 8px 24px -4px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+body.tema-noite .form-titulo,
+.login-fundo--noite ~ .login-wrapper .form-titulo {
+  color: #f8fafc;
+}
+
+body.tema-noite .form-subtitulo,
+.login-fundo--noite ~ .login-wrapper .form-subtitulo {
+  color: #94a3b8;
+}
+
+body.tema-noite .form-logo__nome,
+.login-fundo--noite ~ .login-wrapper .form-logo__nome {
+  color: #38bdf8;
+}
+
+body.tema-noite .form-logo__subtitulo,
+.login-fundo--noite ~ .login-wrapper .form-logo__subtitulo {
+  color: #94a3b8;
+}
+
+body.tema-noite .campo__label,
+.login-fundo--noite ~ .login-wrapper .campo__label {
+  color: #e2e8f0;
+}
+
+body.tema-noite .campo__input,
+.login-fundo--noite ~ .login-wrapper .campo__input {
+  background-color: rgba(30, 41, 59, 0.75);
+  border-color: rgba(71, 85, 105, 0.6);
+  color: #f8fafc;
+}
+
+body.tema-noite .campo__input::placeholder,
+.login-fundo--noite ~ .login-wrapper .campo__input::placeholder {
+  color: #94a3b8;
+}
+
+body.tema-noite .campo__input:focus,
+.login-fundo--noite ~ .login-wrapper .campo__input:focus {
+  background-color: rgba(15, 23, 42, 0.95);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.25);
+}
+
+body.tema-noite .campo__icone,
+.login-fundo--noite ~ .login-wrapper .campo__icone {
+  stroke: #94a3b8;
+  color: #94a3b8;
+}
+
+body.tema-noite .campo__wrapper:focus-within .campo__icone,
+.login-fundo--noite ~ .login-wrapper .campo__wrapper:focus-within .campo__icone {
+  stroke: #38bdf8;
+  color: #38bdf8;
+}
+
+body.tema-noite .campo__botao-olho,
+.login-fundo--noite ~ .login-wrapper .campo__botao-olho {
+  color: #94a3b8;
+}
+
+body.tema-noite .campo__botao-olho:hover,
+.login-fundo--noite ~ .login-wrapper .campo__botao-olho:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+}
+
+body.tema-noite .checkbox-label,
+.login-fundo--noite ~ .login-wrapper .checkbox-label {
+  color: #cbd5e1;
+}
+
+body.tema-noite .link-esqueceu,
+.login-fundo--noite ~ .login-wrapper .link-esqueceu {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+body.tema-noite .link-esqueceu:hover,
+.login-fundo--noite ~ .login-wrapper .link-esqueceu:hover {
+  color: #7dd3fc;
+}
+
+body.tema-noite .divisor__linha,
+.login-fundo--noite ~ .login-wrapper .divisor__linha {
+  background: rgba(148, 163, 184, 0.22);
+}
+
+body.tema-noite .divisor__texto,
+.login-fundo--noite ~ .login-wrapper .divisor__texto {
+  color: #94a3b8;
+}
+
+body.tema-noite .botao-cadastro,
+.login-fundo--noite ~ .login-wrapper .botao-cadastro {
+  background-color: rgba(30, 41, 59, 0.85);
+  border-color: rgba(148, 163, 184, 0.35);
+  color: #f8fafc;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+body.tema-noite .botao-cadastro:hover,
+.login-fundo--noite ~ .login-wrapper .botao-cadastro:hover {
+  background-color: rgba(51, 65, 85, 0.95);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+}
+
+body.tema-noite .form-rodape,
+.login-fundo--noite ~ .login-wrapper .form-rodape {
+  color: #94a3b8;
+}
+
+body.tema-noite .form-rodape a,
+.login-fundo--noite ~ .login-wrapper .form-rodape a {
+  color: #38bdf8;
+}
+
+/* Modais no tema noite */
+body.tema-noite .modal-padrao,
+body.tema-noite .modal-google {
+  background-color: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #f8fafc;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+}
+
+body.tema-noite .modal-padrao__titulo,
+body.tema-noite .modal-google__titulo {
+  color: #f8fafc;
+}
+
+body.tema-noite .modal-padrao__subtitulo,
+body.tema-noite .modal-google__subtitulo {
+  color: #94a3b8;
+}
+
+body.tema-noite .modal-fechar-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+body.tema-noite .modal-fechar-btn:hover {
+  background: #334155;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+body.tema-noite .modal-padrao .campo__label {
+  color: #e2e8f0;
+}
+
+body.tema-noite .modal-padrao .campo__input {
+  background-color: rgba(30, 41, 59, 0.85);
+  border-color: rgba(71, 85, 105, 0.6);
+  color: #f8fafc;
+}
+
+body.tema-noite .modal-padrao .campo__input::placeholder {
+  color: #94a3b8;
+}
+
+body.tema-noite .modal-padrao .campo__input:focus {
+  background-color: rgba(15, 23, 42, 0.95);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.25);
+}
+
+body.tema-noite .modal-btn-secundario {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+body.tema-noite .modal-btn-secundario:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+body.tema-noite .modal-google__conta-item {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.tema-noite .modal-google__conta-item:hover {
+  background: #273549;
+  border-color: #38bdf8;
+}
+
+body.tema-noite .modal-google__nome {
+  color: #f8fafc;
+}
+
+body.tema-noite .modal-google__email {
+  color: #94a3b8;
+}
+
+body.tema-noite .modal-google__footer {
+  border-top-color: #1e293b;
+}
+
+body.tema-noite .modal-google__btn-cancelar {
+  color: #38bdf8;
+}
+
+body.tema-noite .modal-google__btn-cancelar:hover {
+  background-color: rgba(56, 189, 248, 0.1);
+}
+
+body.tema-noite .modal-padrao__texto-legal {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.tema-noite .modal-padrao__texto-legal h4 {
+  color: #f8fafc;
 }
 
 @keyframes subir-card {
@@ -335,24 +651,24 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-logo__icone {
-  width: 54px;
-  height: 54px;
+  width: 52px;
+  height: 52px;
   background: linear-gradient(135deg, #1a6fd4 0%, #1456a8 100%);
-  border-radius: 16px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
-  box-shadow: 0 8px 20px rgba(26, 111, 212, 0.32);
+  margin-bottom: 8px;
+  box-shadow: 0 6px 16px rgba(26, 111, 212, 0.28);
 }
 
 .form-logo__icone svg {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   stroke: #ffffff;
   fill: none;
   stroke-width: 2.2px;
@@ -361,7 +677,7 @@
 }
 
 .form-logo__nome {
-  font-size: 32px;
+  font-size: 31px;
   font-weight: 800;
   color: var(--cor-marca);
   line-height: 1.15;
@@ -369,24 +685,15 @@
 }
 
 .form-logo__subtitulo {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--texto-secundario);
-  margin-top: 4px;
+  margin-top: 3px;
   letter-spacing: 0.01em;
 }
 
-.form-logo__separador {
-  width: 36px;
-  height: 3px;
-  background: var(--cor-marca);
-  border-radius: 999px;
-  margin: 14px auto 0;
-  opacity: 0.22;
-}
-
 .form-titulo {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--texto-principal);
   margin-bottom: 4px;
@@ -1438,12 +1745,19 @@
 
 @media (min-width: 768px) {
   .form-card {
-    max-width: 430px;
-    padding: 36px 32px 30px;
+    max-width: 456px;
+    padding: 38px 34px 30px;
   }
 
   .form-logo__nome {
-    font-size: 34px;
+    font-size: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-card {
+    max-width: 468px;
+    padding: 40px 36px 32px;
   }
 }
 
