@@ -266,7 +266,53 @@
 .topbar__direita {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
+}
+
+/* Botão de Alternância de Tema Claro / Escuro */
+.topbar__btn-tema {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--texto-principal);
+  transition: background-color var(--transicao), transform var(--transicao), border-color var(--transicao), color var(--transicao);
+}
+
+.topbar__btn-tema:hover {
+  background-color: var(--borda-cor);
+  transform: scale(1.05);
+}
+
+.topbar__btn-tema svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  transition: transform 0.25s ease;
+}
+
+/* Modo Claro: Exibe Lua */
+.topbar__btn-tema .icone-tema-sol {
+  display: none;
+}
+.topbar__btn-tema .icone-tema-lua {
+  display: block;
+  color: #475569;
+}
+
+/* Modo Escuro: Exibe Sol Dourado */
+[data-theme="dark"] .topbar__btn-tema .icone-tema-sol {
+  display: block;
+  color: #fbbf24;
+}
+[data-theme="dark"] .topbar__btn-tema .icone-tema-lua {
+  display: none;
 }
 
 .topbar__hora {
@@ -433,7 +479,7 @@
 }
 
 .leaflet-control-zoom a {
-  background-color: #ffffff !important;
+  background-color: var(--fundo-card) !important;
   color: var(--texto-principal) !important;
   border-bottom: 1px solid var(--borda-cor) !important;
 }
@@ -444,8 +490,9 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  background-color: var(--fundo-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--borda-cor);
   border-radius: var(--raio-medio);
   padding: 12px 14px;
@@ -491,7 +538,7 @@
   border: 1px solid transparent;
   cursor: pointer;
   text-align: left;
-  transition: background var(--transicao), border var(--transicao);
+  transition: background var(--transicao), border var(--transicao), transform 0.15s ease;
   width: 100%;
 }
 
@@ -500,10 +547,11 @@
 }
 
 .mapa-legenda__item--ativo {
-  background-color: #ffffff;
+  background-color: var(--cor-marca-clara);
   border-color: var(--cor-marca);
   box-shadow: 0 2px 6px rgba(26, 111, 212, 0.15);
   font-weight: 700;
+  color: var(--texto-principal);
 }
 
 .mapa-legenda__dot {
@@ -1223,8 +1271,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #ffffff;
-  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
+  background-color: var(--fundo-card);
+  transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao), background-color var(--transicao);
   cursor: pointer;
 }
 
@@ -1680,13 +1728,15 @@
     width: 100%;
     height: 75vh;
     height: 75dvh;
-    max-height: 75dvh;
+    max-height: 80dvh;
     border-radius: 20px 20px 0 0;
     border-left: none;
     border-top: 1px solid var(--borda-cor);
     transform: translateY(100%);
-    padding: 10px 16px 20px 16px;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+    padding: 8px 16px 24px 16px;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.25);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 45;
   }
 
   .painel.aberto {
@@ -1695,12 +1745,18 @@
 
   .painel__handle-mobile {
     display: block;
-    width: 44px;
+    width: 48px;
     height: 5px;
-    background-color: #cbd5e1;
+    background-color: var(--borda-cor);
     border-radius: 999px;
-    margin: 2px auto 12px auto;
+    margin: 4px auto 14px auto;
     flex-shrink: 0;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .painel__handle-mobile:active {
+    background-color: var(--cor-marca);
   }
 
   /* Adaptação das outras Views no Mobile */
@@ -1775,4 +1831,192 @@
     text-align: center;
     padding: 10px 14px;
   }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. TEMA ESCURO (DARK MODE) — REGRAS ESPECÍFICAS
+   ═══════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] body {
+  background-color: var(--fundo-pagina);
+  color: var(--texto-principal);
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: #0c1527;
+  border-right-color: #1e293b;
+}
+
+[data-theme="dark"] .topbar {
+  background-color: #0f172a;
+  border-bottom-color: #1e293b;
+}
+
+[data-theme="dark"] .mapa-legenda {
+  background-color: rgba(15, 23, 42, 0.94);
+  border-color: #334155;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .mapa-legenda__item {
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .mapa-legenda__item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .mapa-legenda__item--ativo {
+  background-color: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .leaflet-popup-content-wrapper {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-theme="dark"] .leaflet-popup-tip {
+  background-color: #1e293b !important;
+}
+
+[data-theme="dark"] .popup-onibus__header,
+[data-theme="dark"] .popup-onibus__footer {
+  border-color: #334155;
+}
+
+[data-theme="dark"] .popup-onibus__gps-badge {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+[data-theme="dark"] .proximo-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .proximo-card:hover {
+  background-color: #24344d;
+  border-color: #3b82f6;
+}
+
+[data-theme="dark"] .resumo-item {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .resumo-item__tag--operacao {
+  background-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .painel {
+  background-color: #0f172a;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .btn-painel-flutuante {
+  background-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+}
+
+[data-theme="dark"] .view-bloco-conteudo {
+  background-color: #0f172a;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .busca-input {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .chip-filtro {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .chip-filtro:hover {
+  background-color: #283750;
+}
+
+[data-theme="dark"] .chip-filtro--ativo {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+[data-theme="dark"] .linha-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .horario-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .horario-card__grade {
+  background-color: #131c31;
+  border-color: #24324f;
+}
+
+[data-theme="dark"] .horario-chip {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .horario-chip--destaque {
+  background-color: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .alerta-item {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .alerta-item--atencao {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+[data-theme="dark"] .alerta-item--sucesso {
+  background-color: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+[data-theme="dark"] .alerta-item--info {
+  background-color: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+[data-theme="dark"] .sobre-pilar-card {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .sobre-placeholder-box {
+  background: linear-gradient(135deg, #131c31 0%, #1a2744 100%);
+  border-color: #334155;
+}
+
+[data-theme="dark"] .rodape {
+  background-color: #0f172a;
+  border-top-color: #1e293b;
+}
+
+[data-theme="dark"] .leaflet-container {
+  background-color: #0b1120 !important;
+}
+
+[data-theme="dark"] .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(2.5) hue-rotate(195deg) saturate(0.4) brightness(0.85);
 }

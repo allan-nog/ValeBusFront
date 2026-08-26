@@ -133,21 +133,63 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     3. INICIALIZAÇÃO DO MAPA LEAFLET
+     3. INICIALIZAÇÃO DO MAPA LEAFLET & CAMADAS TEMÁTICAS (DIA/NOITE)
      ────────────────────────────────────────────────────────── */
   const mapaContainer = document.getElementById('mapa');
   if (!mapaContainer) return;
 
-  // Centro inicial: Santa Rita do Sapucaí
+  // Centro inicial: Santa Rita do Sapucaí - MG
   const map = L.map('mapa', {
     zoomControl: true,
     attributionControl: false
   }).setView([-22.2528, -45.7036], 14);
 
-  // Tiles do OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  }).addTo(map);
+  // Camada de Tiles padrão OpenStreetMap (100% gratuita, sem marca d'água ou chave de API)
+  const TILE_LAYER_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const TILE_OPTIONS = {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  };
+
+  let camadaTilesAtual = L.tileLayer(TILE_LAYER_URL, TILE_OPTIONS).addTo(map);
+
+  /* ──────────────────────────────────────────────────────────
+     3.1. GERENCIAMENTO DE TEMA (CLARO / ESCURO)
+     ────────────────────────────────────────────────────────── */
+  const btnTemaToggle = document.getElementById('btn-tema-toggle');
+
+  function definirTema(tema, salvar = true) {
+    const isDark = tema === 'escuro';
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+    if (btnTemaToggle) {
+      btnTemaToggle.setAttribute('aria-label', isDark ? 'Alternar para modo claro' : 'Alternar para modo escuro');
+      btnTemaToggle.setAttribute('title', isDark ? 'Ativar Modo Claro (Dia)' : 'Ativar Modo Escuro (Noite)');
+    }
+
+    if (salvar) {
+      try {
+        localStorage.setItem('valebus_tema', tema);
+      } catch (e) {
+        console.warn('Não foi possível salvar tema no localStorage:', e);
+      }
+    }
+  }
+
+  // Inicializa tema: localStorage -> prefers-color-scheme -> claro
+  const temaSalvo = localStorage.getItem('valebus_tema');
+  const prefereEscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const temaInicial = temaSalvo === 'escuro' || (!temaSalvo && prefereEscuro) ? 'escuro' : 'claro';
+  definirTema(temaInicial, false);
+
+  if (btnTemaToggle) {
+    btnTemaToggle.addEventListener('click', () => {
+      const temaAtual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'escuro' : 'claro';
+      const novoTema = temaAtual === 'escuro' ? 'claro' : 'escuro';
+      definirTema(novoTema, true);
+    });
+  }
 
 
   /* ──────────────────────────────────────────────────────────
@@ -250,7 +292,7 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     6. FILTRO INTERATIVO POR LINHA (LEGENDA) + RECOLHIMENTO MOBILE
+     6. FILTRO INTERATIVO POR LINHA (LEGENDA) + FOCO NO MAPA
      ────────────────────────────────────────────────────────── */
   const botoesFiltro = document.querySelectorAll('#filtros-legenda .mapa-legenda__item');
   const mapaLegenda = document.querySelector('.mapa-legenda');
@@ -291,6 +333,14 @@
       // Atualiza o contador no resumo do painel
       const elTotal = document.getElementById('total-onibus-ativo');
       if (elTotal) elTotal.textContent = `${totalVisivel} / ${FROTA.length}`;
+
+      // FOCO DINÂMICO NO MAPA NA LINHA SELECIONADA
+      if (linhaSelecionada === 'todas') {
+        map.closePopup();
+        map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.0 });
+      } else {
+        focarOnibusPorLinha(linhaSelecionada);
+      }
     });
   });
 
@@ -622,6 +672,50 @@
 
   if (btnPainel) btnPainel.addEventListener('click', abrirPainel);
   if (btnFecharP) btnFecharP.addEventListener('click', fecharPainel);
+
+  // Manipulação de gestos de toque no Bottom Sheet para uso com uma mão
+  const handleMobile = document.querySelector('.painel__handle-mobile');
+  if (handleMobile) {
+    handleMobile.addEventListener('click', () => {
+      if (window.innerWidth < 1100) {
+        fecharPainel();
+      }
+    });
+  }
+
+  if (painel) {
+    let touchStartY = 0;
+    let touchMoveY = 0;
+
+    painel.addEventListener('touchstart', (e) => {
+      // Inicia rastreio apenas se o painel estiver no topo do scroll
+      if (painel.scrollTop <= 0) {
+        touchStartY = e.touches[0].clientY;
+      } else {
+        touchStartY = 0;
+      }
+    }, { passive: true });
+
+    painel.addEventListener('touchmove', (e) => {
+      if (!touchStartY) return;
+      touchMoveY = e.touches[0].clientY;
+      const diffY = touchMoveY - touchStartY;
+      if (diffY > 0 && window.innerWidth < 768) {
+        painel.style.transform = `translateY(${Math.min(diffY, 180)}px)`;
+      }
+    }, { passive: true });
+
+    painel.addEventListener('touchend', () => {
+      if (!touchStartY || !touchMoveY) return;
+      const diffY = touchMoveY - touchStartY;
+      painel.style.transform = '';
+      if (diffY > 70 && window.innerWidth < 768) {
+        fecharPainel();
+      }
+      touchStartY = 0;
+      touchMoveY = 0;
+    });
+  }
 
   if (overlay) {
     overlay.addEventListener('click', () => {

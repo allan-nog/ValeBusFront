@@ -7,7 +7,8 @@
 /* Importação da fonte Inter via Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-:root {
+:root,
+[data-theme="light"] {
 
   /* ── CORES PRINCIPAIS ─────────────────────────────────── */
   --cor-marca:           #1a6fd4;
@@ -66,4 +67,35 @@
   --sidebar-largura:     240px;
   --topbar-altura:       64px;
   --painel-largura:      320px;
+}
+
+[data-theme="dark"] {
+  /* ── CORES PRINCIPAIS NO TEMA ESCURO ─────────────────── */
+  --cor-marca:           #3b82f6;
+  --cor-marca-escura:    #2563eb;
+  --cor-marca-clara:     rgba(59, 130, 246, 0.15);
+  --cor-fundo-escuro:    #060b14;
+  --cor-fundo-painel:    #0f172a;
+  --cor-sucesso:         #22c55e;
+  --cor-erro:            #ef4444;
+  --cor-aviso:           #fbbf24;
+
+  /* ── CORES DE TEXTO NO TEMA ESCURO ───────────────────── */
+  --texto-principal:     #f8fafc;
+  --texto-secundario:    #94a3b8;
+  --texto-claro:         #ffffff;
+
+  /* ── CORES DE FUNDO NO TEMA ESCURO ───────────────────── */
+  --fundo-pagina:        #0b1120;
+  --fundo-card:          #131c31;
+  --fundo-campo:         #1a243b;
+
+  /* ── BORDAS NO TEMA ESCURO ───────────────────────────── */
+  --borda-cor:           #24324f;
+  --borda-foco:          #60a5fa;
+
+  /* ── SOMBRAS NO TEMA ESCURO ──────────────────────────── */
+  --sombra-card:         0 4px 24px rgba(0, 0, 0, 0.45);
+  --sombra-botao:        0 4px 14px rgba(59, 130, 246, 0.4);
+  --sombra-foco:         0 0 0 3px rgba(59, 130, 246, 0.35);
 }
