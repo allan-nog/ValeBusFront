@@ -64,9 +64,9 @@
   --transicao:           0.18s ease;
 
   /* ── DIMENSÕES DE LAYOUT ──────────────────────────────── */
-  --sidebar-largura:     240px;
-  --topbar-altura:       64px;
-  --painel-largura:      320px;
+  --sidebar-largura:     196px;
+  --topbar-altura:       56px;
+  --painel-largura:      268px;
 }
 
 [data-theme="dark"] {

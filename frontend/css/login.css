@@ -20,8 +20,8 @@
 
 .barra-horario {
   position: fixed;
-  top: 16px;
-  top: max(16px, env(safe-area-inset-top, 16px));
+  top: 10px;
+  top: max(10px, env(safe-area-inset-top, 10px));
   left: 0;
   right: 0;
   display: flex;
@@ -36,15 +36,15 @@
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 14px;
+  gap: 6px;
+  padding: 3px 11px;
   background: rgba(15, 23, 42, 0.48);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.92);
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 500;
   letter-spacing: 0.01em;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
@@ -57,7 +57,7 @@
 }
 
 .badge-cidade__icone {
-  font-size: 13.5px;
+  font-size: 12px;
   line-height: 1;
 }
 
@@ -293,22 +293,23 @@
   position: relative;
   z-index: 1;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: max(68px, calc(env(safe-area-inset-top, 0px) + 54px)) var(--espaco-md) max(var(--espaco-lg), env(safe-area-inset-bottom, 24px));
+  padding: 24px 16px;
   box-sizing: border-box;
 }
 
 .form-card {
   width: 100%;
-  max-width: 440px;
+  max-width: 410px;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(226, 232, 240, 0.85);
-  border-radius: var(--raio-grande);
-  padding: 34px 30px 28px;
+  border-radius: 16px;
+  padding: 22px 24px 18px;
   box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.16),
               0 6px 16px -4px rgba(15, 23, 42, 0.08),
               0 0 0 1px rgba(255, 255, 255, 0.7);
@@ -651,24 +652,24 @@ body.tema-noite .modal-padrao__texto-legal h4 {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
 }
 
 .form-logo__icone {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, #1a6fd4 0%, #1456a8 100%);
-  border-radius: 15px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
-  box-shadow: 0 6px 16px rgba(26, 111, 212, 0.28);
+  margin-bottom: 4px;
+  box-shadow: 0 4px 12px rgba(26, 111, 212, 0.25);
 }
 
 .form-logo__icone svg {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   stroke: #ffffff;
   fill: none;
   stroke-width: 2.2px;
@@ -677,7 +678,7 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .form-logo__nome {
-  font-size: 31px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--cor-marca);
   line-height: 1.15;
@@ -685,26 +686,26 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .form-logo__subtitulo {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--texto-secundario);
-  margin-top: 3px;
+  margin-top: 1px;
   letter-spacing: 0.01em;
 }
 
 .form-titulo {
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--texto-principal);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   text-align: center;
   letter-spacing: -0.01em;
 }
 
 .form-subtitulo {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--texto-secundario);
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   text-align: center;
 }
 
@@ -714,15 +715,15 @@ body.tema-noite .modal-padrao__texto-legal h4 {
    ══════════════════════════════════════════════════════════ */
 
 .campo {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .campo__label {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--texto-principal);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .campo__wrapper {
@@ -733,11 +734,11 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 
 .campo__icone {
   position: absolute;
-  left: 14px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   stroke: var(--texto-secundario);
   color: var(--texto-secundario);
   fill: none;
@@ -752,12 +753,12 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 
 .campo__input {
   width: 100%;
-  height: 48px;
+  height: 40px;
   background: var(--fundo-campo);
   border: 1.5px solid var(--borda-cor);
-  border-radius: 10px;
-  padding: 0 16px 0 42px;
-  font-size: 15px;
+  border-radius: 8px;
+  padding: 0 14px 0 38px;
+  font-size: 14px;
   color: var(--texto-principal);
   outline: none;
   box-sizing: border-box;
@@ -767,7 +768,7 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .campo__input--com-botao {
-  padding-right: 46px;
+  padding-right: 42px;
 }
 
 .campo__input::placeholder {
@@ -890,31 +891,31 @@ body.tema-noite .modal-padrao__texto-legal h4 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  margin-top: 2px;
+  margin-bottom: 12px;
+  margin-top: 0;
 }
 
 .checkbox-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--texto-secundario);
   user-select: none;
 }
 
 .checkbox-custom {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   accent-color: var(--cor-marca);
   cursor: pointer;
   margin: 0;
 }
 
 .link-esqueceu {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--cor-marca);
   text-decoration: none;
@@ -939,21 +940,21 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 .erro-mensagem {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 16px;
-  font-size: 13px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
   color: #b91c1c;
-  line-height: 1.45;
+  line-height: 1.4;
   animation: animarErro 0.2s ease-out;
 }
 
 .erro-mensagem svg {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   stroke: #dc2626;
   fill: none;
   flex-shrink: 0;
@@ -977,12 +978,12 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 /* Botão Principal */
 .botao-entrar {
   width: 100%;
-  height: 48px;
+  height: 40px;
   background: var(--cor-marca);
   color: #ffffff;
   border: none;
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.01em;
@@ -990,7 +991,7 @@ body.tema-noite .modal-padrao__texto-legal h4 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(26, 111, 212, 0.3);
+  box-shadow: 0 3px 10px rgba(26, 111, 212, 0.25);
   transition: background-color var(--transicao),
               transform var(--transicao),
               box-shadow var(--transicao);
@@ -998,7 +999,7 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 
 .botao-entrar:hover:not(:disabled) {
   background: var(--cor-marca-escura);
-  box-shadow: 0 6px 18px rgba(26, 111, 212, 0.38);
+  box-shadow: 0 5px 14px rgba(26, 111, 212, 0.35);
   transform: translateY(-1px);
 }
 
@@ -1038,21 +1039,21 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .botao-entrar__icone {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
 }
 
 .botao-entrar__icone-sucesso {
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   stroke: #ffffff;
   flex-shrink: 0;
 }
 
 .icone-loading {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   animation: girar 0.8s linear infinite;
   color: #ffffff;
@@ -1068,8 +1069,8 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 .divisor {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 18px 0 14px;
+  gap: 10px;
+  margin: 10px 0 8px;
 }
 
 .divisor__linha {
@@ -1079,7 +1080,7 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .divisor__texto {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--texto-secundario);
   text-transform: uppercase;
@@ -1090,19 +1091,19 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 /* Botão Oficial: Entrar com o Google */
 .botao-google {
   width: 100%;
-  height: 46px;
+  height: 38px;
   background-color: #ffffff;
   color: #3c4043;
   border: 1px solid #dadce0;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
   box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
   transition: background-color var(--transicao),
               border-color var(--transicao),
@@ -1129,8 +1130,8 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 }
 
 .botao-google__icone {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
@@ -1141,12 +1142,12 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 /* Botão Secundário (Cadastro) */
 .botao-cadastro {
   width: 100%;
-  height: 44px;
+  height: 36px;
   background: #f8fafc;
   color: var(--texto-secundario);
   border: 1px solid var(--borda-cor);
-  border-radius: 10px;
-  font-size: 13.5px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 500;
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
@@ -1171,10 +1172,10 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 /* Rodapé Legal */
 .form-rodape {
   text-align: center;
-  margin-top: 18px;
-  font-size: 12px;
+  margin-top: 10px;
+  font-size: 11px;
   color: var(--texto-secundario);
-  line-height: 1.55;
+  line-height: 1.45;
 }
 
 .form-rodape a {
@@ -1743,21 +1744,118 @@ body.tema-noite .modal-padrao__texto-legal h4 {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 768px) and (min-height: 880px) {
   .form-card {
-    max-width: 456px;
-    padding: 38px 34px 30px;
+    max-width: 430px;
+    padding: 28px 28px 22px;
   }
 
   .form-logo__nome {
-    font-size: 32px;
+    font-size: 26px;
   }
 }
 
-@media (min-width: 1024px) {
+@media (max-height: 720px) {
+  .login-wrapper {
+    padding: 12px 12px;
+  }
+
+  .barra-horario {
+    top: 6px;
+  }
+
+  .badge-cidade {
+    padding: 2px 9px;
+    font-size: 10.5px;
+  }
+
   .form-card {
-    max-width: 468px;
-    padding: 40px 36px 32px;
+    max-width: 390px;
+    padding: 16px 20px 14px;
+    border-radius: 14px;
+  }
+
+  .form-logo {
+    margin-bottom: 6px;
+  }
+
+  .form-logo__icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    margin-bottom: 3px;
+  }
+
+  .form-logo__icone svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .form-logo__nome {
+    font-size: 22px;
+  }
+
+  .form-logo__subtitulo {
+    font-size: 11px;
+  }
+
+  .form-titulo {
+    font-size: 15px;
+  }
+
+  .form-subtitulo {
+    font-size: 11.5px;
+    margin-bottom: 8px;
+  }
+
+  .campo {
+    margin-bottom: 8px;
+  }
+
+  .campo__label {
+    font-size: 11.5px;
+    margin-bottom: 3px;
+  }
+
+  .campo__input {
+    height: 36px;
+    font-size: 13px;
+    padding: 0 12px 0 34px;
+  }
+
+  .campo__icone {
+    left: 10px;
+    width: 15px;
+    height: 15px;
+  }
+
+  .form-linha-opcoes {
+    margin-bottom: 8px;
+  }
+
+  .botao-entrar {
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .divisor {
+    margin: 8px 0 6px;
+  }
+
+  .botao-google {
+    height: 35px;
+    font-size: 12.5px;
+    margin-bottom: 6px;
+  }
+
+  .botao-cadastro {
+    height: 33px;
+    font-size: 12px;
+  }
+
+  .form-rodape {
+    margin-top: 8px;
+    font-size: 10.5px;
   }
 }
 

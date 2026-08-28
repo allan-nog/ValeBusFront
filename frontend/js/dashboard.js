@@ -163,7 +163,6 @@
     { chaveLinha: 'fortaleza',              linha: LINHAS.fortaleza,              posicao: [-22.2445, -45.7060], velocidade: 25 },
     { chaveLinha: 'industrial',             linha: LINHAS.industrial,             posicao: [-22.2610, -45.7140], velocidade: 35 },
     { chaveLinha: 'porto_sapucai',          linha: LINHAS.porto_sapucai,          posicao: [-22.2660, -45.6880], velocidade: 30 },
-    { chaveLinha: 'reforco_jose_gm',        linha: LINHAS.reforco_jose_gm,        posicao: [-22.2420, -45.7020], velocidade: 22 },
     { chaveLinha: 'sao_benedito_hora_meia', linha: LINHAS.sao_benedito_hora_meia, posicao: [-22.2510, -45.7010], velocidade: 27 },
     { chaveLinha: 'sao_benedito_hora',      linha: LINHAS.sao_benedito_hora,      posicao: [-22.2545, -45.7075], velocidade: 29 }
   ];
@@ -329,7 +328,7 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     6. FILTRO INTERATIVO POR LINHA (LEGENDA) + FOCO NO MAPA
+     6. FILTRO INTERATIVO POR LINHA (LEGENDA) + FOCO NO MAPA + ESTADO VAZIO
      ────────────────────────────────────────────────────────── */
   const botoesFiltro = document.querySelectorAll('#filtros-legenda .mapa-legenda__item');
   const mapaLegenda = document.querySelector('.mapa-legenda');
@@ -337,6 +336,60 @@
   const btnLegendaPrev = document.getElementById('btn-legenda-prev');
   const btnLegendaNext = document.getElementById('btn-legenda-next');
   const containerFiltrosLegenda = document.getElementById('filtros-legenda');
+
+  // Elementos do Estado Vazio (Alerta quando nenhum ônibus visível)
+  const elMapaAlertaVazio = document.getElementById('mapa-alerta-vazio');
+  const elMapaAlertaTitulo = document.getElementById('mapa-alerta-vazio-titulo');
+  const elMapaAlertaDesc = document.getElementById('mapa-alerta-vazio-desc');
+  const btnResetFiltroMapa = document.getElementById('btn-reset-filtro-mapa');
+  const elPainelAlertaVazio = document.getElementById('painel-alerta-vazio');
+  const elPainelAlertaTitulo = document.getElementById('painel-alerta-vazio-titulo');
+
+  function mostrarAlertaLinhaVazia(chaveLinha) {
+    const nomeLinha = LINHAS[chaveLinha] ? LINHAS[chaveLinha].nome : 'desta linha';
+
+    // Alerta no Mapa
+    if (elMapaAlertaVazio) {
+      if (elMapaAlertaTitulo) {
+        elMapaAlertaTitulo.textContent = 'Nenhum ônibus desta linha está disponível no momento.';
+      }
+      if (elMapaAlertaDesc) {
+        elMapaAlertaDesc.textContent = `Não há veículos com telemetria GPS transmitindo sinal para ${nomeLinha} agora.`;
+      }
+      elMapaAlertaVazio.style.display = 'flex';
+    }
+
+    // Alerta no Painel Lateral
+    if (elPainelAlertaVazio) {
+      if (elPainelAlertaTitulo) {
+        elPainelAlertaTitulo.textContent = 'Nenhum ônibus desta linha está disponível no momento.';
+      }
+      elPainelAlertaVazio.style.display = 'flex';
+    }
+
+    // Fecha popup e reposiciona visualização da cidade suavemente
+    map.closePopup();
+    map.flyTo([-22.2528, -45.7036], 13.5, { animate: true, duration: 0.8 });
+  }
+
+  function ocultarAlertaLinhaVazia() {
+    if (elMapaAlertaVazio) {
+      elMapaAlertaVazio.style.display = 'none';
+    }
+    if (elPainelAlertaVazio) {
+      elPainelAlertaVazio.style.display = 'none';
+    }
+  }
+
+  // Ação do Botão "Ver todas as linhas" dentro do alerta do mapa
+  if (btnResetFiltroMapa) {
+    btnResetFiltroMapa.addEventListener('click', () => {
+      const btnTodas = document.querySelector('#filtros-legenda [data-linha="todas"]');
+      if (btnTodas) {
+        btnTodas.click();
+      }
+    });
+  }
 
   // Permite recolher/expandir o filtro da legenda no mobile ao clicar no cabeçalho
   if (mapaLegendaHeader && mapaLegenda) {
@@ -414,12 +467,18 @@
         }
       }
 
-      // FOCO DINÂMICO NO MAPA NA LINHA SELECIONADA
-      if (linhaSelecionada === 'todas') {
-        map.closePopup();
-        map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.0 });
+      // ESTADO QUANDO NENHUM ÔNIBUS ESTIVER VISÍVEL
+      if (totalVisivel === 0) {
+        mostrarAlertaLinhaVazia(linhaSelecionada);
       } else {
-        focarOnibusPorLinha(linhaSelecionada, false);
+        ocultarAlertaLinhaVazia();
+
+        if (linhaSelecionada === 'todas') {
+          map.closePopup();
+          map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.0 });
+        } else {
+          focarOnibusPorLinha(linhaSelecionada, false);
+        }
       }
     });
   });
@@ -431,24 +490,25 @@
   const cardsProximos = document.querySelectorAll('.proximo-card');
 
   function focarOnibusPorLinha(chaveLinha, atualizarCarrossel = true) {
+    // Sincroniza o botão correspondente no carrossel da legenda
+    if (atualizarCarrossel) {
+      const btnLegenda = document.querySelector(`#filtros-legenda [data-linha="${chaveLinha}"]`);
+      if (btnLegenda) {
+        botoesFiltro.forEach(b => {
+          b.classList.remove('mapa-legenda__item--ativo');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btnLegenda.classList.add('mapa-legenda__item--ativo');
+        btnLegenda.setAttribute('aria-selected', 'true');
+        btnLegenda.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
     const itemBus = marcadoresMap.get(chaveLinha);
     if (itemBus) {
+      ocultarAlertaLinhaVazia();
       const { marker, bus } = itemBus;
       const latLng = marker.getLatLng();
-
-      // Sincroniza o botão correspondente no carrossel da legenda
-      if (atualizarCarrossel) {
-        const btnLegenda = document.querySelector(`#filtros-legenda [data-linha="${chaveLinha}"]`);
-        if (btnLegenda) {
-          botoesFiltro.forEach(b => {
-            b.classList.remove('mapa-legenda__item--ativo');
-            b.setAttribute('aria-selected', 'false');
-          });
-          btnLegenda.classList.add('mapa-legenda__item--ativo');
-          btnLegenda.setAttribute('aria-selected', 'true');
-          btnLegenda.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        }
-      }
 
       // Garantir que a camada do marcador está visível se houver filtro
       if (!map.hasLayer(marker)) {
@@ -462,7 +522,39 @@
       map.flyTo(latLng, 16, { animate: true, duration: 1.2 });
       marker.openPopup();
 
+      // Atualiza o contador no resumo do painel
+      const elTotal = document.getElementById('total-onibus-ativo');
+      if (elTotal) {
+        const spanNumDestaque = elTotal.querySelector('.num-destaque');
+        const spanNumTotal = elTotal.querySelector('.num-total');
+        if (spanNumDestaque && spanNumTotal) {
+          spanNumDestaque.textContent = '1';
+          spanNumTotal.textContent = FROTA.length;
+        }
+      }
+
       // Se estiver no celular/tablet, fecha o painel lateral para mostrar o mapa
+      if (window.innerWidth < 1100) {
+        fecharPainel();
+      }
+    } else {
+      // Nenhum ônibus visível para esta linha: oculta outros marcadores e exibe estado vazio
+      marcadoresMap.forEach(({ marker }) => {
+        if (map.hasLayer(marker)) map.removeLayer(marker);
+      });
+
+      const elTotal = document.getElementById('total-onibus-ativo');
+      if (elTotal) {
+        const spanNumDestaque = elTotal.querySelector('.num-destaque');
+        const spanNumTotal = elTotal.querySelector('.num-total');
+        if (spanNumDestaque && spanNumTotal) {
+          spanNumDestaque.textContent = '0';
+          spanNumTotal.textContent = FROTA.length;
+        }
+      }
+
+      mostrarAlertaLinhaVazia(chaveLinha);
+
       if (window.innerWidth < 1100) {
         fecharPainel();
       }
@@ -520,22 +612,686 @@
 
 
   /* ──────────────────────────────────────────────────────────
-     8. MENU DO USUÁRIO (DROPDOWN), MODAIS & DEMAIS INTERAÇÕES
+     8. GESTÃO DE ALERTAS, NOTIFICAÇÕES & TOASTS EM TEMPO REAL
      ────────────────────────────────────────────────────────── */
+  const ALERTAS_PADRAO = [
+    {
+      id: 'alt-1',
+      linha: 'fernandes',
+      tipo: 'atencao', // 'atencao' | 'critico' | 'info' | 'sucesso'
+      titulo: 'Trânsito Moderado — Próximo ao Ginásio Poliesportivo',
+      mensagem: 'Linha Fernandes e São Benedito com acréscimo estimado de 3 a 5 minutos devido ao fluxo de entrada/saída escolar e universitário na região central.',
+      origem: 'CCO Operacional ValeBus',
+      horario: 'Há 12 minutos',
+      timestamp: Date.now() - 12 * 60 * 1000,
+      lida: false,
+      resolvido: false
+    },
+    {
+      id: 'alt-2',
+      linha: 'anchieta',
+      tipo: 'info',
+      titulo: 'Linha Anchieta — Rota Especial Sentido Recanto / Inatel',
+      mensagem: 'Embarque e desembarque operando com pontualidade na Praça Urbana Carolina e Rua José Ribeiro de Barros.',
+      origem: 'Telemetria GPS Automática',
+      horario: 'Hoje às 07:00',
+      timestamp: Date.now() - 45 * 60 * 1000,
+      lida: false,
+      resolvido: false
+    },
+    {
+      id: 'alt-3',
+      linha: 'porto_sapucai',
+      tipo: 'sucesso',
+      titulo: 'Operação 100% Normal na Rodovia BR-459',
+      mensagem: 'Linha Industrial e Linha Porto Sapucaí transitando sem retenções nos acessos à Linear e trevo de Cachoeira de Minas.',
+      origem: 'CCO Operacional ValeBus',
+      horario: 'Há 35 minutos',
+      timestamp: Date.now() - 35 * 60 * 1000,
+      lida: true,
+      resolvido: true
+    }
+  ];
+
+  let listaAlertasState = [];
+
+  function carregarAlertas() {
+    try {
+      const salvo = localStorage.getItem('valebus_alertas');
+      if (salvo) {
+        listaAlertasState = JSON.parse(salvo);
+      } else {
+        listaAlertasState = [...ALERTAS_PADRAO];
+      }
+    } catch (e) {
+      listaAlertasState = [...ALERTAS_PADRAO];
+    }
+  }
+
+  function salvarAlertas() {
+    try {
+      localStorage.setItem('valebus_alertas', JSON.stringify(listaAlertasState));
+    } catch (e) {
+      console.warn('Erro ao salvar alertas no storage:', e);
+    }
+  }
+
+  carregarAlertas();
+
+  // Elementos do Sino e Dropdown
   const btnSino = document.getElementById('btn-sino-notificacoes');
+  const dropdownNotificacoes = document.getElementById('dropdown-notificacoes');
+  const notificacoesWrapper = document.getElementById('topbar-notificacoes-wrapper');
+  const badgeSino = document.getElementById('topbar-badge-sino');
+  const dropdownBadgeNaolidas = document.getElementById('dropdown-badge-naolidas');
+  const countTodos = document.getElementById('notif-count-todos');
+  const countNaolidos = document.getElementById('notif-count-naolidos');
+  const listaDropdown = document.getElementById('dropdown-notificacoes-lista');
+  const btnMarcarTodasLidas = document.getElementById('btn-marcar-todas-lidas');
+  const btnLimparNotifs = document.getElementById('btn-limpar-notificacoes');
+  const btnDropdownIrAlertas = document.getElementById('btn-dropdown-ir-alertas');
+  const filtrosDropdown = document.querySelectorAll('.notificacoes-dropdown__filtros .notif-filtro-btn');
+
+  // Elementos da Seção Alertas
+  const feedAlertasContainer = document.getElementById('feed-alertas-container');
+  const inputBuscaAlertas = document.getElementById('input-busca-alertas');
+  const chipsFiltroFeed = document.querySelectorAll('.alertas-filtros-chips .alerta-filtro-chip');
+  const kpiAlertasAtivos = document.getElementById('kpi-alertas-ativos');
+  const kpiLinhasAtrasadas = document.getElementById('kpi-linhas-atrasadas');
+  const kpiAlertasResolvidos = document.getElementById('kpi-alertas-resolvidos');
+  const feedCountTodos = document.getElementById('feed-count-todos');
+  const btnAbrirModalNovoAlerta = document.getElementById('btn-abrir-modal-novo-alerta');
+
+  // Modal Novo Alerta
+  const modalNovoAlerta = document.getElementById('modal-novo-alerta');
+  const btnFecharModalAlerta = document.getElementById('btn-fechar-modal-alerta');
+  const btnCancelarAlerta = document.getElementById('btn-cancelar-alerta');
+  const formNovoAlerta = document.getElementById('form-novo-alerta');
+
+  // Toast Container
+  const toastContainer = document.getElementById('toast-container');
+
+  let filtroAtivoDropdown = 'todos';
+  let filtroAtivoFeed = 'todos';
+  let termoBuscaFeed = '';
+
+  /* Ícones e Cores Auxiliares */
+  const ICONES_TIPO = {
+    atencao: '⚠️',
+    critico: '🚨',
+    info: '📢',
+    sucesso: '✅'
+  };
+
+  function obterNomeLinha(chave) {
+    if (!chave || chave === 'todas') return 'Todas as Linhas';
+    return LINHAS[chave] ? LINHAS[chave].nome : chave;
+  }
+
+  function obterCorLinha(chave) {
+    if (!chave || chave === 'todas') return '#2563eb';
+    return LINHAS[chave] ? LINHAS[chave].cor : '#2563eb';
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.1. SISTEMA GLOBAL DE TOASTS (POPUP NOTIFICATIONS)
+     ────────────────────────────────────────────────────────── */
+  function exibirToast({ titulo, mensagem, tipo = 'info', linha = null, duracaoMs = 5000 }) {
+    if (!toastContainer) return;
+
+    const toast = document.createElement('div');
+    toast.className = `valebus-toast valebus-toast--${tipo}`;
+    toast.setAttribute('role', 'alert');
+
+    const icone = ICONES_TIPO[tipo] || '📢';
+    const temLinha = linha && linha !== 'todas' && LINHAS[linha];
+
+    toast.innerHTML = `
+      <div class="valebus-toast__icone-wrap" aria-hidden="true">${icone}</div>
+      <div class="valebus-toast__corpo">
+        <h4 class="valebus-toast__titulo">${titulo}</h4>
+        <p class="valebus-toast__msg">${mensagem}</p>
+        ${temLinha ? `
+          <div class="valebus-toast__acoes">
+            <button type="button" class="btn-toast-mapa" data-linha="${linha}">
+              Localizar no Mapa →
+            </button>
+          </div>
+        ` : ''}
+      </div>
+      <button type="button" class="valebus-toast__fechar" aria-label="Fechar notificação">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><use href="#icone-fechar"/></svg>
+      </button>
+      <div class="valebus-toast__progresso" style="animation-duration: ${duracaoMs}ms;"></div>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    let timer = setTimeout(() => {
+      removerToast(toast);
+    }, duracaoMs);
+
+    const btnFechar = toast.querySelector('.valebus-toast__fechar');
+    if (btnFechar) {
+      btnFechar.addEventListener('click', () => {
+        clearTimeout(timer);
+        removerToast(toast);
+      });
+    }
+
+    const btnVerMapa = toast.querySelector('.btn-toast-mapa');
+    if (btnVerMapa) {
+      btnVerMapa.addEventListener('click', () => {
+        clearTimeout(timer);
+        removerToast(toast);
+        navegarParaSecao('mapa');
+        setTimeout(() => {
+          focarOnibusPorLinha(linha);
+        }, 300);
+      });
+    }
+  }
+
+  function removerToast(toast) {
+    if (!toast) return;
+    toast.classList.add('valebus-toast--saindo');
+    setTimeout(() => {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 250);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.2. ATUALIZAÇÃO DE BADGES E INDICADORES (KPIs)
+     ────────────────────────────────────────────────────────── */
+  function atualizarBadgesEIndicadores() {
+    const total = listaAlertasState.length;
+    const naoLidos = listaAlertasState.filter(a => !a.lida).length;
+    const ativos = listaAlertasState.filter(a => !a.resolvido).length;
+    const atrasados = listaAlertasState.filter(a => !a.resolvido && (a.tipo === 'atencao' || a.tipo === 'critico')).length;
+    const resolvidos = listaAlertasState.filter(a => a.resolvido).length;
+
+    // Badge do Sino na TopBar
+    if (badgeSino) {
+      if (naoLidos > 0) {
+        badgeSino.textContent = String(naoLidos);
+        badgeSino.style.display = 'inline-flex';
+        badgeSino.classList.remove('topbar__badge-sino--vazio');
+        if (btnSino) btnSino.setAttribute('aria-label', `Ver ${naoLidos} notificação(ões) não lida(s)`);
+      } else {
+        badgeSino.textContent = '0';
+        badgeSino.style.display = 'none';
+        badgeSino.classList.add('topbar__badge-sino--vazio');
+        if (btnSino) btnSino.setAttribute('aria-label', 'Nenhuma notificação nova');
+      }
+    }
+
+    // Badge na Sidebar (Item Alertas da Frota)
+    const sidebarBadgeAlertas = document.querySelector('.sidebar__nav .nav__item[data-secao="alertas"] .nav__badge');
+    if (sidebarBadgeAlertas) {
+      sidebarBadgeAlertas.textContent = String(naoLidos || ativos);
+      sidebarBadgeAlertas.style.display = (naoLidos || ativos) > 0 ? 'inline-flex' : 'none';
+    }
+
+    // Dropdown Badges
+    if (dropdownBadgeNaolidas) {
+      dropdownBadgeNaolidas.textContent = naoLidos > 0 ? `${naoLidos} nova${naoLidos > 1 ? 's' : ''}` : '0 novas';
+      dropdownBadgeNaolidas.style.display = naoLidos > 0 ? 'inline-block' : 'none';
+    }
+    if (countTodos) countTodos.textContent = String(total);
+    if (countNaolidos) countNaolidos.textContent = String(naoLidos);
+    if (feedCountTodos) feedCountTodos.textContent = String(total);
+
+    // KPIs da Tela view-alertas
+    if (kpiAlertasAtivos) kpiAlertasAtivos.textContent = String(ativos);
+    if (kpiLinhasAtrasadas) kpiLinhasAtrasadas.textContent = String(atrasados);
+    if (kpiAlertasResolvidos) kpiAlertasResolvidos.textContent = String(resolvidos);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.3. RENDERIZAÇÃO DO DROPDOWN DO SINO
+     ────────────────────────────────────────────────────────── */
+  function renderizarDropdownNotificacoes() {
+    if (!listaDropdown) return;
+
+    let filtrados = listaAlertasState;
+    if (filtroAtivoDropdown === 'nao_lidos') {
+      filtrados = listaAlertasState.filter(a => !a.lida);
+    } else if (filtroAtivoDropdown === 'atencao') {
+      filtrados = listaAlertasState.filter(a => a.tipo === 'atencao' || a.tipo === 'critico');
+    }
+
+    if (filtrados.length === 0) {
+      listaDropdown.innerHTML = `
+        <div class="notif-vazio-estado">
+          <div class="notif-vazio-estado__icone">🔔</div>
+          <span class="notif-vazio-estado__titulo">Nenhuma notificação encontrada</span>
+          <span class="notif-vazio-estado__desc">Tudo calmo na operação de transporte de Santa Rita.</span>
+        </div>
+      `;
+      return;
+    }
+
+    listaDropdown.innerHTML = filtrados.map(alerta => {
+      const corLinha = obterCorLinha(alerta.linha);
+      const nomeLinha = obterNomeLinha(alerta.linha);
+      const icone = ICONES_TIPO[alerta.tipo] || '📢';
+      const temOnibusNoMapa = alerta.linha && alerta.linha !== 'todas' && LINHAS[alerta.linha];
+
+      return `
+        <article class="notif-item ${!alerta.lida ? 'notif-item--nao-lida' : ''}" data-id="${alerta.id}">
+          <div class="notif-item__icone-wrap notif-item__icone-wrap--${alerta.tipo}" aria-hidden="true">${icone}</div>
+          <div class="notif-item__corpo">
+            <div class="notif-item__topo">
+              <span class="notif-item__tag-linha" style="background-color: ${corLinha}; color: #ffffff;">
+                ${nomeLinha}
+              </span>
+              <time class="notif-item__tempo">${alerta.horario}</time>
+            </div>
+            <h5 class="notif-item__titulo">${alerta.titulo}</h5>
+            <p class="notif-item__msg">${alerta.mensagem}</p>
+            <div class="notif-item__acoes">
+              ${temOnibusNoMapa ? `
+                <button type="button" class="btn-notif-mapa" data-linha="${alerta.linha}">
+                  Ver Ônibus no Mapa →
+                </button>
+              ` : ''}
+              ${!alerta.lida ? `
+                <button type="button" class="btn-notif-lida" data-id="${alerta.id}">
+                  Marcar como lida
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Eventos dentro dos itens do dropdown
+    listaDropdown.querySelectorAll('.btn-notif-mapa').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const linha = btn.getAttribute('data-linha');
+        fecharDropdownNotificacoes();
+        navegarParaSecao('mapa');
+        setTimeout(() => {
+          focarOnibusPorLinha(linha);
+        }, 300);
+      });
+    });
+
+    listaDropdown.querySelectorAll('.btn-notif-lida').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        marcarAlertaComoLido(id);
+      });
+    });
+
+    listaDropdown.querySelectorAll('.notif-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const id = item.getAttribute('data-id');
+        marcarAlertaComoLido(id);
+      });
+    });
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.4. RENDERIZAÇÃO DO FEED COMPLETO NA TELA VIEW-ALERTAS
+     ────────────────────────────────────────────────────────── */
+  function renderizarFeedAlertas() {
+    if (!feedAlertasContainer) return;
+
+    let lista = listaAlertasState;
+
+    // Filtro por categoria
+    if (filtroAtivoFeed === 'atencao') {
+      lista = lista.filter(a => a.tipo === 'atencao' || a.tipo === 'critico');
+    } else if (filtroAtivoFeed === 'info') {
+      lista = lista.filter(a => a.tipo === 'info');
+    } else if (filtroAtivoFeed === 'sucesso') {
+      lista = lista.filter(a => a.tipo === 'sucesso' || a.resolvido);
+    }
+
+    // Busca textual
+    if (termoBuscaFeed) {
+      const termo = normalizarTexto(termoBuscaFeed);
+      lista = lista.filter(a => {
+        const tTitulo = normalizarTexto(a.titulo);
+        const tMsg = normalizarTexto(a.mensagem);
+        const tLinha = normalizarTexto(obterNomeLinha(a.linha));
+        return tTitulo.includes(termo) || tMsg.includes(termo) || tLinha.includes(termo);
+      });
+    }
+
+    if (lista.length === 0) {
+      feedAlertasContainer.innerHTML = `
+        <div class="notif-vazio-estado" style="background: var(--fundo-card); border-radius: 14px; border: 1.5px solid var(--borda-cor); padding: 40px 20px;">
+          <div class="notif-vazio-estado__icone">🔍</div>
+          <span class="notif-vazio-estado__titulo">Nenhum alerta encontrado com este filtro</span>
+          <span class="notif-vazio-estado__desc">Tente alterar os termos da busca ou emitir um novo comunicado CCO.</span>
+        </div>
+      `;
+      return;
+    }
+
+    feedAlertasContainer.innerHTML = lista.map(alerta => {
+      const corLinha = obterCorLinha(alerta.linha);
+      const nomeLinha = obterNomeLinha(alerta.linha);
+      const temOnibusNoMapa = alerta.linha && alerta.linha !== 'todas' && LINHAS[alerta.linha];
+      const isResolvido = alerta.resolvido || alerta.tipo === 'sucesso';
+
+      return `
+        <article class="alerta-card-principal alerta-card-principal--${alerta.tipo}" data-id="${alerta.id}">
+          <div class="alerta-card-principal__topo">
+            <span class="alerta-card-principal__linha-tag" style="background-color: ${corLinha};">
+              🚍 ${nomeLinha}
+            </span>
+            <span class="alerta-card-principal__status-tag ${isResolvido ? 'alerta-card-principal__status-tag--resolvido' : 'alerta-card-principal__status-tag--ativo'}">
+              ${isResolvido ? '✅ Operação Normalizada' : '⚠️ Ocorrência Ativa'}
+            </span>
+            <time class="alerta-card-principal__hora">${alerta.horario}</time>
+          </div>
+
+          <h4 class="alerta-card-principal__titulo">${alerta.titulo}</h4>
+          <p class="alerta-card-principal__desc">${alerta.mensagem}</p>
+
+          <div class="alerta-card-principal__rodape">
+            <span class="alerta-card-principal__origem">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icone-usuario"/></svg>
+              ${alerta.origem}
+            </span>
+
+            <div class="alerta-card-principal__acoes">
+              ${temOnibusNoMapa ? `
+                <button type="button" class="btn-alerta-acao btn-feed-mapa" data-linha="${alerta.linha}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icone-mapa"/></svg>
+                  <span>Localizar Ônibus</span>
+                </button>
+              ` : ''}
+              ${!isResolvido ? `
+                <button type="button" class="btn-alerta-acao btn-alerta-acao--resolver btn-feed-resolver" data-id="${alerta.id}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icone-check"/></svg>
+                  <span>Resolver</span>
+                </button>
+              ` : ''}
+              <button type="button" class="btn-alerta-acao btn-alerta-acao--remover btn-feed-remover" data-id="${alerta.id}" title="Remover alerta">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icone-lixeira"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    // Eventos do feed
+    feedAlertasContainer.querySelectorAll('.btn-feed-mapa').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const linha = btn.getAttribute('data-linha');
+        navegarParaSecao('mapa');
+        setTimeout(() => {
+          focarOnibusPorLinha(linha);
+        }, 300);
+      });
+    });
+
+    feedAlertasContainer.querySelectorAll('.btn-feed-resolver').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        resolverAlerta(id);
+      });
+    });
+
+    feedAlertasContainer.querySelectorAll('.btn-feed-remover').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        removerAlerta(id);
+      });
+    });
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.5. MUTAÇÕES DE ESTADO DOS ALERTAS
+     ────────────────────────────────────────────────────────── */
+  function marcarAlertaComoLido(id) {
+    const item = listaAlertasState.find(a => a.id === id);
+    if (item && !item.lida) {
+      item.lida = true;
+      salvarAlertas();
+      atualizarBadgesEIndicadores();
+      renderizarDropdownNotificacoes();
+    }
+  }
+
+  function marcarTodasComoLidas() {
+    listaAlertasState.forEach(a => { a.lida = true; });
+    salvarAlertas();
+    atualizarBadgesEIndicadores();
+    renderizarDropdownNotificacoes();
+    exibirToast({
+      titulo: 'Notificações Atualizadas',
+      mensagem: 'Todas as notificações foram marcadas como lidas.',
+      tipo: 'sucesso',
+      duracaoMs: 3000
+    });
+  }
+
+  function limparNotificacoesConcluidas() {
+    const antes = listaAlertasState.length;
+    listaAlertasState = listaAlertasState.filter(a => !a.resolvido);
+    salvarAlertas();
+    atualizarBadgesEIndicadores();
+    renderizarDropdownNotificacoes();
+    renderizarFeedAlertas();
+
+    const removidas = antes - listaAlertasState.length;
+    if (removidas > 0) {
+      exibirToast({
+        titulo: 'Limpeza Concluída',
+        mensagem: `${removidas} ocorrência(s) normalizada(s) removida(s) da visualização.`,
+        tipo: 'info',
+        duracaoMs: 3500
+      });
+    }
+  }
+
+  function resolverAlerta(id) {
+    const item = listaAlertasState.find(a => a.id === id);
+    if (item) {
+      item.resolvido = true;
+      item.tipo = 'sucesso';
+      item.lida = true;
+      salvarAlertas();
+      atualizarBadgesEIndicadores();
+      renderizarDropdownNotificacoes();
+      renderizarFeedAlertas();
+
+      exibirToast({
+        titulo: 'Ocorrência Normalizada',
+        mensagem: `Alerta "${item.titulo}" resolvido e rota restabelecida.`,
+        tipo: 'sucesso',
+        linha: item.linha,
+        duracaoMs: 4500
+      });
+    }
+  }
+
+  function removerAlerta(id) {
+    listaAlertasState = listaAlertasState.filter(a => a.id !== id);
+    salvarAlertas();
+    atualizarBadgesEIndicadores();
+    renderizarDropdownNotificacoes();
+    renderizarFeedAlertas();
+  }
+
+  function adicionarNovoAlerta({ linha, tipo, titulo, mensagem, dispararToast = true }) {
+    const agora = new Date();
+    const h = String(agora.getHours()).padStart(2, '0');
+    const m = String(agora.getMinutes()).padStart(2, '0');
+
+    const novo = {
+      id: 'alt-' + Date.now(),
+      linha,
+      tipo,
+      titulo,
+      mensagem,
+      origem: 'Operador CCO (Sessão Atual)',
+      horario: `Hoje às ${h}:${m}`,
+      timestamp: Date.now(),
+      lida: false,
+      resolvido: tipo === 'sucesso'
+    };
+
+    listaAlertasState.unshift(novo);
+    salvarAlertas();
+    atualizarBadgesEIndicadores();
+    renderizarDropdownNotificacoes();
+    renderizarFeedAlertas();
+
+    if (dispararToast) {
+      exibirToast({
+        titulo: `[${obterNomeLinha(linha)}] ${titulo}`,
+        mensagem: mensagem,
+        tipo: tipo,
+        linha: linha,
+        duracaoMs: 6000
+      });
+    }
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     8.6. EVENT LISTENERS DO DROPDOWN E MODAIS
+     ────────────────────────────────────────────────────────── */
+  function abrirDropdownNotificacoes() {
+    if (!dropdownNotificacoes || !btnSino) return;
+    fecharDropdownUsuario();
+    renderizarDropdownNotificacoes();
+    dropdownNotificacoes.classList.add('notificacoes-dropdown--aberto');
+    dropdownNotificacoes.setAttribute('aria-hidden', 'false');
+    btnSino.setAttribute('aria-expanded', 'true');
+  }
+
+  function fecharDropdownNotificacoes() {
+    if (!dropdownNotificacoes || !btnSino) return;
+    dropdownNotificacoes.classList.remove('notificacoes-dropdown--aberto');
+    dropdownNotificacoes.setAttribute('aria-hidden', 'true');
+    btnSino.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleDropdownNotificacoes(e) {
+    if (e) e.stopPropagation();
+    const aberto = dropdownNotificacoes && dropdownNotificacoes.classList.contains('notificacoes-dropdown--aberto');
+    aberto ? fecharDropdownNotificacoes() : abrirDropdownNotificacoes();
+  }
+
   if (btnSino) {
-    btnSino.addEventListener('click', () => {
+    btnSino.addEventListener('click', toggleDropdownNotificacoes);
+  }
+
+  if (btnMarcarTodasLidas) {
+    btnMarcarTodasLidas.addEventListener('click', (e) => {
+      e.stopPropagation();
+      marcarTodasComoLidas();
+    });
+  }
+
+  if (btnLimparNotifs) {
+    btnLimparNotifs.addEventListener('click', (e) => {
+      e.stopPropagation();
+      limparNotificacoesConcluidas();
+    });
+  }
+
+  if (btnDropdownIrAlertas) {
+    btnDropdownIrAlertas.addEventListener('click', () => {
+      fecharDropdownNotificacoes();
       navegarParaSecao('alertas');
     });
   }
 
-  // 8.1. Dropdown do Usuário
+  filtrosDropdown.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filtrosDropdown.forEach(b => {
+        b.classList.remove('notif-filtro-btn--ativo');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('notif-filtro-btn--ativo');
+      btn.setAttribute('aria-selected', 'true');
+      filtroAtivoDropdown = btn.getAttribute('data-filtro') || 'todos';
+      renderizarDropdownNotificacoes();
+    });
+  });
+
+  // Filtros e busca no feed principal
+  if (inputBuscaAlertas) {
+    inputBuscaAlertas.addEventListener('input', (e) => {
+      termoBuscaFeed = e.target.value;
+      renderizarFeedAlertas();
+    });
+  }
+
+  chipsFiltroFeed.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chipsFiltroFeed.forEach(c => {
+        c.classList.remove('alerta-filtro-chip--ativo');
+        c.setAttribute('aria-selected', 'false');
+      });
+      chip.classList.add('alerta-filtro-chip--ativo');
+      chip.setAttribute('aria-selected', 'true');
+      filtroAtivoFeed = chip.getAttribute('data-filtro') || 'todos';
+      renderizarFeedAlertas();
+    });
+  });
+
+  // Modal de Novo Alerta
+  if (btnAbrirModalNovoAlerta) {
+    btnAbrirModalNovoAlerta.addEventListener('click', () => {
+      abrirModalDash(modalNovoAlerta);
+    });
+  }
+
+  if (btnFecharModalAlerta) btnFecharModalAlerta.addEventListener('click', () => fecharModalDash(modalNovoAlerta));
+  if (btnCancelarAlerta) btnCancelarAlerta.addEventListener('click', () => fecharModalDash(modalNovoAlerta));
+
+  if (formNovoAlerta) {
+    formNovoAlerta.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const linha = document.getElementById('alerta-input-linha').value;
+      const tipo = document.getElementById('alerta-input-tipo').value;
+      const titulo = document.getElementById('alerta-input-titulo').value.trim();
+      const desc = document.getElementById('alerta-input-desc').value.trim();
+      const dispararToast = document.getElementById('alerta-input-toast').checked;
+
+      if (!titulo || !desc) return;
+
+      adicionarNovoAlerta({
+        linha,
+        tipo,
+        titulo,
+        mensagem: desc,
+        dispararToast
+      });
+
+      formNovoAlerta.reset();
+      fecharModalDash(modalNovoAlerta);
+    });
+  }
+
+  // Inicialização do estado de alertas na carga
+  atualizarBadgesEIndicadores();
+  renderizarDropdownNotificacoes();
+  renderizarFeedAlertas();
+
+
+  /* ──────────────────────────────────────────────────────────
+     8.7. DROPDOWN DO USUÁRIO & MODAIS DE PERFIL E CONFIG
+     ────────────────────────────────────────────────────────── */
   const btnUsuario = document.getElementById('btn-usuario-menu') || document.querySelector('.topbar__usuario');
   const dropdownUsuario = document.getElementById('dropdown-usuario');
   const usuarioWrapper = document.getElementById('topbar-usuario-wrapper') || document.querySelector('.topbar__usuario-wrapper');
 
   function abrirDropdownUsuario() {
     if (!dropdownUsuario || !btnUsuario) return;
+    fecharDropdownNotificacoes();
     dropdownUsuario.classList.add('usuario-dropdown--aberto');
     dropdownUsuario.setAttribute('aria-hidden', 'false');
     btnUsuario.setAttribute('aria-expanded', 'true');
@@ -564,14 +1320,17 @@
     btnUsuario.addEventListener('click', toggleDropdownUsuario);
   }
 
-  // Fecha dropdown se clicar fora
+  // Fecha dropdowns se clicar fora
   document.addEventListener('click', (e) => {
     if (usuarioWrapper && !usuarioWrapper.contains(e.target)) {
       fecharDropdownUsuario();
     }
+    if (notificacoesWrapper && !notificacoesWrapper.contains(e.target)) {
+      fecharDropdownNotificacoes();
+    }
   });
 
-  // 8.2. Modais de Perfil e Configurações
+  // Modais de Perfil e Configurações
   const modalPerfil = document.getElementById('modal-perfil');
   const modalConfig = document.getElementById('modal-configuracoes');
   const btnDropdownPerfil = document.getElementById('dropdown-btn-perfil');
@@ -586,6 +1345,7 @@
   function abrirModalDash(modal) {
     if (!modal) return;
     fecharDropdownUsuario();
+    fecharDropdownNotificacoes();
     modal.classList.add('ativo');
     modal.setAttribute('aria-hidden', 'false');
   }
@@ -620,7 +1380,7 @@
   if (btnFecharConfig) btnFecharConfig.addEventListener('click', () => fecharModalDash(modalConfig));
   if (btnSalvarConfig) btnSalvarConfig.addEventListener('click', () => fecharModalDash(modalConfig));
 
-  [modalPerfil, modalConfig].forEach(m => {
+  [modalPerfil, modalConfig, modalNovoAlerta].forEach(m => {
     if (m) {
       m.addEventListener('click', (e) => {
         if (e.target === m) fecharModalDash(m);
@@ -949,8 +1709,10 @@
       fecharSidebar();
       fecharPainel();
       fecharDropdownUsuario();
+      fecharDropdownNotificacoes();
       fecharModalDash(modalPerfil);
       fecharModalDash(modalConfig);
+      fecharModalDash(modalNovoAlerta);
     }
   });
 

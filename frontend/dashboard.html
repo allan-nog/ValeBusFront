@@ -144,6 +144,45 @@
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
     </symbol>
 
+    <!-- Check / Concluído -->
+    <symbol id="icone-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+
+    <!-- Check Duplo -->
+    <symbol id="icone-check-duplo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L7 17l-5-5"/>
+      <path d="M22 10l-7.5 7.5L13 16"/>
+    </symbol>
+
+    <!-- Alerta Triângulo -->
+    <symbol id="icone-alerta-triangulo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+
+    <!-- Alerta Círculo (Crítico) -->
+    <symbol id="icone-alerta-circulo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </symbol>
+
+    <!-- Plus / Adicionar -->
+    <symbol id="icone-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </symbol>
+
+    <!-- Lixeira / Limpar -->
+    <symbol id="icone-lixeira" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      <line x1="10" y1="11" x2="10" y2="17"/>
+      <line x1="14" y1="11" x2="14" y2="17"/>
+    </symbol>
+
   </svg>
 
   <!-- Overlay de fundo para gavetas mobile -->
@@ -239,10 +278,61 @@
 
         <time class="topbar__hora" id="topbar-hora" aria-label="Hora atual">14:32</time>
 
-        <button class="topbar__sino" id="btn-sino-notificacoes" aria-label="Ver 2 notificações não lidas">
-          <svg aria-hidden="true"><use href="#icone-sino"/></svg>
-          <span class="topbar__badge-sino" aria-hidden="true">2</span>
-        </button>
+        <div class="topbar__notificacoes-wrapper" id="topbar-notificacoes-wrapper">
+          <button class="topbar__sino" id="btn-sino-notificacoes" type="button" aria-label="Ver notificações" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-notificacoes">
+            <svg aria-hidden="true"><use href="#icone-sino"/></svg>
+            <span class="topbar__badge-sino" id="topbar-badge-sino" aria-hidden="true">2</span>
+          </button>
+
+          <!-- Dropdown Central de Notificações -->
+          <div class="notificacoes-dropdown" id="dropdown-notificacoes" role="region" aria-label="Painel de Notificações e Alertas Operacionais" aria-hidden="true">
+            <!-- Cabeçalho do Dropdown -->
+            <div class="notificacoes-dropdown__header">
+              <div class="notificacoes-dropdown__header-info">
+                <div class="notificacoes-dropdown__titulo-wrap">
+                  <span class="notificacoes-dropdown__titulo">Notificações &amp; Alertas</span>
+                  <span class="notificacoes-dropdown__badge-naolidas" id="dropdown-badge-naolidas">2 novas</span>
+                </div>
+                <span class="notificacoes-dropdown__subtitulo">Telemetria CCO em tempo real</span>
+              </div>
+              <div class="notificacoes-dropdown__header-acoes">
+                <button type="button" class="btn-acao-notif" id="btn-marcar-todas-lidas" title="Marcar todas como lidas">
+                  <svg width="14" height="14" aria-hidden="true"><use href="#icone-check-duplo"/></svg>
+                  <span>Lidas</span>
+                </button>
+                <button type="button" class="btn-acao-notif btn-acao-notif--limpar" id="btn-limpar-notificacoes" title="Limpar alertas concluídos">
+                  <svg width="13" height="13" aria-hidden="true"><use href="#icone-lixeira"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtros Rápidos das Notificações -->
+            <div class="notificacoes-dropdown__filtros" role="tablist">
+              <button type="button" class="notif-filtro-btn notif-filtro-btn--ativo" data-filtro="todos" role="tab" aria-selected="true">
+                Todos (<span id="notif-count-todos">3</span>)
+              </button>
+              <button type="button" class="notif-filtro-btn" data-filtro="nao_lidos" role="tab" aria-selected="false">
+                Não lidos (<span id="notif-count-naolidos">2</span>)
+              </button>
+              <button type="button" class="notif-filtro-btn" data-filtro="atencao" role="tab" aria-selected="false">
+                Trânsito &amp; Atraso
+              </button>
+            </div>
+
+            <!-- Lista de Notificações / Alertas -->
+            <div class="notificacoes-dropdown__lista" id="dropdown-notificacoes-lista" role="list">
+              <!-- Conteúdo gerado dinamicamente via JS -->
+            </div>
+
+            <!-- Rodapé com Ação Global -->
+            <div class="notificacoes-dropdown__footer">
+              <button type="button" class="btn-notif-ver-todos" id="btn-dropdown-ir-alertas">
+                <span>Abrir Central Completa de Alertas</span>
+                <svg width="14" height="14" aria-hidden="true"><use href="#icone-chevron"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <div class="topbar__divisor" aria-hidden="true"></div>
 
@@ -328,7 +418,7 @@
         </div>
         <div class="main__header-status" id="main-header-status" aria-label="Status da frota">
           <span class="live-dot" aria-hidden="true"></span>
-          <span class="live-label">GPS Ativo &bull; 8 Veículos</span>
+          <span class="live-label">GPS Ativo &bull; 7 Veículos</span>
         </div>
       </div>
 
@@ -338,6 +428,27 @@
         <div class="mapa-container" role="region" aria-label="Mapa interativo de monitoramento de ônibus">
 
           <div id="mapa"></div>
+
+          <!-- Estado quando nenhum ônibus estiver visível (Filtro sem veículo ativo) -->
+          <div class="mapa-alerta-vazio" id="mapa-alerta-vazio" style="display: none;" role="status" aria-live="polite">
+            <div class="mapa-alerta-vazio__card">
+              <div class="mapa-alerta-vazio__icone-wrap" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
+                  <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+                  <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+                </svg>
+              </div>
+              <div class="mapa-alerta-vazio__conteudo">
+                <h4 class="mapa-alerta-vazio__titulo" id="mapa-alerta-vazio-titulo">Nenhum ônibus desta linha está disponível no momento.</h4>
+                <p class="mapa-alerta-vazio__desc" id="mapa-alerta-vazio-desc">Não há veículos com telemetria GPS ativa operando nesta rota neste instante.</p>
+              </div>
+              <button type="button" class="mapa-alerta-vazio__btn-reset" id="btn-reset-filtro-mapa" aria-label="Ver todas as linhas da frota">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Ver todas as linhas</span>
+              </button>
+            </div>
+          </div>
 
           <!-- Legenda com Filtro Interativo por Linha em Carrossel -->
           <div class="mapa-legenda">
@@ -801,35 +912,84 @@
 
       <!-- VIEW 4: ALERTAS OPERACIONAIS -->
       <div class="secao-view" id="view-alertas" style="display: none;">
-        <div class="view-bloco-conteudo">
-          <div class="alertas-feed">
-            <article class="alerta-item alerta-item--atencao">
-              <div class="alerta-item__icone">⚠️</div>
-              <div class="alerta-item__info">
-                <h4>Trânsito Moderado — Próximo ao Ginásio Poliesportivo</h4>
-                <p>Linha Fernandes e São Benedito com acréscimo estimado de 3 a 5 minutos devido a fluxo escolar e universitário na região central.</p>
-                <span class="alerta-item__tempo">Publicado há 12 minutos • CCO Operacional</span>
-              </div>
-            </article>
+        <div class="view-bloco-conteudo alertas-view-container">
 
-            <article class="alerta-item alerta-item--sucesso">
-              <div class="alerta-item__icone">✅</div>
-              <div class="alerta-item__info">
-                <h4>Operação 100% Normal na Rodovia BR-459</h4>
-                <p>Linha Industrial e Linha Porto Sapucaí transitando sem retenções nos acessos à Linear e trevo de Cachoeira de Minas.</p>
-                <span class="alerta-item__tempo">Publicado há 35 minutos • CCO Operacional</span>
+          <!-- Painel Superior de Indicadores de Alertas -->
+          <div class="alertas-kpi-grid">
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--ativo">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icone-alerta-triangulo"/></svg>
               </div>
-            </article>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Alertas Ativos</span>
+                <span class="alerta-kpi-card__valor" id="kpi-alertas-ativos">2</span>
+              </div>
+            </div>
 
-            <article class="alerta-item alerta-item--info">
-              <div class="alerta-item__icone">📢</div>
-              <div class="alerta-item__info">
-                <h4>Linha Anchieta — Rota Especial Sentido Recanto / Inatel</h4>
-                <p>Embarque e desembarque operando pontualmente na Praça Urbana Carolina e Rua José Ribeiro de Barros.</p>
-                <span class="alerta-item__tempo">Hoje às 07:00 • Telemetria ValeBus</span>
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--atraso">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icone-relogio"/></svg>
               </div>
-            </article>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Linhas c/ Atraso</span>
+                <span class="alerta-kpi-card__valor" id="kpi-linhas-atrasadas">1</span>
+              </div>
+            </div>
+
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--resolvido">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icone-check"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Rotas Normalizadas</span>
+                <span class="alerta-kpi-card__valor" id="kpi-alertas-resolvidos">5</span>
+              </div>
+            </div>
+
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--indice">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icone-onibus"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Índice Regularidade</span>
+                <span class="alerta-kpi-card__valor">98.5%</span>
+              </div>
+            </div>
           </div>
+
+          <!-- Barra de Ações e Filtros de Alertas -->
+          <div class="alertas-controles-bar">
+            <div class="alertas-busca-wrap">
+              <svg class="alertas-busca-icone" aria-hidden="true"><use href="#icone-buscar"/></svg>
+              <input type="text" id="input-busca-alertas" class="alertas-busca-input" placeholder="Filtrar alertas por linha, local ou descrição...">
+            </div>
+
+            <div class="alertas-filtros-chips" role="tablist">
+              <button type="button" class="alerta-filtro-chip alerta-filtro-chip--ativo" data-filtro="todos" role="tab" aria-selected="true">
+                Todos (<span id="feed-count-todos">3</span>)
+              </button>
+              <button type="button" class="alerta-filtro-chip" data-filtro="atencao" role="tab" aria-selected="false">
+                ⚠️ Trânsito &amp; Atraso
+              </button>
+              <button type="button" class="alerta-filtro-chip" data-filtro="info" role="tab" aria-selected="false">
+                📢 Avisos &amp; Rotas
+              </button>
+              <button type="button" class="alerta-filtro-chip" data-filtro="sucesso" role="tab" aria-selected="false">
+                ✅ Normalizados
+              </button>
+            </div>
+
+            <button type="button" class="btn-novo-alerta" id="btn-abrir-modal-novo-alerta">
+              <svg width="15" height="15" aria-hidden="true"><use href="#icone-plus"/></svg>
+              <span>Novo Comunicado CCO</span>
+            </button>
+          </div>
+
+          <!-- Feed Central de Alertas -->
+          <div class="alertas-feed-principal" id="feed-alertas-container" role="list">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+
         </div>
       </div><!-- /view-alertas -->
 
@@ -906,6 +1066,15 @@
       <!-- Próximos ônibus -->
       <section aria-labelledby="titulo-proximos">
         <h2 class="painel__secao-titulo" id="titulo-proximos">Próximos ônibus por Parada</h2>
+
+        <!-- Aviso no Painel quando filtrada linha sem ônibus ativo -->
+        <div class="painel-alerta-vazio" id="painel-alerta-vazio" style="display: none;" role="status">
+          <div class="painel-alerta-vazio__icone" aria-hidden="true">⚠️</div>
+          <div class="painel-alerta-vazio__texto">
+            <strong id="painel-alerta-vazio-titulo">Nenhum ônibus desta linha está disponível no momento.</strong>
+            <span>Veículos fora do horário de pico ou sem sinal GPS ativo.</span>
+          </div>
+        </div>
 
         <div class="proximos-lista" id="proximos-lista">
 
@@ -984,8 +1153,8 @@
             </div>
           </article>
 
-          <!-- Reforço José G.M (via MCM) -->
-          <article class="proximo-card proximo-card--extra" data-linha="reforco_jose_gm" role="button" tabindex="0" aria-label="Linha Reforço José G.M. Clique para ver no mapa.">
+          <!-- Reforço José G.M (via MCM) - Sem ônibus no momento -->
+          <article class="proximo-card proximo-card--extra proximo-card--indisponivel" data-linha="reforco_jose_gm" role="button" tabindex="0" aria-label="Linha Reforço José G.M. Sem ônibus no momento. Clique para filtrar.">
             <div class="proximo-card__linha-badge" style="background-color: #dc2626;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -994,8 +1163,8 @@
               <span class="proximo-card__parada">Rua Das Rosas | Ginásio</span>
             </div>
             <div class="proximo-card__lado-direito">
-              <span class="proximo-card__tempo">10 min</span>
-              <span class="status-badge status-badge--horario">No horário</span>
+              <span class="proximo-card__tempo proximo-card__tempo--indisponivel">—</span>
+              <span class="status-badge status-badge--indisponivel">Indisponível</span>
             </div>
           </article>
 
@@ -1054,7 +1223,7 @@
             <div class="resumo-item__info">
               <span class="resumo-item__label">Ônibus em circulação</span>
               <div class="resumo-item__dados">
-                <span class="resumo-item__valor" id="total-onibus-ativo"><strong class="num-destaque">8</strong><span class="num-barra">/</span><span class="num-total">8</span></span>
+                <span class="resumo-item__valor" id="total-onibus-ativo"><strong class="num-destaque">7</strong><span class="num-barra">/</span><span class="num-total">7</span></span>
                 <span class="resumo-item__tag resumo-item__tag--online">100% online</span>
               </div>
             </div>
@@ -1237,6 +1406,97 @@
       </div>
     </div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: NOVO COMUNICADO / ALERTA OPERACIONAL CCO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-novo-alerta" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-novo-alerta-titulo">
+    <div class="modal-card modal-card--form">
+      <div class="modal-card__header">
+        <div class="modal-card__header-info">
+          <div class="modal-card__icone-topo modal-card__icone-topo--alerta" aria-hidden="true">
+            <svg><use href="#icone-alerta-triangulo"/></svg>
+          </div>
+          <div>
+            <h3 class="modal-card__titulo" id="modal-novo-alerta-titulo">Emitir Alerta Operacional CCO</h3>
+            <p class="modal-card__subtitulo">Transmitir aviso em tempo real para os operadores e usuários</p>
+          </div>
+        </div>
+        <button type="button" class="modal-card__fechar" id="btn-fechar-modal-alerta" aria-label="Fechar formulário de alerta">
+          <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
+        </button>
+      </div>
+
+      <form id="form-novo-alerta" class="modal-form-conteudo">
+        <div class="modal-card__corpo">
+          <div class="form-alerta-grid">
+            
+            <!-- Linha Afetada -->
+            <div class="form-grupo">
+              <label for="alerta-input-linha" class="form-label">Linha / Veículo Afetado *</label>
+              <select id="alerta-input-linha" class="form-select" required>
+                <option value="todas">Todas as Linhas da Frota (Geral)</option>
+                <option value="anchieta">Linha Anchieta (Praça Urbana / Inatel)</option>
+                <option value="fernandes">Linha Fernandes (Copasa / Ginásio)</option>
+                <option value="fortaleza">Linha Fortaleza (Copasa / Bairro)</option>
+                <option value="industrial">Linha Industrial (BR-459 / Distrito)</option>
+                <option value="porto_sapucai">Linha Porto Sapucaí (BR-459 Km 116)</option>
+                <option value="reforco_jose_gm">Linha Reforço José G.M (via MCM)</option>
+                <option value="sao_benedito_hora_meia">Linha São Benedito (Hora e Meia)</option>
+                <option value="sao_benedito_hora">Linha São Benedito (Hora)</option>
+              </select>
+            </div>
+
+            <!-- Tipo / Criticidade -->
+            <div class="form-grupo">
+              <label for="alerta-input-tipo" class="form-label">Tipo de Ocorrência *</label>
+              <select id="alerta-input-tipo" class="form-select" required>
+                <option value="atencao">⚠️ Trânsito / Lentidão (+3 a 5 min)</option>
+                <option value="critico">🚨 Atraso Severo / Desvio de Rota (+8 min)</option>
+                <option value="info">📢 Aviso Operacional / Embarque</option>
+                <option value="sucesso">✅ Rota Normalizada / Pontual</option>
+              </select>
+            </div>
+
+            <!-- Título do Comunicado -->
+            <div class="form-grupo form-grupo--full">
+              <label for="alerta-input-titulo" class="form-label">Título da Ocorrência *</label>
+              <input type="text" id="alerta-input-titulo" class="form-input" placeholder="Ex: Trânsito intenso próximo ao Inatel / Rua José Ribeiro" required maxlength="80">
+            </div>
+
+            <!-- Descrição Detalhada -->
+            <div class="form-grupo form-grupo--full">
+              <label for="alerta-input-desc" class="form-label">Descrição e Ações do CCO *</label>
+              <textarea id="alerta-input-desc" class="form-textarea" rows="3" placeholder="Detalhes operacionais para orientação dos motoristas e passageiros..." required maxlength="240"></textarea>
+            </div>
+
+            <!-- Notificar com Toast na Tela -->
+            <div class="form-grupo form-grupo--full form-grupo--checkbox">
+              <label class="checkbox-container">
+                <input type="checkbox" id="alerta-input-toast" checked>
+                <span class="checkbox-custom"></span>
+                <span class="checkbox-label">Transmitir Toast Notification em tempo real na tela</span>
+              </label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-card__rodape">
+          <button type="button" class="btn-modal btn-modal--secundario" id="btn-cancelar-alerta">Cancelar</button>
+          <button type="submit" class="btn-modal btn-modal--primario" id="btn-publicar-alerta">
+            <svg width="15" height="15" aria-hidden="true"><use href="#icone-sino"/></svg>
+            <span>Publicar Comunicado CCO</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTAINER GLOBAL DE TOAST NOTIFICATIONS (POPUP)
+       ═══════════════════════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Bibliotecas de Terceiros e Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
