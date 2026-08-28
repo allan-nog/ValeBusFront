@@ -27,27 +27,64 @@
 
   function carregarUsuarioLogado() {
     try {
+      let nome = 'João da Silva';
+      let email = 'avaliador@feiratech.com.br';
+      let cargo = 'Avaliador Feira';
+      let metodo = 'Google Workspace / Feira Tech';
+
       const salvo = localStorage.getItem('valebus_usuario');
-      if (!salvo) return;
-      const usuario = JSON.parse(salvo);
-      if (!usuario || !usuario.nome) return;
-
-      const elNome   = document.querySelector('.topbar__usuario-nome');
-      const elCargo  = document.querySelector('.topbar__usuario-cargo');
-      const elAvatar = document.querySelector('.topbar__avatar');
-
-      if (elNome) elNome.textContent = usuario.nome;
-      if (elCargo) {
-        elCargo.textContent = usuario.email || 'Usuário Autenticado';
-      }
-      if (elAvatar) {
-        const partes = usuario.nome.trim().split(' ');
-        let iniciais = partes[0].charAt(0).toUpperCase();
-        if (partes.length > 1) {
-          iniciais += partes[partes.length - 1].charAt(0).toUpperCase();
+      if (salvo) {
+        const usuario = JSON.parse(salvo);
+        if (usuario && usuario.nome) {
+          nome = usuario.nome;
+          email = usuario.email || `${usuario.nome.toLowerCase().replace(/\s+/g, '.')}@feiratech.com.br`;
+          cargo = usuario.metodo === 'Google' ? 'Avaliador Feira Tech' : (usuario.cargo || 'Operador CCO');
+          if (usuario.metodo) metodo = usuario.metodo;
         }
-        elAvatar.textContent = iniciais;
       }
+
+      // Iniciais do Avatar
+      const partes = nome.trim().split(/\s+/).filter(Boolean);
+      let iniciais = 'US';
+      if (partes.length === 1) {
+        iniciais = partes[0].substring(0, 2).toUpperCase();
+      } else if (partes.length > 1) {
+        iniciais = (partes[0].charAt(0) + partes[partes.length - 1].charAt(0)).toUpperCase();
+      }
+
+      // 1. Atualiza elementos do TopBar
+      const elNome   = document.getElementById('topbar-usuario-nome') || document.querySelector('.topbar__usuario-nome');
+      const elCargo  = document.getElementById('topbar-usuario-cargo') || document.querySelector('.topbar__usuario-cargo');
+      const elAvatar = document.getElementById('topbar-usuario-avatar') || document.querySelector('.topbar__avatar');
+
+      if (elNome) elNome.textContent = nome;
+      if (elCargo) elCargo.textContent = cargo;
+      if (elAvatar) elAvatar.textContent = iniciais;
+
+      // 2. Atualiza elementos do Dropdown
+      const elDropNome   = document.getElementById('dropdown-usuario-nome');
+      const elDropEmail  = document.getElementById('dropdown-usuario-email');
+      const elDropCargo  = document.getElementById('dropdown-usuario-cargo');
+      const elDropAvatar = document.getElementById('dropdown-usuario-avatar');
+
+      if (elDropNome) elDropNome.textContent = nome;
+      if (elDropEmail) elDropEmail.textContent = email;
+      if (elDropCargo) elDropCargo.textContent = cargo;
+      if (elDropAvatar) elDropAvatar.textContent = iniciais;
+
+      // 3. Atualiza elementos do Modal de Perfil
+      const elModNome   = document.getElementById('modal-perfil-nome');
+      const elModEmail  = document.getElementById('modal-perfil-email');
+      const elModCargo  = document.getElementById('modal-perfil-cargo');
+      const elModAvatar = document.getElementById('modal-perfil-avatar');
+      const elModMetodo = document.getElementById('modal-perfil-metodo');
+
+      if (elModNome) elModNome.textContent = nome;
+      if (elModEmail) elModEmail.textContent = email;
+      if (elModCargo) elModCargo.textContent = cargo;
+      if (elModAvatar) elModAvatar.textContent = iniciais;
+      if (elModMetodo) elModMetodo.textContent = metodo;
+
     } catch (e) {
       console.warn('Erro ao carregar usuário autenticado:', e);
     }
@@ -297,6 +334,9 @@
   const botoesFiltro = document.querySelectorAll('#filtros-legenda .mapa-legenda__item');
   const mapaLegenda = document.querySelector('.mapa-legenda');
   const mapaLegendaHeader = document.querySelector('.mapa-legenda__header');
+  const btnLegendaPrev = document.getElementById('btn-legenda-prev');
+  const btnLegendaNext = document.getElementById('btn-legenda-next');
+  const containerFiltrosLegenda = document.getElementById('filtros-legenda');
 
   // Permite recolher/expandir o filtro da legenda no mobile ao clicar no cabeçalho
   if (mapaLegendaHeader && mapaLegenda) {
@@ -307,16 +347,47 @@
     });
   }
 
+  // Suporte a rolagem horizontal via roda do mouse no carrossel
+  if (containerFiltrosLegenda) {
+    containerFiltrosLegenda.addEventListener('wheel', (e) => {
+      if (e.deltaY !== 0 && !e.deltaX) {
+        e.preventDefault();
+        containerFiltrosLegenda.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+  }
+
+  // Ações das setas de navegação (Anterior / Próxima Linha)
+  if (btnLegendaPrev) {
+    btnLegendaPrev.addEventListener('click', () => {
+      const botoesArr = Array.from(botoesFiltro);
+      const indexAtual = botoesArr.findIndex(b => b.classList.contains('mapa-legenda__item--ativo'));
+      const prevIndex = indexAtual > 0 ? indexAtual - 1 : botoesArr.length - 1;
+      botoesArr[prevIndex].click();
+    });
+  }
+
+  if (btnLegendaNext) {
+    btnLegendaNext.addEventListener('click', () => {
+      const botoesArr = Array.from(botoesFiltro);
+      const indexAtual = botoesArr.findIndex(b => b.classList.contains('mapa-legenda__item--ativo'));
+      const nextIndex = indexAtual < botoesArr.length - 1 ? indexAtual + 1 : 0;
+      botoesArr[nextIndex].click();
+    });
+  }
+
   botoesFiltro.forEach(botao => {
     botao.addEventListener('click', (e) => {
       e.stopPropagation();
-      botoesFiltro.forEach(b => b.classList.remove('mapa-legenda__item--ativo'));
+      botoesFiltro.forEach(b => {
+        b.classList.remove('mapa-legenda__item--ativo');
+        b.setAttribute('aria-selected', 'false');
+      });
       botao.classList.add('mapa-legenda__item--ativo');
+      botao.setAttribute('aria-selected', 'true');
 
-      // Rola suavemente o chip ativo para o centro no mobile
-      if (window.innerWidth < 768) {
-        botao.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
+      // Centraliza o chip ativo com animação fluida no carrossel em qualquer resolução
+      botao.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
       const linhaSelecionada = botao.getAttribute('data-linha');
       let totalVisivel = 0;
@@ -332,14 +403,23 @@
 
       // Atualiza o contador no resumo do painel
       const elTotal = document.getElementById('total-onibus-ativo');
-      if (elTotal) elTotal.textContent = `${totalVisivel} / ${FROTA.length}`;
+      if (elTotal) {
+        const spanNumDestaque = elTotal.querySelector('.num-destaque');
+        const spanNumTotal = elTotal.querySelector('.num-total');
+        if (spanNumDestaque && spanNumTotal) {
+          spanNumDestaque.textContent = totalVisivel;
+          spanNumTotal.textContent = FROTA.length;
+        } else {
+          elTotal.textContent = `${totalVisivel} / ${FROTA.length}`;
+        }
+      }
 
       // FOCO DINÂMICO NO MAPA NA LINHA SELECIONADA
       if (linhaSelecionada === 'todas') {
         map.closePopup();
         map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.0 });
       } else {
-        focarOnibusPorLinha(linhaSelecionada);
+        focarOnibusPorLinha(linhaSelecionada, false);
       }
     });
   });
@@ -350,11 +430,25 @@
      ────────────────────────────────────────────────────────── */
   const cardsProximos = document.querySelectorAll('.proximo-card');
 
-  function focarOnibusPorLinha(chaveLinha) {
+  function focarOnibusPorLinha(chaveLinha, atualizarCarrossel = true) {
     const itemBus = marcadoresMap.get(chaveLinha);
     if (itemBus) {
       const { marker, bus } = itemBus;
       const latLng = marker.getLatLng();
+
+      // Sincroniza o botão correspondente no carrossel da legenda
+      if (atualizarCarrossel) {
+        const btnLegenda = document.querySelector(`#filtros-legenda [data-linha="${chaveLinha}"]`);
+        if (btnLegenda) {
+          botoesFiltro.forEach(b => {
+            b.classList.remove('mapa-legenda__item--ativo');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btnLegenda.classList.add('mapa-legenda__item--ativo');
+          btnLegenda.setAttribute('aria-selected', 'true');
+          btnLegenda.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }
 
       // Garantir que a camada do marcador está visível se houver filtro
       if (!map.hasLayer(marker)) {
@@ -391,26 +485,42 @@
     });
   });
 
-  // Botão "Ver todas as 8 linhas da frota"
+  // Botão "Ver todas as 8 linhas da frota" (Expandir / Recolher lista de próximos ônibus)
   const btnVerTodos = document.getElementById('btn-ver-todos');
+  const proximosLista = document.getElementById('proximos-lista');
+  const btnVerTodosTexto = btnVerTodos ? btnVerTodos.querySelector('.btn-ver-todos__texto') : null;
+  const btnVerTodosBadge = btnVerTodos ? btnVerTodos.querySelector('.btn-ver-todos__badge') : null;
+
   if (btnVerTodos) {
     btnVerTodos.addEventListener('click', () => {
-      // Reseta o filtro para 'todas'
-      const btnTodas = document.querySelector('#filtros-legenda [data-linha="todas"]');
-      if (btnTodas) btnTodas.click();
+      const estaExpandido = btnVerTodos.getAttribute('aria-expanded') === 'true';
+      const novoEstado = !estaExpandido;
 
-      // Redefine a visão inicial do mapa
-      map.flyTo([-22.2528, -45.7036], 14, { animate: true, duration: 1.2 });
+      btnVerTodos.setAttribute('aria-expanded', String(novoEstado));
 
-      if (window.innerWidth < 1100) {
-        fecharPainel();
+      if (proximosLista) {
+        proximosLista.classList.toggle('proximos-lista--expandida', novoEstado);
+      }
+
+      if (novoEstado) {
+        if (btnVerTodosTexto) btnVerTodosTexto.textContent = 'Recolher linhas da frota';
+        if (btnVerTodosBadge) btnVerTodosBadge.style.display = 'none';
+
+        // Reseta o filtro do mapa para 'todas' e re-enquadra a visão completa
+        const btnTodas = document.querySelector('#filtros-legenda [data-linha="todas"]');
+        if (btnTodas && !btnTodas.classList.contains('mapa-legenda__item--ativo')) {
+          btnTodas.click();
+        }
+      } else {
+        if (btnVerTodosTexto) btnVerTodosTexto.textContent = 'Ver todas as 8 linhas da frota';
+        if (btnVerTodosBadge) btnVerTodosBadge.style.display = 'inline-flex';
       }
     });
   }
 
 
   /* ──────────────────────────────────────────────────────────
-     8. DEMAIS INTERAÇÕES DA INTERFACE (Sino, Usuário e Navegação)
+     8. MENU DO USUÁRIO (DROPDOWN), MODAIS & DEMAIS INTERAÇÕES
      ────────────────────────────────────────────────────────── */
   const btnSino = document.getElementById('btn-sino-notificacoes');
   if (btnSino) {
@@ -419,10 +529,119 @@
     });
   }
 
-  const btnUsuario = document.querySelector('.topbar__usuario');
+  // 8.1. Dropdown do Usuário
+  const btnUsuario = document.getElementById('btn-usuario-menu') || document.querySelector('.topbar__usuario');
+  const dropdownUsuario = document.getElementById('dropdown-usuario');
+  const usuarioWrapper = document.getElementById('topbar-usuario-wrapper') || document.querySelector('.topbar__usuario-wrapper');
+
+  function abrirDropdownUsuario() {
+    if (!dropdownUsuario || !btnUsuario) return;
+    dropdownUsuario.classList.add('usuario-dropdown--aberto');
+    dropdownUsuario.setAttribute('aria-hidden', 'false');
+    btnUsuario.setAttribute('aria-expanded', 'true');
+  }
+
+  function fecharDropdownUsuario() {
+    if (!dropdownUsuario || !btnUsuario) return;
+    dropdownUsuario.classList.remove('usuario-dropdown--aberto');
+    dropdownUsuario.setAttribute('aria-hidden', 'true');
+    btnUsuario.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleDropdownUsuario(e) {
+    if (e) {
+      e.stopPropagation();
+    }
+    const aberto = dropdownUsuario && dropdownUsuario.classList.contains('usuario-dropdown--aberto');
+    if (aberto) {
+      fecharDropdownUsuario();
+    } else {
+      abrirDropdownUsuario();
+    }
+  }
+
   if (btnUsuario) {
-    btnUsuario.addEventListener('click', () => {
-      alert('👤 Perfil do Usuário: João da Silva\nFunção: Avaliador Feira Tech (CCO ValeBus)\nSessão ativa em Santa Rita do Sapucaí.');
+    btnUsuario.addEventListener('click', toggleDropdownUsuario);
+  }
+
+  // Fecha dropdown se clicar fora
+  document.addEventListener('click', (e) => {
+    if (usuarioWrapper && !usuarioWrapper.contains(e.target)) {
+      fecharDropdownUsuario();
+    }
+  });
+
+  // 8.2. Modais de Perfil e Configurações
+  const modalPerfil = document.getElementById('modal-perfil');
+  const modalConfig = document.getElementById('modal-configuracoes');
+  const btnDropdownPerfil = document.getElementById('dropdown-btn-perfil');
+  const btnDropdownConfig = document.getElementById('dropdown-btn-config');
+  const btnFecharPerfil = document.getElementById('btn-fechar-modal-perfil');
+  const btnFecharPerfilAcao = document.getElementById('btn-fechar-perfil-acao');
+  const btnFecharConfig = document.getElementById('btn-fechar-modal-config');
+  const btnSalvarConfig = document.getElementById('btn-salvar-config');
+  const switchTema = document.getElementById('cfg-switch-tema');
+  const switchAnim = document.getElementById('cfg-switch-anim');
+
+  function abrirModalDash(modal) {
+    if (!modal) return;
+    fecharDropdownUsuario();
+    modal.classList.add('ativo');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function fecharModalDash(modal) {
+    if (!modal) return;
+    modal.classList.remove('ativo');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  if (btnDropdownPerfil) {
+    btnDropdownPerfil.addEventListener('click', (e) => {
+      e.preventDefault();
+      abrirModalDash(modalPerfil);
+    });
+  }
+
+  if (btnDropdownConfig) {
+    btnDropdownConfig.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (switchTema) {
+        switchTema.classList.toggle('config-switch--ativo', isDark);
+        switchTema.setAttribute('aria-checked', String(isDark));
+      }
+      abrirModalDash(modalConfig);
+    });
+  }
+
+  if (btnFecharPerfil) btnFecharPerfil.addEventListener('click', () => fecharModalDash(modalPerfil));
+  if (btnFecharPerfilAcao) btnFecharPerfilAcao.addEventListener('click', () => fecharModalDash(modalPerfil));
+  if (btnFecharConfig) btnFecharConfig.addEventListener('click', () => fecharModalDash(modalConfig));
+  if (btnSalvarConfig) btnSalvarConfig.addEventListener('click', () => fecharModalDash(modalConfig));
+
+  [modalPerfil, modalConfig].forEach(m => {
+    if (m) {
+      m.addEventListener('click', (e) => {
+        if (e.target === m) fecharModalDash(m);
+      });
+    }
+  });
+
+  if (switchTema) {
+    switchTema.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const novoTema = isDark ? 'claro' : 'escuro';
+      definirTema(novoTema, true);
+      switchTema.classList.toggle('config-switch--ativo', !isDark);
+      switchTema.setAttribute('aria-checked', String(!isDark));
+    });
+  }
+
+  if (switchAnim) {
+    switchAnim.addEventListener('click', () => {
+      const ativo = switchAnim.classList.toggle('config-switch--ativo');
+      switchAnim.setAttribute('aria-checked', String(ativo));
     });
   }
 
@@ -729,6 +948,9 @@
     if (e.key === 'Escape') {
       fecharSidebar();
       fecharPainel();
+      fecharDropdownUsuario();
+      fecharModalDash(modalPerfil);
+      fecharModalDash(modalConfig);
     }
   });
 

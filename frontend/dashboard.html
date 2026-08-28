@@ -102,6 +102,12 @@
       <line x1="6" y1="6" x2="18" y2="18"/>
     </symbol>
 
+    <!-- Usuário / Perfil -->
+    <symbol id="icone-usuario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </symbol>
+
     <!-- Chevron baixo -->
     <symbol id="icone-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="6 9 12 15 18 9"/>
@@ -238,14 +244,73 @@
           <span class="topbar__badge-sino" aria-hidden="true">2</span>
         </button>
 
-        <button class="topbar__usuario" aria-label="Menu do usuário">
-          <div class="topbar__avatar" aria-hidden="true">JD</div>
-          <div class="topbar__usuario-info">
-            <span class="topbar__usuario-nome">João da Silva</span>
-            <span class="topbar__usuario-cargo">Avaliador Feira</span>
+        <div class="topbar__divisor" aria-hidden="true"></div>
+
+        <div class="topbar__usuario-wrapper" id="topbar-usuario-wrapper">
+          <button class="topbar__usuario" id="btn-usuario-menu" type="button" aria-label="Menu do usuário" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-usuario">
+            <div class="topbar__avatar" id="topbar-usuario-avatar" aria-hidden="true">JD</div>
+            <div class="topbar__usuario-info">
+              <span class="topbar__usuario-nome" id="topbar-usuario-nome">João da Silva</span>
+              <span class="topbar__usuario-cargo" id="topbar-usuario-cargo">Avaliador Feira</span>
+            </div>
+            <svg class="topbar__chevron" aria-hidden="true"><use href="#icone-chevron"/></svg>
+          </button>
+
+          <!-- Dropdown Customizado do Usuário -->
+          <div class="usuario-dropdown" id="dropdown-usuario" role="menu" aria-label="Menu de opções do usuário" aria-hidden="true">
+            <!-- Cabeçalho do Dropdown com Informações Completas do Usuário -->
+            <div class="usuario-dropdown__header">
+              <div class="usuario-dropdown__avatar-wrap">
+                <div class="usuario-dropdown__avatar" id="dropdown-usuario-avatar" aria-hidden="true">JD</div>
+                <span class="usuario-dropdown__status-ponto" title="Sessão Ativa" aria-hidden="true"></span>
+              </div>
+              <div class="usuario-dropdown__dados">
+                <span class="usuario-dropdown__nome" id="dropdown-usuario-nome">João da Silva</span>
+                <span class="usuario-dropdown__email" id="dropdown-usuario-email">avaliador@feiratech.com.br</span>
+                <div class="usuario-dropdown__badge-cargo" id="dropdown-usuario-cargo">Avaliador Feira</div>
+              </div>
+            </div>
+
+            <div class="usuario-dropdown__divisor" role="separator" aria-hidden="true"></div>
+
+            <!-- Links e Ações do Dropdown -->
+            <div class="usuario-dropdown__itens">
+              <button type="button" class="usuario-dropdown__item" id="dropdown-btn-perfil" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-usuario"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Perfil</span>
+                  <span class="usuario-dropdown__item-desc">Dados da conta e operador</span>
+                </div>
+              </button>
+
+              <button type="button" class="usuario-dropdown__item" id="dropdown-btn-config" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-config"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Configurações</span>
+                  <span class="usuario-dropdown__item-desc">Preferências e telemetria</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="usuario-dropdown__divisor" role="separator" aria-hidden="true"></div>
+
+            <div class="usuario-dropdown__footer">
+              <a href="login.html" class="usuario-dropdown__item usuario-dropdown__item--sair" id="dropdown-btn-sair" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-sair"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Sair</span>
+                  <span class="usuario-dropdown__item-desc">Encerrar sessão no sistema</span>
+                </div>
+              </a>
+            </div>
           </div>
-          <svg class="topbar__chevron" aria-hidden="true"><use href="#icone-chevron"/></svg>
-        </button>
+        </div>
 
       </div>
     </header>
@@ -257,8 +322,14 @@
     <main class="main" id="main-area">
 
       <div class="main__header">
-        <h1 class="main__titulo" id="main-titulo">Monitoramento de Frota em Tempo Real</h1>
-        <p class="main__subtitulo" id="main-subtitulo">Santa Rita do Sapucaí — Simulação GPS Telemetria</p>
+        <div class="main__header-info">
+          <h1 class="main__titulo" id="main-titulo">Monitoramento de Frota em Tempo Real</h1>
+          <p class="main__subtitulo" id="main-subtitulo">Santa Rita do Sapucaí — Simulação GPS Telemetria</p>
+        </div>
+        <div class="main__header-status" id="main-header-status" aria-label="Status da frota">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="live-label">GPS Ativo &bull; 8 Veículos</span>
+        </div>
       </div>
 
       <!-- VIEW 1: MAPA EM TEMPO REAL -->
@@ -268,61 +339,70 @@
 
           <div id="mapa"></div>
 
-          <!-- Legenda com Filtro Interativo por Linha -->
+          <!-- Legenda com Filtro Interativo por Linha em Carrossel -->
           <div class="mapa-legenda">
 
             <div class="mapa-legenda__header">
-              <span class="mapa-legenda__titulo">Linhas Monitoradas</span>
-              <span class="mapa-legenda__dica">Clique para filtrar</span>
+              <span class="mapa-legenda__titulo">Linhas</span>
             </div>
 
-            <div class="mapa-legenda__filtros" id="filtros-legenda">
-
-              <button type="button" class="mapa-legenda__item mapa-legenda__item--ativo" data-linha="todas">
-                <span class="mapa-legenda__dot" style="background:#0f172a;"></span>
-                <strong>Todas as Linhas</strong>
+            <div class="mapa-legenda__carrossel">
+              <button type="button" class="mapa-legenda__nav-btn mapa-legenda__nav-btn--prev" id="btn-legenda-prev" aria-label="Linha anterior" title="Linha anterior">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
               </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="anchieta">
-                <span class="mapa-legenda__dot" style="background:#16a34a;"></span>
-                <span>Anchieta</span>
-              </button>
+              <div class="mapa-legenda__filtros" id="filtros-legenda" role="tablist">
 
-              <button type="button" class="mapa-legenda__item" data-linha="fernandes">
-                <span class="mapa-legenda__dot" style="background:#2563eb;"></span>
-                <span>Fernandes</span>
-              </button>
+                <button type="button" class="mapa-legenda__item mapa-legenda__item--ativo" data-linha="todas" role="tab" aria-selected="true">
+                  <span class="mapa-legenda__dot" style="background:#0f172a;"></span>
+                  <strong>Todas</strong>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="fortaleza">
-                <span class="mapa-legenda__dot" style="background:#9333ea;"></span>
-                <span>Fortaleza</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="anchieta" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#16a34a;"></span>
+                  <span>Anchieta</span>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="industrial">
-                <span class="mapa-legenda__dot" style="background:#ea580c;"></span>
-                <span>Industrial</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="fernandes" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#2563eb;"></span>
+                  <span>Fernandes</span>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="porto_sapucai">
-                <span class="mapa-legenda__dot" style="background:#0891b2;"></span>
-                <span>Porto Sapucaí</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="fortaleza" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#9333ea;"></span>
+                  <span>Fortaleza</span>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="reforco_jose_gm">
-                <span class="mapa-legenda__dot" style="background:#dc2626;"></span>
-                <span>Reforço José G.M</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="industrial" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#ea580c;"></span>
+                  <span>Industrial</span>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora_meia">
-                <span class="mapa-legenda__dot" style="background:#db2777;"></span>
-                <span>São Benedito (Hora e Meia)</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="porto_sapucai" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#0891b2;"></span>
+                  <span>Porto Sapucaí</span>
+                </button>
 
-              <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora">
-                <span class="mapa-legenda__dot" style="background:#eab308;"></span>
-                <span>São Benedito (Hora)</span>
-              </button>
+                <button type="button" class="mapa-legenda__item" data-linha="reforco_jose_gm" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#dc2626;"></span>
+                  <span>Reforço José G.M</span>
+                </button>
 
+                <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora_meia" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#db2777;"></span>
+                  <span>São Benedito (Hora e Meia)</span>
+                </button>
+
+                <button type="button" class="mapa-legenda__item" data-linha="sao_benedito_hora" role="tab" aria-selected="false">
+                  <span class="mapa-legenda__dot" style="background:#eab308;"></span>
+                  <span>São Benedito (Hora)</span>
+                </button>
+
+              </div>
+
+              <button type="button" class="mapa-legenda__nav-btn mapa-legenda__nav-btn--next" id="btn-legenda-next" aria-label="Próxima linha" title="Próxima linha">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
             </div>
 
           </div><!-- /mapa-legenda -->
@@ -806,19 +886,28 @@
          ────────────────────────────────────────────────────── -->
     <aside class="painel" id="painel-lateral" aria-label="Informações detalhadas da operação">
 
-      <!-- Indicador de arraste / Drawer handle no Mobile -->
-      <div class="painel__handle-mobile" aria-hidden="true"></div>
-
-      <!-- Botão fechar painel no mobile/tablet -->
-      <button class="painel__fechar" id="btn-fechar-painel" aria-label="Fechar painel de informações">
-        <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
-      </button>
+      <!-- Header exclusivo para Drawer / Bottom Sheet (Mobile e Tablet) -->
+      <div class="painel__mobile-topbar">
+        <div class="painel__handle-mobile" aria-hidden="true" title="Arraste para fechar"></div>
+        <div class="painel__mobile-header-row">
+          <div class="painel__mobile-titulo-wrap">
+            <span class="painel__mobile-titulo">Painel Operacional</span>
+            <span class="painel__mobile-sub">Telemetria &amp; Chegadas</span>
+          </div>
+          <button class="painel__fechar" id="btn-fechar-painel" aria-label="Fechar painel de informações" title="Fechar painel">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <!-- Próximos ônibus -->
       <section aria-labelledby="titulo-proximos">
         <h2 class="painel__secao-titulo" id="titulo-proximos">Próximos ônibus por Parada</h2>
 
-        <div class="proximos-lista">
+        <div class="proximos-lista" id="proximos-lista">
 
           <!-- Anchieta -->
           <article class="proximo-card" data-linha="anchieta" role="button" tabindex="0" aria-label="Linha Anchieta. Clique para ver no mapa.">
@@ -866,7 +955,7 @@
           </article>
 
           <!-- Industrial -->
-          <article class="proximo-card" data-linha="industrial" role="button" tabindex="0" aria-label="Linha Industrial. Clique para ver no mapa.">
+          <article class="proximo-card proximo-card--extra" data-linha="industrial" role="button" tabindex="0" aria-label="Linha Industrial. Clique para ver no mapa.">
             <div class="proximo-card__linha-badge" style="background-color: #ea580c;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -881,7 +970,7 @@
           </article>
 
           <!-- Porto Sapucaí -->
-          <article class="proximo-card" data-linha="porto_sapucai" role="button" tabindex="0" aria-label="Linha Porto Sapucaí. Clique para ver no mapa.">
+          <article class="proximo-card proximo-card--extra" data-linha="porto_sapucai" role="button" tabindex="0" aria-label="Linha Porto Sapucaí. Clique para ver no mapa.">
             <div class="proximo-card__linha-badge" style="background-color: #0891b2;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -896,7 +985,7 @@
           </article>
 
           <!-- Reforço José G.M (via MCM) -->
-          <article class="proximo-card" data-linha="reforco_jose_gm" role="button" tabindex="0" aria-label="Linha Reforço José G.M. Clique para ver no mapa.">
+          <article class="proximo-card proximo-card--extra" data-linha="reforco_jose_gm" role="button" tabindex="0" aria-label="Linha Reforço José G.M. Clique para ver no mapa.">
             <div class="proximo-card__linha-badge" style="background-color: #dc2626;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -911,7 +1000,7 @@
           </article>
 
           <!-- São Benedito (Hora e Meia) -->
-          <article class="proximo-card" data-linha="sao_benedito_hora_meia" role="button" tabindex="0" aria-label="Linha São Benedito (Hora e Meia). Clique para ver no mapa.">
+          <article class="proximo-card proximo-card--extra" data-linha="sao_benedito_hora_meia" role="button" tabindex="0" aria-label="Linha São Benedito (Hora e Meia). Clique para ver no mapa.">
             <div class="proximo-card__linha-badge" style="background-color: #db2777;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -926,7 +1015,7 @@
           </article>
 
           <!-- São Benedito (Hora) -->
-          <article class="proximo-card" data-linha="sao_benedito_hora" role="button" tabindex="0" aria-label="Linha São Benedito (Hora). Clique para ver no mapa.">
+          <article class="proximo-card proximo-card--extra" data-linha="sao_benedito_hora" role="button" tabindex="0" aria-label="Linha São Benedito (Hora). Clique para ver no mapa.">
             <div class="proximo-card__linha-badge" style="background-color: #eab308;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
             </div>
@@ -942,10 +1031,11 @@
 
         </div><!-- /proximos-lista -->
 
-        <button class="painel__ver-todos" id="btn-ver-todos" aria-label="Ver todas as linhas e frota completa">
-          Ver todas as 8 linhas da frota
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 6h10M9 2l4 4-4 4"/>
+        <button class="painel__ver-todos" id="btn-ver-todos" aria-expanded="false" aria-label="Ver todas as 8 linhas da frota">
+          <span class="btn-ver-todos__texto">Ver todas as 8 linhas da frota</span>
+          <span class="btn-ver-todos__badge">+5</span>
+          <svg class="btn-ver-todos__icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </button>
       </section>
@@ -962,10 +1052,12 @@
               <svg><use href="#icone-onibus"/></svg>
             </div>
             <div class="resumo-item__info">
-              <p class="resumo-item__label">Ônibus em circulação</p>
-              <p class="resumo-item__valor" id="total-onibus-ativo">8 / 8</p>
+              <span class="resumo-item__label">Ônibus em circulação</span>
+              <div class="resumo-item__dados">
+                <span class="resumo-item__valor" id="total-onibus-ativo"><strong class="num-destaque">8</strong><span class="num-barra">/</span><span class="num-total">8</span></span>
+                <span class="resumo-item__tag resumo-item__tag--online">100% online</span>
+              </div>
             </div>
-            <span class="resumo-item__tag resumo-item__tag--online">100% online</span>
           </div>
 
           <!-- Linhas ativas -->
@@ -974,10 +1066,12 @@
               <svg><use href="#icone-share"/></svg>
             </div>
             <div class="resumo-item__info">
-              <p class="resumo-item__label">Linhas ativas</p>
-              <p class="resumo-item__valor">8</p>
+              <span class="resumo-item__label">Linhas ativas</span>
+              <div class="resumo-item__dados">
+                <span class="resumo-item__valor"><strong class="num-destaque">8</strong><span class="num-sufixo">linhas</span></span>
+                <span class="resumo-item__tag resumo-item__tag--operacao">Em operação</span>
+              </div>
             </div>
-            <span class="resumo-item__tag resumo-item__tag--operacao">Em operação</span>
           </div>
 
           <!-- Intervalo Médio -->
@@ -986,9 +1080,11 @@
               <svg><use href="#icone-relogio"/></svg>
             </div>
             <div class="resumo-item__info">
-              <p class="resumo-item__label">Frequência média</p>
-              <p class="resumo-item__valor">12 min</p>
-              <p class="resumo-item__sub">Horário de pico ativo</p>
+              <span class="resumo-item__label">Frequência média</span>
+              <div class="resumo-item__dados">
+                <span class="resumo-item__valor"><strong class="num-destaque">12</strong><span class="num-sufixo">min</span></span>
+                <span class="resumo-item__sub">Pico ativo</span>
+              </div>
             </div>
           </div>
 
@@ -1018,6 +1114,129 @@
   <button class="btn-painel-flutuante" id="btn-painel-flutuante" aria-label="Abrir resumo da operação">
     <svg aria-hidden="true"><use href="#icone-onibus"/></svg>
   </button>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: PERFIL DO USUÁRIO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-perfil" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-perfil-titulo">
+    <div class="modal-card">
+      <div class="modal-card__header">
+        <div class="modal-card__header-info">
+          <div class="modal-card__icone-topo" aria-hidden="true">
+            <svg><use href="#icone-usuario"/></svg>
+          </div>
+          <div>
+            <h3 class="modal-card__titulo" id="modal-perfil-titulo">Perfil do Usuário</h3>
+            <p class="modal-card__subtitulo">Credenciais e sessão ativa no CCO ValeBus</p>
+          </div>
+        </div>
+        <button type="button" class="modal-card__fechar" id="btn-fechar-modal-perfil" aria-label="Fechar modal de perfil">
+          <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-card__corpo">
+        <div class="perfil-card-destaque">
+          <div class="perfil-card-destaque__avatar" id="modal-perfil-avatar">JD</div>
+          <div class="perfil-card-destaque__info">
+            <h4 class="perfil-card-destaque__nome" id="modal-perfil-nome">João da Silva</h4>
+            <span class="perfil-card-destaque__email" id="modal-perfil-email">avaliador@feiratech.com.br</span>
+            <div class="perfil-card-destaque__tag-wrap">
+              <span class="perfil-card-destaque__cargo-badge" id="modal-perfil-cargo">Avaliador Feira Tech</span>
+              <span class="perfil-card-destaque__status-tag">🟢 Sessão Ativa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="perfil-detalhes-grid">
+          <div class="perfil-detalhe-item">
+            <span class="perfil-detalhe-item__label">Unidade / Polo</span>
+            <span class="perfil-detalhe-item__valor">Santa Rita do Sapucaí - MG</span>
+          </div>
+          <div class="perfil-detalhe-item">
+            <span class="perfil-detalhe-item__label">Nível de Permissão</span>
+            <span class="perfil-detalhe-item__valor">Acesso Completo (CCO &amp; Telemetria)</span>
+          </div>
+          <div class="perfil-detalhe-item">
+            <span class="perfil-detalhe-item__label">Método de Login</span>
+            <span class="perfil-detalhe-item__valor" id="modal-perfil-metodo">Google Workspace / Feira</span>
+          </div>
+          <div class="perfil-detalhe-item">
+            <span class="perfil-detalhe-item__label">Último Acesso</span>
+            <span class="perfil-detalhe-item__valor" id="modal-perfil-acesso">Hoje (Sessão atual)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-card__rodape">
+        <button type="button" class="btn-modal btn-modal--secundario" id="btn-fechar-perfil-acao">Fechar</button>
+        <a href="login.html" class="btn-modal btn-modal--perigo">
+          <svg width="15" height="15" aria-hidden="true"><use href="#icone-sair"/></svg>
+          <span>Sair da Conta</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL: CONFIGURAÇÕES DO SISTEMA
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-configuracoes" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-config-titulo">
+    <div class="modal-card">
+      <div class="modal-card__header">
+        <div class="modal-card__header-info">
+          <div class="modal-card__icone-topo" aria-hidden="true">
+            <svg><use href="#icone-config"/></svg>
+          </div>
+          <div>
+            <h3 class="modal-card__titulo" id="modal-config-titulo">Preferências do CCO</h3>
+            <p class="modal-card__subtitulo">Ajustes de visualização e monitoramento da frota</p>
+          </div>
+        </div>
+        <button type="button" class="modal-card__fechar" id="btn-fechar-modal-config" aria-label="Fechar modal de configurações">
+          <svg aria-hidden="true"><use href="#icone-fechar"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-card__corpo">
+        <div class="config-opcoes-lista">
+          
+          <div class="config-opcao-item">
+            <div class="config-opcao-item__info">
+              <span class="config-opcao-item__titulo">Modo Noturno Automático</span>
+              <span class="config-opcao-item__desc">Alterna mapa e interface conforme o horário do dia</span>
+            </div>
+            <button type="button" class="config-switch config-switch--ativo" id="cfg-switch-tema" role="switch" aria-checked="true" aria-label="Alternar modo noturno">
+              <span class="config-switch__alavanca"></span>
+            </button>
+          </div>
+
+          <div class="config-opcao-item">
+            <div class="config-opcao-item__info">
+              <span class="config-opcao-item__titulo">Taxa de Atualização GPS</span>
+              <span class="config-opcao-item__desc">Intervalo de telemetria simulada dos 8 ônibus</span>
+            </div>
+            <span class="config-badge-info">A cada 3.5s (Tempo Real)</span>
+          </div>
+
+          <div class="config-opcao-item">
+            <div class="config-opcao-item__info">
+              <span class="config-opcao-item__titulo">Animações Fluídas de Voo (FlyTo)</span>
+              <span class="config-opcao-item__desc">Efeito suave de zoom ao clicar nos cards de linha</span>
+            </div>
+            <button type="button" class="config-switch config-switch--ativo" id="cfg-switch-anim" role="switch" aria-checked="true" aria-label="Alternar animações">
+              <span class="config-switch__alavanca"></span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-card__rodape">
+        <button type="button" class="btn-modal btn-modal--primario" id="btn-salvar-config">Concluído</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Bibliotecas de Terceiros e Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
