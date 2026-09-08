@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Gestor CCO — ValeBus</title>
+  <meta name="description" content="Central de Gestão de Frotas e Cadastro de Motoristas de Santa Rita do Sapucaí.">
+  <link rel="icon" type="image/svg+xml" href="assets/svg/icone-onibus.svg">
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/gestor.css">
+</head>
+<body class="gestor-layout">
+
+  <!-- TOPBAR EXECUTIVA DO GESTOR -->
+  <header class="gestor-topbar" role="banner">
+    <div class="gestor-topbar__esquerda">
+      <a href="gestor.html" class="gestor-logo" aria-label="ValeBus Gestão">
+        <div class="gestor-logo__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
+            <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+            <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+          </svg>
+        </div>
+        <div class="gestor-logo__titulos">
+          <span class="gestor-logo__nome">
+            ValeBus <span class="gestor-badge-pill">Gestor CCO</span>
+          </span>
+          <span class="gestor-logo__cidade">Santa Rita do Sapucaí — Central de Controle</span>
+        </div>
+      </a>
+
+      <div class="gestor-topbar__status">
+        <span class="gestor-topbar__status-dot" aria-hidden="true"></span>
+        <span id="gestor-status-texto">CCO Conectado &bull; Base Central</span>
+      </div>
+    </div>
+
+    <div class="gestor-topbar__direita">
+      <!-- Atalho: Mapa de Passageiros -->
+      <a href="dashboard.html" class="gestor-btn-link" title="Visualizar mapa público da cidade">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+          <line x1="9" y1="3" x2="9" y2="18"/>
+          <line x1="15" y1="6" x2="15" y2="21"/>
+        </svg>
+        <span>Mapa Passageiro</span>
+      </a>
+
+      <!-- Atalho: Cockpit do Motorista -->
+      <a href="motorista.html" class="gestor-btn-link" title="Abrir terminal embarcado de motorista">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 3c-.1.2-.1.4-.1.6V16c0 .6.4 1 1 1h2"/>
+          <circle cx="7" cy="17" r="2"/>
+        </svg>
+        <span>Terminal Motorista</span>
+      </a>
+
+      <!-- Alternador de Tema -->
+      <button type="button" class="gestor-btn-icone" id="btn-tema-gestor" aria-label="Alternar tema" title="Tema claro/escuro">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+
+      <!-- Cartão do Usuário Gestor -->
+      <div class="gestor-usuario-card">
+        <div class="gestor-avatar" id="gestor-avatar">GV</div>
+        <div class="gestor-usuario-info">
+          <span class="gestor-usuario-nome" id="gestor-nome">Gestor Operacional</span>
+          <span class="gestor-usuario-email" id="gestor-email">valebussrs@gmail.com</span>
+        </div>
+      </div>
+
+      <!-- Botão Sair -->
+      <button type="button" class="gestor-btn-sair" id="btn-sair-gestor" title="Encerrar sessão">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Sair</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="gestor-conteudo" role="main">
+
+    <!-- BANNER BOAS-VINDAS -->
+    <section class="gestor-banner" aria-labelledby="banner-titulo">
+      <div class="gestor-banner__info">
+        <h1 id="banner-titulo">Gestão de Motoristas & Despacho Operacional</h1>
+        <p>Cadastre, credencie e monitore as escalas de motoristas da frota urbana de Santa Rita do Sapucaí. As credenciais cadastradas aqui são imediatamente sincronizadas com o terminal de bordo dos ônibus.</p>
+      </div>
+      <div class="gestor-banner__acoes">
+        <button type="button" class="btn-gestor-primario" id="btn-abrir-modal-motorista">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>Cadastrar Novo Motorista</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- KPIS OPERACIONAIS -->
+    <section class="gestor-kpi-grid" aria-label="Indicadores gerais da frota">
+      <!-- Card 1: Motoristas Cadastrados -->
+      <div class="gestor-kpi-card">
+        <div class="gestor-kpi-card__info">
+          <span class="gestor-kpi-card__rotulo">Motoristas Cadastrados</span>
+          <span class="gestor-kpi-card__valor" id="kpi-total-motoristas">0</span>
+          <span class="gestor-kpi-card__sub">Credenciados na base ValeBus</span>
+        </div>
+        <div class="gestor-kpi-card__icone-wrap gestor-kpi-card__icone-wrap--azul">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Card 2: Motoristas em Turno -->
+      <div class="gestor-kpi-card">
+        <div class="gestor-kpi-card__info">
+          <span class="gestor-kpi-card__rotulo">Em Turno / Operação</span>
+          <span class="gestor-kpi-card__valor" id="kpi-motoristas-ativos">0</span>
+          <span class="gestor-kpi-card__sub">Transmitindo telemetria CCO</span>
+        </div>
+        <div class="gestor-kpi-card__icone-wrap gestor-kpi-card__icone-wrap--verde">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Card 3: Frota em Circulação -->
+      <div class="gestor-kpi-card">
+        <div class="gestor-kpi-card__info">
+          <span class="gestor-kpi-card__rotulo">Veículos em Linha</span>
+          <span class="gestor-kpi-card__valor" id="kpi-frota-ativa">6</span>
+          <span class="gestor-kpi-card__sub">Ônibus ativos em SRS</span>
+        </div>
+        <div class="gestor-kpi-card__icone-wrap gestor-kpi-card__icone-wrap--roxo">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 3c-.1.2-.1.4-.1.6V16c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Card 4: Pontualidade -->
+      <div class="gestor-kpi-card">
+        <div class="gestor-kpi-card__info">
+          <span class="gestor-kpi-card__rotulo">Pontualidade Média</span>
+          <span class="gestor-kpi-card__valor">98.4%</span>
+          <span class="gestor-kpi-card__sub">Conformidade com a tabela horária</span>
+        </div>
+        <div class="gestor-kpi-card__icone-wrap gestor-kpi-card__icone-wrap--amarelo">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVEGAÇÃO DE ABAS -->
+    <nav class="gestor-abas" aria-label="Módulos de gestão">
+      <button type="button" class="gestor-aba-btn ativo" data-aba="motoristas">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        </svg>
+        <span>Cadastro de Motoristas</span>
+        <span class="gestor-aba-badge" id="badge-total-motoristas">0</span>
+      </button>
+
+      <button type="button" class="gestor-aba-btn" data-aba="escalas">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span>Escalas & Frotas do Dia</span>
+      </button>
+
+      <button type="button" class="gestor-aba-btn" data-aba="ocorrencias">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Rádio & Ocorrências CCO</span>
+      </button>
+    </nav>
+
+    <!-- ═══ PAINEL 1: CADASTRO DE MOTORISTAS ═══ -->
+    <div class="gestor-painel-secao" id="painel-motoristas">
+      <!-- BARRA DE FERRAMENTAS -->
+      <div class="gestor-toolbar">
+        <div class="gestor-toolbar__esquerda">
+          <div class="gestor-busca-wrapper">
+            <svg class="gestor-busca-icone" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" class="gestor-busca-input" id="input-busca-motorista" placeholder="Buscar por nome, matrícula ou CPF...">
+          </div>
+
+          <select class="gestor-select-filtro" id="filtro-status-motorista" aria-label="Filtrar por status">
+            <option value="todos">Todos os Status</option>
+            <option value="ativo">Ativo</option>
+            <option value="viagem">Em Viagem</option>
+            <option value="folga">Folga</option>
+            <option value="inativo">Inativo</option>
+          </select>
+
+          <select class="gestor-select-filtro" id="filtro-linha-motorista" aria-label="Filtrar por linha">
+            <option value="todas">Todas as Linhas</option>
+            <option value="Fernandes">Linha Fernandes</option>
+            <option value="Anchieta">Linha Anchieta</option>
+            <option value="Fortaleza">Linha Fortaleza</option>
+            <option value="Industrial">Linha Industrial</option>
+            <option value="Porto Sapucaí">Linha Porto Sapucaí</option>
+            <option value="São Benedito">Linha São Benedito</option>
+          </select>
+        </div>
+
+        <div class="gestor-toolbar__direita">
+          <button type="button" class="btn-gestor-secundario" id="btn-redefinir-dados-demo" title="Restaurar motoristas padrão de Santa Rita">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            <span>Restaurar Base Demo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TABELA DE MOTORISTAS -->
+      <div class="gestor-tabela-container">
+        <table class="gestor-tabela" aria-label="Lista de motoristas cadastrados">
+          <thead>
+            <tr>
+              <th scope="col">Motorista</th>
+              <th scope="col">Matrícula</th>
+              <th scope="col">CNH & Validade</th>
+              <th scope="col">Linha Principal</th>
+              <th scope="col">Ônibus</th>
+              <th scope="col">Turno</th>
+              <th scope="col">PIN Terminal</th>
+              <th scope="col">Status</th>
+              <th scope="col" style="text-align: right;">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-motoristas-corpo">
+            <!-- Renderizado dinamicamente via gestor.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PAINEL 2: ESCALAS DO DIA ═══ -->
+    <div class="gestor-painel-secao" id="painel-escalas" style="display: none;">
+      <div class="gestor-escala-grid" id="grid-escalas-dia">
+        <!-- Renderizado dinamicamente via gestor.js -->
+      </div>
+    </div>
+
+    <!-- ═══ PAINEL 3: OCORRÊNCIAS CCO ═══ -->
+    <div class="gestor-painel-secao" id="painel-ocorrencias" style="display: none;">
+      <div class="gestor-escala-card" style="margin-bottom: 16px;">
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">Feed de Rádio & Mensagens Operacionais</h3>
+        <p style="font-size: 13px; color: var(--texto-secundario); margin-bottom: 16px;">Histórico de chamados e ocorrências enviadas pelos motoristas em rota através do botão de suporte de bordo.</p>
+        <div id="lista-feed-ocorrencias" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Renderizado dinamicamente -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL DE CADASTRO / EDIÇÃO DE MOTORISTA
+       ═══════════════════════════════════════════════════════ -->
+  <div class="gestor-modal-overlay" id="modal-motorista" aria-hidden="true">
+    <div class="gestor-modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo-motorista">
+      <div class="gestor-modal__header">
+        <h2 class="gestor-modal__titulo" id="modal-titulo-motorista">Cadastrar Novo Motorista</h2>
+        <button type="button" class="gestor-modal__fechar" id="btn-fechar-modal-motorista" aria-label="Fechar janela">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="form-cadastro-motorista" novalidate>
+        <input type="hidden" id="input-motorista-id-edit" value="">
+
+        <div class="gestor-modal__corpo">
+          <div class="gestor-form-grid">
+
+            <!-- Nome Completo -->
+            <div class="gestor-form-grupo gestor-form-col-2">
+              <label class="gestor-form-rotulo" for="form-mot-nome">Nome Completo *</label>
+              <input type="text" class="gestor-form-input" id="form-mot-nome" placeholder="Ex: Carlos Alberto Mendes" required>
+            </div>
+
+            <!-- Matrícula + Gerador -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-matricula">Matrícula Operacional *</label>
+              <div class="gestor-input-com-btn">
+                <input type="text" class="gestor-form-input" id="form-mot-matricula" placeholder="Ex: MOT-1042" required>
+                <button type="button" class="gestor-btn-mini" id="btn-gerar-matricula" title="Gerar código aleatório">Gerar</button>
+              </div>
+            </div>
+
+            <!-- PIN do Terminal -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-pin">PIN de Bordo (4 a 6 dígitos) *</label>
+              <input type="text" class="gestor-form-input" id="form-mot-pin" placeholder="Ex: 4821" maxlength="6" pattern="[0-9]*" inputmode="numeric" required>
+            </div>
+
+            <!-- CPF -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-cpf">CPF do Motorista</label>
+              <input type="text" class="gestor-form-input" id="form-mot-cpf" placeholder="000.000.000-00">
+            </div>
+
+            <!-- Telefone -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-telefone">Telefone / WhatsApp</label>
+              <input type="text" class="gestor-form-input" id="form-mot-telefone" placeholder="(35) 99999-0000">
+            </div>
+
+            <!-- CNH Número -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-cnh">Número da CNH</label>
+              <input type="text" class="gestor-form-input" id="form-mot-cnh" placeholder="Ex: 04829104820">
+            </div>
+
+            <!-- Categoria CNH -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-cnh-cat">Categoria CNH *</label>
+              <select class="gestor-form-select" id="form-mot-cnh-cat">
+                <option value="D" selected>Categoria D (Transporte de Passageiros)</option>
+                <option value="E">Categoria E (Articulados / Cargas Pesadas)</option>
+              </select>
+            </div>
+
+            <!-- Validade CNH -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-cnh-validade">Validade da CNH *</label>
+              <input type="date" class="gestor-form-input" id="form-mot-cnh-validade">
+            </div>
+
+            <!-- Linha Principal -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-linha">Linha Habitual *</label>
+              <select class="gestor-form-select" id="form-mot-linha">
+                <option value="Linha Fernandes">Linha Fernandes</option>
+                <option value="Linha Anchieta">Linha Anchieta</option>
+                <option value="Linha Fortaleza">Linha Fortaleza</option>
+                <option value="Linha Industrial">Linha Industrial</option>
+                <option value="Linha Porto Sapucaí">Linha Porto Sapucaí</option>
+                <option value="Linha Reforço José G.M">Linha Reforço José G.M</option>
+                <option value="Linha São Benedito">Linha São Benedito</option>
+              </select>
+            </div>
+
+            <!-- Veículo Padrão -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-veiculo">Veículo / Ônibus *</label>
+              <select class="gestor-form-select" id="form-mot-veiculo">
+                <option value="Ônibus #01 (Prefixo 101)">Ônibus #01 (Prefixo 101)</option>
+                <option value="Ônibus #02 (Prefixo 102)" selected>Ônibus #02 (Prefixo 102)</option>
+                <option value="Ônibus #03 (Prefixo 103)">Ônibus #03 (Prefixo 103)</option>
+                <option value="Ônibus #04 (Prefixo 104)">Ônibus #04 (Prefixo 104)</option>
+                <option value="Ônibus #05 (Prefixo 105)">Ônibus #05 (Prefixo 105)</option>
+                <option value="Ônibus #06 (Prefixo 106)">Ônibus #06 (Prefixo 106)</option>
+              </select>
+            </div>
+
+            <!-- Turno -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-turno">Turno de Trabalho *</label>
+              <select class="gestor-form-select" id="form-mot-turno">
+                <option value="Manhã (05:30 - 13:30)">Manhã (05:30 - 13:30)</option>
+                <option value="Tarde (13:30 - 21:30)">Tarde (13:30 - 21:30)</option>
+                <option value="Noite (18:00 - 00:00)">Noite (18:00 - 00:00)</option>
+                <option value="Integral">Integral</option>
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="gestor-form-grupo">
+              <label class="gestor-form-rotulo" for="form-mot-status">Status Operacional *</label>
+              <select class="gestor-form-select" id="form-mot-status">
+                <option value="ativo">Ativo</option>
+                <option value="viagem">Em Viagem</option>
+                <option value="folga">Folga</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="gestor-modal__footer">
+          <button type="button" class="btn-gestor-secundario" id="btn-cancelar-modal-motorista">Cancelar</button>
+          <button type="submit" class="btn-gestor-primario" id="btn-salvar-motorista">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            <span id="texto-btn-salvar">Salvar Credenciais</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST DE FEEDBACK -->
+  <div class="gestor-toast" id="gestor-toast" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="gestor-toast-texto">Operação concluída com sucesso.</span>
+  </div>
+
+  <!-- SCRIPT DO GESTOR -->
+  <script src="js/gestor.js"></script>
+</body>
+</html>

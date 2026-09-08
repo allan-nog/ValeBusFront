@@ -192,8 +192,8 @@
   // Ao selecionar uma conta do Google no modal
   contasGoogle.forEach(conta => {
     conta.addEventListener('click', () => {
-      const email = conta.getAttribute('data-email');
-      const nome  = conta.getAttribute('data-nome');
+      const email = conta.getAttribute('data-email') || '';
+      const nome  = conta.getAttribute('data-nome') || '';
 
       conta.classList.add('modal-google__conta-item--selecionada');
 
@@ -201,11 +201,15 @@
         fecharModalGoogle();
         conta.classList.remove('modal-google__conta-item--selecionada');
 
+        const ehGestor = email.toLowerCase().trim() === 'valebussrs@gmail.com';
+
         // Salva usuário logado no localStorage
         try {
           localStorage.setItem('valebus_usuario', JSON.stringify({
             nome: nome,
             email: email,
+            cargo: ehGestor ? 'Gestor CCO & Frotas Master' : 'Passageiro / Avaliador',
+            perfil: ehGestor ? 'gestor' : 'passageiro',
             metodo: 'Google'
           }));
         } catch (e) {
@@ -221,10 +225,12 @@
         if (iconePadrao) iconePadrao.style.display = 'none';
         if (iconeLoading) iconeLoading.style.display = 'none';
         if (iconeSucesso) iconeSucesso.style.display = 'inline-block';
-        if (textoBotao) textoBotao.textContent = 'Acesso autorizado!';
+        if (textoBotao) {
+          textoBotao.textContent = ehGestor ? 'Painel do Gestor CCO...' : 'Acesso autorizado!';
+        }
 
         setTimeout(() => {
-          window.location.href = 'dashboard.html';
+          window.location.href = ehGestor ? 'gestor.html' : 'dashboard.html';
         }, 750);
       }, 150);
     });
@@ -368,12 +374,15 @@
       ocultarErro();
 
       // Salva nome derivado do e-mail para a sessão
+      const ehGestor = email && email.toLowerCase().trim() === 'valebussrs@gmail.com';
       try {
         const parteNome = email.split('@')[0];
-        const nomeFormatado = parteNome.charAt(0).toUpperCase() + parteNome.slice(1);
+        const nomeFormatado = ehGestor ? 'Gestor ValeBus SRS' : (parteNome.charAt(0).toUpperCase() + parteNome.slice(1));
         localStorage.setItem('valebus_usuario', JSON.stringify({
           nome: nomeFormatado,
           email: email,
+          cargo: ehGestor ? 'Gestor CCO & Frotas Master' : 'Passageiro / Usuário da Linha',
+          perfil: ehGestor ? 'gestor' : 'passageiro',
           metodo: 'Email/Senha'
         }));
       } catch (e) {}
@@ -609,6 +618,55 @@
     });
   }
 
+  // Auto-preenchimento ao digitar a matrícula do motorista cadastrado pelo Gestor
+  if (inputMotId) {
+    const buscarMotoristaCadastrado = () => {
+      const val = inputMotId.value.trim().toUpperCase();
+      if (!val || val.length < 3) return;
+
+      try {
+        const salvos = localStorage.getItem('valebus_motoristas_cadastrados');
+        if (!salvos) return;
+        const motoristasCadastrados = JSON.parse(salvos);
+        const mot = motoristasCadastrados.find(m =>
+          m.matricula.toUpperCase() === val ||
+          m.matricula.replace('MOT-', '').toUpperCase() === val.replace('MOT-', '')
+        );
+
+        if (mot) {
+          if (inputMotNome && (!inputMotNome.value || inputMotNome.value.startsWith('Motorista'))) {
+            inputMotNome.value = mot.nome;
+          }
+          if (selectMotLinha && mot.linha) {
+            for (let i = 0; i < selectMotLinha.options.length; i++) {
+              if (selectMotLinha.options[i].text.toLowerCase().includes(mot.linha.toLowerCase().replace('linha ', ''))) {
+                selectMotLinha.selectedIndex = i;
+                break;
+              }
+            }
+          }
+          if (selectMotVeiculo && mot.veiculo) {
+            for (let i = 0; i < selectMotVeiculo.options.length; i++) {
+              if (mot.veiculo.includes(selectMotVeiculo.options[i].value)) {
+                selectMotVeiculo.selectedIndex = i;
+                break;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao consultar motoristas cadastrados:', e);
+      }
+    };
+
+    inputMotId.addEventListener('blur', buscarMotoristaCadastrado);
+    inputMotId.addEventListener('input', () => {
+      if (inputMotId.value.trim().length >= 4) {
+        buscarMotoristaCadastrado();
+      }
+    });
+  }
+
   if (btnLoginMotorista) {
     btnLoginMotorista.addEventListener('click', () => {
       if (motoristaSucesso) motoristaSucesso.style.display = 'none';
@@ -630,7 +688,7 @@
       e.preventDefault();
       const id = inputMotId ? inputMotId.value.trim() : '';
       const nome = inputMotNome ? inputMotNome.value.trim() : '';
-      const pin = inputMotPin ? inputMotPin.value : '';
+      const pin = inputMotPin ? inputMotPin.value.trim() : '';
       const linhaNome = selectMotLinha ? selectMotLinha.options[selectMotLinha.selectedIndex].text : 'Linha Fernandes';
       const veiculoNome = selectMotVeiculo ? selectMotVeiculo.options[selectMotVeiculo.selectedIndex].text : 'Ônibus #02';
 
@@ -654,19 +712,53 @@
         return;
       }
 
+      // Validação de credenciais contra a base do Gestor CCO
+      let motoristaCadastrado = null;
+      try {
+        const salvos = localStorage.getItem('valebus_motoristas_cadastrados');
+        if (salvos) {
+          const lista = JSON.parse(salvos);
+          motoristaCadastrado = lista.find(m =>
+            m.matricula.toUpperCase() === id.toUpperCase() ||
+            m.matricula.replace('MOT-', '').toUpperCase() === id.replace('MOT-', '').toUpperCase()
+          );
+        }
+      } catch (e) {}
+
+      if (motoristaCadastrado) {
+        if (motoristaCadastrado.status === 'inativo') {
+          if (motoristaErro) {
+            motoristaErroTxt.textContent = `Acesso suspenso pelo Gestor: Matrícula ${motoristaCadastrado.matricula} está inativa. Contate o CCO.`;
+            motoristaErro.style.display = 'flex';
+          }
+          if (motoristaSucesso) motoristaSucesso.style.display = 'none';
+          return;
+        }
+
+        if (motoristaCadastrado.pin && pin !== motoristaCadastrado.pin) {
+          if (motoristaErro) {
+            motoristaErroTxt.textContent = `PIN de bordo incorreto para a matrícula ${motoristaCadastrado.matricula}. Consulte o Gestor CCO.`;
+            motoristaErro.style.display = 'flex';
+          }
+          if (motoristaSucesso) motoristaSucesso.style.display = 'none';
+          if (inputMotPin) inputMotPin.focus();
+          return;
+        }
+      }
+
       if (motoristaErro) motoristaErro.style.display = 'none';
       if (btnConfirmarMot) btnConfirmarMot.disabled = true;
       if (txtBtnMotorista) txtBtnMotorista.textContent = 'Conectando telemetria...';
 
       await esperar(800);
 
-      const nomeFinal = nome ? nome : `Motorista ${id}`;
+      const nomeFinal = nome ? nome : (motoristaCadastrado ? motoristaCadastrado.nome : `Motorista ${id}`);
       try {
         localStorage.setItem('valebus_usuario', JSON.stringify({
           nome: nomeFinal,
           email: `${id.toLowerCase()}@motorista.valebus.com.br`,
           cargo: `Motorista Operacional — ${linhaNome}`,
-          matricula: id,
+          matricula: motoristaCadastrado ? motoristaCadastrado.matricula : id,
           linha: linhaNome,
           veiculo: veiculoNome,
           metodo: 'Terminal de Bordo'
@@ -719,6 +811,8 @@
     try {
       await esperar(950);
 
+      const ehGestor = email && email.toLowerCase().trim() === 'valebussrs@gmail.com';
+
       setCarregando(false);
       if (botaoEntrar) {
         botaoEntrar.disabled = true;
@@ -728,11 +822,11 @@
       if (iconeLoading) iconeLoading.style.display = 'none';
       if (iconeSucesso) iconeSucesso.style.display = 'inline-block';
       if (textoBotao) {
-        textoBotao.textContent = 'Acesso autorizado!';
+        textoBotao.textContent = ehGestor ? 'Painel do Gestor Autorizado!' : 'Acesso autorizado!';
       }
 
       await esperar(700);
-      window.location.href = 'dashboard.html';
+      window.location.href = ehGestor ? 'gestor.html' : 'dashboard.html';
 
     } catch (erro) {
       setCarregando(false);

@@ -1320,6 +1320,49 @@
     btnUsuario.addEventListener('click', toggleDropdownUsuario);
   }
 
+  // Sincroniza dados do usuário logado na Topbar e Dropdown
+  function sincronizarUsuarioLogado() {
+    try {
+      const raw = localStorage.getItem('valebus_usuario');
+      if (!raw) return;
+      const user = JSON.parse(raw);
+      if (!user) return;
+
+      const nomeEl = document.getElementById('topbar-usuario-nome');
+      const cargoEl = document.getElementById('topbar-usuario-cargo');
+      const avatarEl = document.getElementById('topbar-usuario-avatar');
+      const dropNome = document.getElementById('dropdown-usuario-nome');
+      const dropEmail = document.getElementById('dropdown-usuario-email');
+      const dropCargo = document.getElementById('dropdown-usuario-cargo');
+      const dropAvatar = document.getElementById('dropdown-usuario-avatar');
+      const btnGestor = document.getElementById('dropdown-btn-gestor');
+
+      const iniciais = (user.nome || 'VB')
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(p => p[0].toUpperCase())
+        .join('');
+
+      if (nomeEl && user.nome) nomeEl.textContent = user.nome;
+      if (cargoEl && user.cargo) cargoEl.textContent = user.cargo;
+      if (avatarEl && iniciais) avatarEl.textContent = iniciais;
+
+      if (dropNome && user.nome) dropNome.textContent = user.nome;
+      if (dropEmail && user.email) dropEmail.textContent = user.email;
+      if (dropCargo && user.cargo) dropCargo.textContent = user.cargo;
+      if (dropAvatar && iniciais) dropAvatar.textContent = iniciais;
+
+      // Se for o gestor valebussrs@gmail.com, exibe o atalho CCO no dropdown
+      if (btnGestor && user.email && user.email.toLowerCase().trim() === 'valebussrs@gmail.com') {
+        btnGestor.style.display = 'flex';
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar usuário logado:', e);
+    }
+  }
+  sincronizarUsuarioLogado();
+
   // Fecha dropdowns se clicar fora
   document.addEventListener('click', (e) => {
     if (usuarioWrapper && !usuarioWrapper.contains(e.target)) {
