@@ -165,6 +165,28 @@
         Criar nova conta
       </button>
 
+      <!-- Divisor para Área Operacional -->
+      <div class="divisor divisor--motorista" aria-hidden="true">
+        <div class="divisor__linha"></div>
+        <span class="divisor__texto">Acesso da Frota</span>
+        <div class="divisor__linha"></div>
+      </div>
+
+      <!-- Botão de Login do Motorista -->
+      <button type="button" class="botao-motorista" id="btn-login-motorista" aria-label="Fazer login como motorista">
+        <div class="botao-motorista__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 3c-.1.2-.1.4-.1.6V16c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+        <div class="botao-motorista__textos">
+          <span class="botao-motorista__titulo">Fazer login como motorista</span>
+        </div>
+      </button>
+
       <!-- Rodapé legal -->
       <p class="form-rodape">
         Ao acessar, você concorda com os
@@ -436,6 +458,143 @@
       <div class="modal-padrao__acoes" style="margin-top: 14px;">
         <button type="button" class="modal-btn-primario" id="btn-fechar-termos" style="width: 100%;">Entendido</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL DE LOGIN DO MOTORISTA (TERMINAL DE BORDO)
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal-padrao-overlay" id="modal-motorista" aria-hidden="true">
+    <div class="modal-padrao modal-padrao--motorista" role="dialog" aria-modal="true" aria-labelledby="modal-motorista-titulo">
+      <button type="button" class="modal-fechar-btn" id="btn-fechar-x-motorista" aria-label="Fechar modal">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="modal-padrao__header">
+        <div class="modal-padrao__icone-topo modal-padrao__icone-topo--motorista" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 3c-.1.2-.1.4-.1.6V16c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+        <h3 id="modal-motorista-titulo" class="modal-padrao__titulo">Área do Motorista</h3>
+        <p class="modal-padrao__subtitulo">Informe sua matrícula e configure o veículo para acessar o sistema.</p>
+      </div>
+
+      <form id="form-login-motorista" class="modal-padrao__corpo" novalidate>
+        <!-- Campo: Matrícula / Código Operacional -->
+        <div class="campo" style="margin-bottom: 12px;">
+          <label class="campo__label" for="input-motorista-id">Matrícula ou Código Operacional</label>
+          <div class="campo__wrapper">
+            <svg class="campo__icone" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/>
+            </svg>
+            <input class="campo__input"
+                   type="text" id="input-motorista-id"
+                   placeholder="Ex: MOT-104 ou 2048"
+                   autocomplete="username" required>
+          </div>
+        </div>
+
+        <!-- Campo: Nome do Motorista (Opcional/Auto-preenchido) -->
+        <div class="campo" style="margin-bottom: 12px;">
+          <label class="campo__label" for="input-motorista-nome">Nome do Operador</label>
+          <div class="campo__wrapper">
+            <svg class="campo__icone" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input class="campo__input"
+                   type="text" id="input-motorista-nome"
+                   placeholder="Ex: Carlos Mendes" required>
+          </div>
+        </div>
+
+        <!-- Campo: Senha / PIN de Bordo -->
+        <div class="campo" style="margin-bottom: 12px;">
+          <label class="campo__label" for="input-motorista-pin">PIN ou Senha de Acesso</label>
+          <div class="campo__wrapper">
+            <svg class="campo__icone" aria-hidden="true">
+              <use href="#icone-cadeado"/>
+            </svg>
+            <input class="campo__input campo__input--com-botao"
+                   type="password" id="input-motorista-pin"
+                   placeholder="••••••" required minlength="4">
+            <button
+                type="button"
+                class="campo__botao-olho"
+                id="botao-olho-motorista"
+                aria-label="Mostrar PIN">
+              <svg class="campo__icone-olho" aria-hidden="true">
+                <use href="#icone-olho"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Linha da Escala & Veículo em 2 colunas -->
+        <div class="modal-linha-dupla">
+          <div class="campo">
+            <label class="campo__label" for="select-motorista-linha">Linha do Turno</label>
+            <div class="campo__wrapper campo__wrapper--select">
+              <select class="campo__input campo__select" id="select-motorista-linha" required>
+                <option value="fernandes">Linha Fernandes</option>
+                <option value="anchieta">Linha Anchieta</option>
+                <option value="fortaleza">Linha Fortaleza</option>
+                <option value="industrial">Linha Industrial</option>
+                <option value="porto_sapucai">Linha Porto Sapucaí</option>
+                <option value="reforco_jose_gm">Linha Reforço José G.M</option>
+                <option value="sao_benedito_hora">Linha São Benedito (Hora)</option>
+                <option value="sao_benedito_hora_meia">Linha São Benedito (Hora e Meia)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label class="campo__label" for="select-motorista-veiculo">Veículo / Prefixo</label>
+            <div class="campo__wrapper campo__wrapper--select">
+              <select class="campo__input campo__select" id="select-motorista-veiculo" required>
+                <option value="01">Ônibus #01 (Prefixo 101)</option>
+                <option value="02" selected>Ônibus #02 (Prefixo 102)</option>
+                <option value="03">Ônibus #03 (Prefixo 103)</option>
+                <option value="04">Ônibus #04 (Prefixo 104)</option>
+                <option value="05">Ônibus #05 (Prefixo 105)</option>
+                <option value="06">Ônibus #06 (Prefixo 106)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alertas de Feedback -->
+        <div class="modal-alerta modal-alerta--erro" id="motorista-erro" style="display:none;" role="alert">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="motorista-erro-texto">Informe a matrícula e o PIN de acesso.</span>
+        </div>
+
+        <div class="modal-alerta modal-alerta--sucesso" id="motorista-sucesso" style="display:none;" role="alert">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span>Operador autenticado! Conectando telemetria de bordo...</span>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="modal-padrao__acoes">
+          <button type="button" class="modal-btn-secundario" id="btn-cancelar-motorista">Voltar</button>
+          <button type="submit" class="modal-btn-primario modal-btn-primario--motorista" id="btn-confirmar-motorista">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span id="texto-btn-motorista">Iniciar Turno & Entrar</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

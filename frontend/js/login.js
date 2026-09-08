@@ -283,6 +283,24 @@
   const btnFecharTermos    = document.getElementById('btn-fechar-termos');
   const btnFecharXTermos   = document.getElementById('btn-fechar-x-termos');
 
+  // Modal Login do Motorista (Terminal Operacional)
+  const btnLoginMotorista   = document.getElementById('btn-login-motorista');
+  const modalMotorista      = document.getElementById('modal-motorista');
+  const formMotorista       = document.getElementById('form-login-motorista');
+  const inputMotId          = document.getElementById('input-motorista-id');
+  const inputMotNome        = document.getElementById('input-motorista-nome');
+  const inputMotPin         = document.getElementById('input-motorista-pin');
+  const selectMotLinha      = document.getElementById('select-motorista-linha');
+  const selectMotVeiculo    = document.getElementById('select-motorista-veiculo');
+  const botaoOlhoMotorista  = document.getElementById('botao-olho-motorista');
+  const btnCancelarMot      = document.getElementById('btn-cancelar-motorista');
+  const btnFecharXMotorista = document.getElementById('btn-fechar-x-motorista');
+  const btnConfirmarMot     = document.getElementById('btn-confirmar-motorista');
+  const txtBtnMotorista     = document.getElementById('texto-btn-motorista');
+  const motoristaSucesso    = document.getElementById('motorista-sucesso');
+  const motoristaErro       = document.getElementById('motorista-erro');
+  const motoristaErroTxt    = document.getElementById('motorista-erro-texto');
+
 
   /* ──────────────────────────────────────────────────────────
      6. MOSTRAR / OCULTAR SENHA
@@ -576,8 +594,97 @@
   if (btnFecharTermos) btnFecharTermos.addEventListener('click', () => fecharModal(modalTermos));
   if (btnFecharXTermos) btnFecharXTermos.addEventListener('click', () => fecharModal(modalTermos));
 
+  // Modal: Login do Motorista (Terminal Operacional)
+  if (botaoOlhoMotorista && inputMotPin) {
+    botaoOlhoMotorista.addEventListener('click', function () {
+      const estaOculta = inputMotPin.type === 'password';
+      inputMotPin.type = estaOculta ? 'text' : 'password';
+
+      const useEl = botaoOlhoMotorista.querySelector('use');
+      if (useEl) {
+        useEl.setAttribute('href', estaOculta ? '#icone-olho-off' : '#icone-olho');
+      }
+
+      botaoOlhoMotorista.setAttribute('aria-label', estaOculta ? 'Ocultar PIN' : 'Mostrar PIN');
+    });
+  }
+
+  if (btnLoginMotorista) {
+    btnLoginMotorista.addEventListener('click', () => {
+      if (motoristaSucesso) motoristaSucesso.style.display = 'none';
+      if (motoristaErro) motoristaErro.style.display = 'none';
+      abrirModal(modalMotorista, inputMotId);
+    });
+  }
+
+  if (btnCancelarMot) {
+    btnCancelarMot.addEventListener('click', () => fecharModal(modalMotorista));
+  }
+
+  if (btnFecharXMotorista) {
+    btnFecharXMotorista.addEventListener('click', () => fecharModal(modalMotorista));
+  }
+
+  if (formMotorista) {
+    formMotorista.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = inputMotId ? inputMotId.value.trim() : '';
+      const nome = inputMotNome ? inputMotNome.value.trim() : '';
+      const pin = inputMotPin ? inputMotPin.value : '';
+      const linhaNome = selectMotLinha ? selectMotLinha.options[selectMotLinha.selectedIndex].text : 'Linha Fernandes';
+      const veiculoNome = selectMotVeiculo ? selectMotVeiculo.options[selectMotVeiculo.selectedIndex].text : 'Ônibus #02';
+
+      if (!id || id.length < 3) {
+        if (motoristaErro) {
+          motoristaErroTxt.textContent = 'Informe a matrícula ou código operacional (mínimo 3 dígitos).';
+          motoristaErro.style.display = 'flex';
+        }
+        if (motoristaSucesso) motoristaSucesso.style.display = 'none';
+        if (inputMotId) inputMotId.focus();
+        return;
+      }
+
+      if (!pin || pin.length < 4) {
+        if (motoristaErro) {
+          motoristaErroTxt.textContent = 'O PIN de segurança deve ter pelo menos 4 caracteres.';
+          motoristaErro.style.display = 'flex';
+        }
+        if (motoristaSucesso) motoristaSucesso.style.display = 'none';
+        if (inputMotPin) inputMotPin.focus();
+        return;
+      }
+
+      if (motoristaErro) motoristaErro.style.display = 'none';
+      if (btnConfirmarMot) btnConfirmarMot.disabled = true;
+      if (txtBtnMotorista) txtBtnMotorista.textContent = 'Conectando telemetria...';
+
+      await esperar(800);
+
+      const nomeFinal = nome ? nome : `Motorista ${id}`;
+      try {
+        localStorage.setItem('valebus_usuario', JSON.stringify({
+          nome: nomeFinal,
+          email: `${id.toLowerCase()}@motorista.valebus.com.br`,
+          cargo: `Motorista Operacional — ${linhaNome}`,
+          matricula: id,
+          linha: linhaNome,
+          veiculo: veiculoNome,
+          metodo: 'Terminal de Bordo'
+        }));
+      } catch (err) {
+        console.warn('Erro ao salvar dados do motorista:', err);
+      }
+
+      if (motoristaSucesso) motoristaSucesso.style.display = 'flex';
+
+      setTimeout(() => {
+        window.location.href = 'motorista.html';
+      }, 850);
+    });
+  }
+
   // Fechar modais ao clicar no overlay
-  [modalGoogle, modalEsqueceu, modalCadastro, modalTermos].forEach(modal => {
+  [modalGoogle, modalEsqueceu, modalCadastro, modalTermos, modalMotorista].forEach(modal => {
     if (modal) {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -598,6 +705,7 @@
       fecharModal(modalEsqueceu);
       fecharModal(modalCadastro);
       fecharModal(modalTermos);
+      fecharModal(modalMotorista);
     }
   });
 

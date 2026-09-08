@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ValeBus — Terminal do Motorista</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/motorista.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+
+<body>
+
+  <!-- Sprite de ícones idêntico ao dashboard oficial ValeBus -->
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">
+    <!-- Ônibus -->
+    <symbol id="icone-onibus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/>
+      <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/>
+      <circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>
+    </symbol>
+
+    <!-- Mapa -->
+    <symbol id="icone-mapa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+      <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+    </symbol>
+
+    <!-- Linhas -->
+    <symbol id="icone-linhas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="6"  x2="21" y2="6"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+
+    <!-- Paradas / Alvo -->
+    <symbol id="icone-paradas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </symbol>
+
+    <!-- Alertas (sino) -->
+    <symbol id="icone-sino" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </symbol>
+
+    <!-- Relógio -->
+    <symbol id="icone-relogio" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </symbol>
+
+    <!-- Sobre / Info -->
+    <symbol id="icone-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </symbol>
+
+    <!-- Usuário / Perfil -->
+    <symbol id="icone-usuario" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </symbol>
+
+    <!-- Menu 3 pontos verticais -->
+    <symbol id="icone-mais" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="1"/>
+      <circle cx="12" cy="5" r="1"/>
+      <circle cx="12" cy="19" r="1"/>
+    </symbol>
+
+    <!-- Alerta Triângulo -->
+    <symbol id="icone-alerta-triangulo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </symbol>
+
+    <!-- Suporte / Headset -->
+    <symbol id="icone-suporte" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+    </symbol>
+
+    <!-- Mira GPS / Recentralizar -->
+    <symbol id="icone-mira" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="22" y1="12" x2="18" y2="12"/>
+      <line x1="6" y1="12" x2="2" y2="12"/>
+      <line x1="12" y1="6" x2="12" y2="2"/>
+      <line x1="12" y1="22" x2="12" y2="18"/>
+      <circle cx="12" cy="12" r="3"/>
+    </symbol>
+
+    <!-- Play Iniciar -->
+    <symbol id="icone-play" viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </symbol>
+
+    <!-- Stop Encerrar -->
+    <symbol id="icone-stop" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="5" y="5" width="14" height="14" rx="2"/>
+    </symbol>
+
+    <!-- Chevron baixo -->
+    <symbol id="icone-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </symbol>
+
+    <!-- Sol (Tema Claro) -->
+    <symbol id="icone-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </symbol>
+
+    <!-- Lua (Tema Escuro) -->
+    <symbol id="icone-lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </symbol>
+
+    <!-- Menu Hambúrguer -->
+    <symbol id="icone-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+
+    <!-- Fechar X -->
+    <symbol id="icone-fechar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+
+    <!-- Sair -->
+    <symbol id="icone-sair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </symbol>
+  </svg>
+
+  <!-- Overlay para drawers mobile -->
+  <div class="sidebar-overlay" id="overlay" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYOUT COMPLETO DO DASHBOARD VALEBUS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="dashboard dashboard--motorista">
+
+    <!-- ──────────────────────────────────────────────────────
+         SIDEBAR — Identidade Visual Oficial ValeBus
+         ────────────────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+
+      <!-- Logo Oficial ValeBus -->
+      <div class="sidebar__logo">
+        <div class="sidebar__logo-icone" aria-hidden="true">
+          <svg><use href="#icone-onibus"/></svg>
+        </div>
+        <div class="sidebar__logo-texto">
+          <span class="sidebar__logo-nome">ValeBus</span>
+          <span class="sidebar__logo-cidade">Terminal do Motorista</span>
+        </div>
+      </div>
+
+      <!-- Navegação Lateral -->
+      <nav class="sidebar__nav" aria-label="Navegação do motorista">
+        <button type="button" class="nav__item nav__item--ativo" data-secao="cockpit" id="nav-btn-cockpit" aria-current="page">
+          <svg aria-hidden="true"><use href="#icone-mapa"/></svg>
+          <span class="nav__label">Cockpit &amp; Mapa</span>
+        </button>
+
+        <button type="button" class="nav__item" data-secao="rotas" id="nav-btn-rotas">
+          <svg aria-hidden="true"><use href="#icone-linhas"/></svg>
+          <span class="nav__label">Escala &amp; Itinerários</span>
+        </button>
+
+        <button type="button" class="nav__item" data-secao="perfil" id="nav-btn-perfil">
+          <svg aria-hidden="true"><use href="#icone-usuario"/></svg>
+          <span class="nav__label">Meu Perfil &amp; Turno</span>
+        </button>
+      </nav>
+
+      <!-- Botão Sair -->
+      <div class="sidebar__sair">
+        <a href="login.html" class="nav__item nav__item--sair">
+          <svg aria-hidden="true"><use href="#icone-sair"/></svg>
+          <span class="nav__label">Encerrar Turno</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ──────────────────────────────────────────────────────
+         TOPBAR — Barra Superior Oficial ValeBus
+         ────────────────────────────────────────────────────── -->
+    <header class="topbar" role="banner">
+
+      <!-- Esquerda: botão menu (mobile) + status -->
+      <div class="topbar__esquerda">
+        <button class="topbar__menu-btn" id="btn-menu" aria-label="Abrir menu de navegação" aria-expanded="false">
+          <svg aria-hidden="true"><use href="#icone-menu"/></svg>
+        </button>
+
+        <div class="topbar__status">
+          <span class="topbar__status-dot" aria-hidden="true"></span>
+          <span id="topbar-status-texto">Telemetria Online &bull; Santa Rita do Sapucaí</span>
+        </div>
+      </div>
+
+      <!-- Direita: tema + hora + ações + usuário -->
+      <div class="topbar__direita">
+
+        <!-- Tema Dia / Noite -->
+        <button class="topbar__btn-tema" id="btn-tema-toggle" type="button" aria-label="Alternar para modo escuro" title="Alternar tema claro/escuro">
+          <svg class="icone-tema-sol" aria-hidden="true"><use href="#icone-sol"/></svg>
+          <svg class="icone-tema-lua" aria-hidden="true"><use href="#icone-lua"/></svg>
+        </button>
+
+        <!-- Relógio do Sistema -->
+        <time class="topbar__hora" id="topbar-hora" aria-label="Hora atual">14:35</time>
+
+        <!-- Menu de 3 Pontos com Opções do Motorista (Relatar Problema & Suporte) -->
+        <div class="topbar__notificacoes-wrapper" id="topbar-acoes-wrapper">
+          <button class="topbar__sino topbar__btn-acoes-motorista" id="btn-menu-motorista" type="button" aria-label="Opções e suporte do motorista" aria-expanded="false" aria-haspopup="true" title="Opções e suporte">
+            <svg aria-hidden="true"><use href="#icone-mais"/></svg>
+          </button>
+
+          <!-- Dropdown com Relatar Problema e Suporte Técnico -->
+          <div class="notificacoes-dropdown motorista-dropdown" id="dropdown-motorista" role="menu" aria-hidden="true">
+            <div class="notificacoes-dropdown__header">
+              <div class="notificacoes-dropdown__header-info">
+                <span class="notificacoes-dropdown__titulo">Central de Ocorrências</span>
+                <span class="notificacoes-dropdown__subtitulo">Comunicação direta com o CCO</span>
+              </div>
+            </div>
+
+            <div class="motorista-dropdown__itens">
+              <button type="button" class="usuario-dropdown__item" id="btn-abrir-problema" role="menuitem">
+                <div class="usuario-dropdown__item-icone" style="background-color: rgba(245, 158, 11, 0.15); color: #d97706;" aria-hidden="true">
+                  <svg><use href="#icone-alerta-triangulo"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Relatar um Problema</span>
+                  <span class="usuario-dropdown__item-desc">Trânsito, pane mecânica ou desvio</span>
+                </div>
+              </button>
+
+              <button type="button" class="usuario-dropdown__item" id="btn-abrir-suporte" role="menuitem">
+                <div class="usuario-dropdown__item-icone" style="background-color: rgba(37, 99, 235, 0.15); color: var(--cor-marca);" aria-hidden="true">
+                  <svg><use href="#icone-suporte"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Suporte Técnico</span>
+                  <span class="usuario-dropdown__item-desc">Canal VHF, garagem e telemetria</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar__divisor" aria-hidden="true"></div>
+
+        <!-- Perfil do Motorista no Topbar -->
+        <div class="topbar__usuario-wrapper" id="topbar-usuario-wrapper">
+          <button class="topbar__usuario" id="btn-usuario-menu" type="button" aria-label="Menu do motorista" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-usuario">
+            <div class="topbar__avatar" id="topbar-usuario-avatar" aria-hidden="true">JS</div>
+            <div class="topbar__usuario-info">
+              <span class="topbar__usuario-nome" id="topbar-usuario-nome">João Silva</span>
+              <span class="topbar__usuario-cargo" id="topbar-usuario-cargo">Motorista Operacional</span>
+            </div>
+            <svg class="topbar__chevron" aria-hidden="true"><use href="#icone-chevron"/></svg>
+          </button>
+
+          <!-- Dropdown do Motorista -->
+          <div class="usuario-dropdown" id="dropdown-usuario" role="menu" aria-label="Opções da conta" aria-hidden="true">
+            <div class="usuario-dropdown__header">
+              <div class="usuario-dropdown__avatar-wrap">
+                <div class="usuario-dropdown__avatar" id="dropdown-usuario-avatar" aria-hidden="true">JS</div>
+                <span class="usuario-dropdown__status-ponto" title="Turno Ativo" aria-hidden="true"></span>
+              </div>
+              <div class="usuario-dropdown__dados">
+                <span class="usuario-dropdown__nome" id="dropdown-usuario-nome">João Silva</span>
+                <span class="usuario-dropdown__email" id="dropdown-usuario-email">Matrícula: MOT-104 &bull; CNH Categoria D</span>
+                <div class="usuario-dropdown__badge-cargo" id="dropdown-usuario-cargo">Ônibus #02 (Prefixo 102)</div>
+              </div>
+            </div>
+
+            <div class="usuario-dropdown__divisor" role="separator" aria-hidden="true"></div>
+
+            <div class="usuario-dropdown__itens">
+              <button type="button" class="usuario-dropdown__item" id="dropdown-btn-perfil" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-usuario"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Ver Dados do Turno</span>
+                  <span class="usuario-dropdown__item-desc">Métricas, km rodados e pontualidade</span>
+                </div>
+              </button>
+
+              <a href="dashboard.html" class="usuario-dropdown__item" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-mapa"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Painel Geral da Frota</span>
+                  <span class="usuario-dropdown__item-desc">Visualização CCO de Santa Rita</span>
+                </div>
+              </a>
+            </div>
+
+            <div class="usuario-dropdown__divisor" role="separator" aria-hidden="true"></div>
+
+            <div class="usuario-dropdown__footer">
+              <a href="login.html" class="usuario-dropdown__item usuario-dropdown__item--sair" role="menuitem">
+                <div class="usuario-dropdown__item-icone" aria-hidden="true">
+                  <svg><use href="#icone-sair"/></svg>
+                </div>
+                <div class="usuario-dropdown__item-texto">
+                  <span class="usuario-dropdown__item-titulo">Encerrar Turno</span>
+                  <span class="usuario-dropdown__item-desc">Finalizar jornada de trabalho</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- ──────────────────────────────────────────────────────
+         ÁREA PRINCIPAL (MAPA LEAFLET & VIEWS)
+         ────────────────────────────────────────────────────── -->
+    <main class="main" id="main-area">
+
+      <!-- Cabeçalho da Seção Principal -->
+      <div class="main__header">
+        <div class="main__header-info">
+          <h1 class="main__titulo" id="main-titulo">Cockpit de Bordo &bull; Telemetria em Tempo Real</h1>
+          <p class="main__subtitulo" id="main-subtitulo">Santa Rita do Sapucaí &mdash; Ônibus #02 (Linha 01 Centro / Bairro Industrial)</p>
+        </div>
+        <div class="main__header-status" id="main-header-status" aria-label="Status da transmissão">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span class="live-label" id="main-status-label">GPS Sincronizado &bull; CCO Online</span>
+        </div>
+      </div>
+
+      <!-- VIEW 1: COCKPIT & MAPA EM TEMPO REAL -->
+      <div class="secao-view secao-view--ativa" id="view-cockpit">
+        <div class="mapa-container" role="region" aria-label="Mapa de monitoramento da rota">
+          
+          <!-- Leaflet Map Element -->
+          <div id="mapa-motorista"></div>
+
+          <!-- Indicador Flutuante Oficial de Localização -->
+          <div class="motorista-mapa-pill-loc" aria-label="Cidade de operação">
+            <svg class="motorista-mapa-pill-loc__icone" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            <span>Santa Rita do Sapucaí &bull; Cockpit do Motorista</span>
+          </div>
+
+          <!-- Botão Flutuante de Recentralizar GPS -->
+          <button type="button" class="btn-recenter-mapa-valebus" id="btn-recenter-gps" aria-label="Recentralizar no meu ônibus" title="Centralizar visualização no ônibus">
+            <svg width="18" height="18" aria-hidden="true"><use href="#icone-mira"/></svg>
+            <span>Meu Ônibus</span>
+          </button>
+
+          <!-- Banner de Status de Viagem em Andamento -->
+          <div class="motorista-banner-em-rota" id="banner-em-rota" style="display: none;">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span class="motorista-banner-em-rota__txt">VIAGEM EM ANDAMENTO &bull; TRANSMITINDO TELEMETRIA AO VIVO AO CCO</span>
+          </div>
+
+          <!-- Card Cockpit Flutuante do Motorista (Centralizado) -->
+          <div class="motorista-cockpit-overlay-card" id="cockpit-overlay-card">
+            
+            <!-- Linha 1: Perfil do Motorista, Status e Viagens Hoje -->
+            <div class="cockpit-card__topo">
+              <div class="cockpit-card__perfil">
+                <div class="cockpit-avatar-wrap">
+                  <div class="cockpit-avatar-img">JS</div>
+                  <span class="cockpit-status-dot" title="Online" aria-hidden="true"></span>
+                </div>
+                <div class="cockpit-perfil-dados">
+                  <h3 class="cockpit-perfil-nome" id="motorista-nome-display">João Silva</h3>
+                  <div class="cockpit-perfil-status">
+                    <span class="status-bolinha">●</span>
+                    <span id="motorista-status-texto">Conectado</span>
+                    <span class="status-separador">&bull;</span>
+                    <span id="motorista-estacao-texto">Inatel</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cockpit-badge-viagens" id="motorista-badge-viagens">
+                <span class="cockpit-badge-viagens__rotulo">Hoje:</span>
+                <strong class="cockpit-badge-viagens__num" id="motorista-num-viagens">12 viagens</strong>
+              </div>
+            </div>
+
+            <!-- Linha 2: Rota Atribuída -->
+            <div class="cockpit-card__rota">
+              <div class="cockpit-rota-header">
+                <span class="cockpit-rota-tag">ROTA ATRIBUÍDA</span>
+                <span class="cockpit-rota-codigo" id="motorista-linha-display">Linha 01</span>
+              </div>
+              <h4 class="cockpit-rota-nome" id="motorista-destino-display">Centro / Bairro Industrial</h4>
+            </div>
+
+            <!-- Linha 3: Métricas em 3 Colunas -->
+            <div class="cockpit-metricas-grid">
+              <div class="cockpit-metrica-item">
+                <span class="cockpit-metrica-label">DISTÂNCIA</span>
+                <strong class="cockpit-metrica-val" id="metrica-distancia">3.8 km</strong>
+              </div>
+
+              <div class="cockpit-metrica-item">
+                <span class="cockpit-metrica-label">TEMPO EST.</span>
+                <strong class="cockpit-metrica-val" id="metrica-tempo">12 min</strong>
+              </div>
+
+              <div class="cockpit-metrica-item cockpit-metrica-item--destaque">
+                <span class="cockpit-metrica-label">PRÓXIMA PARADA</span>
+                <strong class="cockpit-metrica-val cockpit-metrica-val--parada" id="metrica-parada">Av. Inatel, Centro</strong>
+              </div>
+            </div>
+
+            <!-- Linha 4: Botão Principal de Ação (Iniciar / Encerrar Rota) -->
+            <button type="button" class="cockpit-btn-acao" id="btn-iniciar-rota" aria-label="Iniciar rota da viagem">
+              <svg class="cockpit-btn-acao__icone" id="btn-acao-icone" width="18" height="18" aria-hidden="true"><use href="#icone-play"/></svg>
+              <span class="cockpit-btn-acao__texto" id="btn-acao-texto">Iniciar Rota</span>
+            </button>
+
+          </div><!-- /motorista-cockpit-overlay-card -->
+
+        </div><!-- /mapa-container -->
+      </div><!-- /view-cockpit -->
+
+      <!-- VIEW 2: ESCALA & ITINERÁRIOS -->
+      <div class="secao-view" id="view-rotas" style="display: none;">
+        <div class="motorista-secao-conteudo">
+          <div class="motorista-secao-header">
+            <h2 class="motorista-secao-titulo">Escala &amp; Itinerários Programados</h2>
+            <p class="motorista-secao-desc">Consulte a programação do turno e alterne as linhas vinculadas ao seu veículo.</p>
+          </div>
+
+          <div class="linhas-grid">
+            <!-- Linha Ativa Atual -->
+            <article class="linha-card" style="border: 2px solid var(--cor-marca);">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: var(--cor-marca);"></span>
+                <h3 class="linha-card__titulo">Linha 01 &mdash; Centro &rarr; Bairro Industrial</h3>
+                <span class="linha-card__status-tag" style="background-color: rgba(37,99,235,0.15); color: var(--cor-marca);">Em Operação</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Terminal de Partida:</span>
+                  <span class="linha-card__texto">Terminal Urbano Central (Partida às 08:15)</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Próxima Parada:</span>
+                  <span class="linha-card__texto">Av. Inatel, Centro &bull; Previsto em 12 min</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🏁 Destino Final:</span>
+                  <span class="linha-card__texto">Distrito Industrial JK (14 paradas no trajeto)</span>
+                </div>
+              </div>
+              <div class="rota-card-acoes-bar">
+                <span class="status-badge status-badge--horario">● Pontualidade 98%</span>
+                <button type="button" class="btn-acao-rota-card rota-card__btn-trocar" data-linha="industrial">Definida no Cockpit</button>
+              </div>
+            </article>
+
+            <!-- Linha Alternativa: Anchieta -->
+            <article class="linha-card">
+              <div class="linha-card__topo">
+                <span class="linha-card__dot" style="background-color: #16a34a;"></span>
+                <h3 class="linha-card__titulo">Linha Anchieta &mdash; Praça Urbana / Recanto</h3>
+                <span class="linha-card__status-tag">Escala Tarde</span>
+              </div>
+              <div class="linha-card__conteudo">
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">🚩 Partida Agendada:</span>
+                  <span class="linha-card__texto">Praça Urbana Carolina às 13:30</span>
+                </div>
+                <div class="linha-card__dado">
+                  <span class="linha-card__rotulo">📍 Itinerário:</span>
+                  <span class="linha-card__texto">Rua José Ribeiro de Barros &bull; Inatel &bull; Recanto</span>
+                </div>
+              </div>
+              <div class="rota-card-acoes-bar">
+                <span class="status-badge">Turno Tarde</span>
+                <button type="button" class="btn-acao-rota-card rota-card__btn-trocar" data-linha="anchieta">Alternar Rota</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: PERFIL & DESEMPENHO DO TURNO -->
+      <div class="secao-view" id="view-perfil" style="display: none;">
+        <div class="motorista-secao-conteudo">
+          <div class="motorista-secao-header">
+            <h2 class="motorista-secao-titulo">Meu Perfil Operacional</h2>
+            <p class="motorista-secao-desc">Dados cadastrais, telemetria do veículo e resumo de produtividade do dia.</p>
+          </div>
+
+          <!-- Cards de Métricas e Desempenho -->
+          <div class="alertas-kpi-grid" style="margin-bottom: 24px;">
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--ativo">
+                <svg width="22" height="22" aria-hidden="true"><use href="#icone-onibus"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Viagens Concluídas Hoje</span>
+                <strong class="alerta-kpi-card__valor" id="perfil-stat-viagens">12</strong>
+              </div>
+            </div>
+
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--resolvido">
+                <svg width="22" height="22" aria-hidden="true"><use href="#icone-relogio"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Índice de Pontualidade</span>
+                <strong class="alerta-kpi-card__valor" style="color: #16a34a;">98.4%</strong>
+              </div>
+            </div>
+
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--indice">
+                <svg width="22" height="22" aria-hidden="true"><use href="#icone-mapa"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Km Rodados no Turno</span>
+                <strong class="alerta-kpi-card__valor">84.2 km</strong>
+              </div>
+            </div>
+
+            <div class="alerta-kpi-card">
+              <div class="alerta-kpi-card__icone alerta-kpi-card__icone--atraso">
+                <svg width="22" height="22" aria-hidden="true"><use href="#icone-paradas"/></svg>
+              </div>
+              <div class="alerta-kpi-card__dados">
+                <span class="alerta-kpi-card__rotulo">Avaliação Média</span>
+                <strong class="alerta-kpi-card__valor" style="color: #f59e0b;">★ 4.98</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informações Detalhadas do Condutor e Veículo -->
+          <div class="linha-card" style="padding: 20px;">
+            <h3 class="linha-card__titulo" style="margin-bottom: 16px;">Dados do Condutor &amp; Veículo Atribuído</h3>
+            <div class="perfil-info-grid">
+              <div class="perfil-info-bloco">
+                <span class="perfil-info-rotulo">Motorista:</span>
+                <strong class="perfil-info-valor" id="perfil-nome-texto">João Silva</strong>
+              </div>
+              <div class="perfil-info-bloco">
+                <span class="perfil-info-rotulo">Matrícula &amp; Habilitação:</span>
+                <strong class="perfil-info-valor" id="perfil-matricula-texto">MOT-104 &bull; CNH Categoria D</strong>
+              </div>
+              <div class="perfil-info-bloco">
+                <span class="perfil-info-rotulo">Veículo Operacional:</span>
+                <strong class="perfil-info-valor" id="perfil-veiculo-display">Ônibus #02 (Prefixo 102) &bull; Placa RTA-4B29</strong>
+              </div>
+              <div class="perfil-info-bloco">
+                <span class="perfil-info-rotulo">Validador Eletrônico / Catraca:</span>
+                <strong class="perfil-info-valor" style="color: #16a34a;">Conectado &bull; Versão 4.8.2 (Online)</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ──────────────────────────────────────────────────────
+         PAINEL LATERAL DIREITO — Telemetria da Rota & Escala
+         ────────────────────────────────────────────────────── -->
+    <aside class="painel" id="painel-lateral" aria-label="Telemetria e próximas paradas">
+
+      <!-- Header Mobile para Drawer -->
+      <div class="painel__mobile-topbar">
+        <div class="painel__handle-mobile" aria-hidden="true"></div>
+        <div class="painel__mobile-header-row">
+          <div class="painel__mobile-titulo-wrap">
+            <span class="painel__mobile-titulo">Telemetria de Bordo</span>
+            <span class="painel__mobile-sub">Linha 01 &bull; Ônibus #02</span>
+          </div>
+          <button class="painel__fechar" id="btn-fechar-painel" aria-label="Fechar painel">
+            <svg width="18" height="18" aria-hidden="true"><use href="#icone-fechar"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Próximas Paradas do Itinerário Atual -->
+      <section aria-labelledby="titulo-itinerario">
+        <h2 class="painel__secao-titulo" id="titulo-itinerario">Paradas do Itinerário</h2>
+
+        <div class="proximos-lista">
+          <!-- Parada Realizada -->
+          <article class="proximo-card proximo-card--concluido">
+            <div class="proximo-card__linha-badge" style="background-color: #64748b;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Terminal Urbano Central</span>
+              <span class="proximo-card__parada">Partida realizada às 08:15</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="status-badge status-badge--horario">Concluída</span>
+            </div>
+          </article>
+
+          <!-- Próxima Parada Imediata -->
+          <article class="proximo-card proximo-card--destaque" style="border-color: var(--cor-marca);">
+            <div class="proximo-card__linha-badge" style="background-color: var(--cor-marca);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha" style="color: var(--cor-marca); font-weight: 800;">Av. Inatel, Centro</span>
+              <span class="proximo-card__parada">Próxima parada programada</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">12 min</span>
+              <span class="status-badge status-badge--horario">No horário</span>
+            </div>
+          </article>
+
+          <!-- Próxima: Ginásio -->
+          <article class="proximo-card">
+            <div class="proximo-card__linha-badge" style="background-color: #2563eb;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Rua das Rosas &bull; Ginásio</span>
+              <span class="proximo-card__parada">Parada intermediária #03</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">18 min</span>
+              <span class="status-badge status-badge--horario">Normal</span>
+            </div>
+          </article>
+
+          <!-- Destino Final: Distrito Industrial -->
+          <article class="proximo-card">
+            <div class="proximo-card__linha-badge" style="background-color: #ea580c;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            </div>
+            <div class="proximo-card__info">
+              <span class="proximo-card__nome-linha">Distrito Industrial JK</span>
+              <span class="proximo-card__parada">Ponto final da linha</span>
+            </div>
+            <div class="proximo-card__lado-direito">
+              <span class="proximo-card__tempo">26 min</span>
+              <span class="status-badge">Final</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Ações Rápidas do Painel -->
+      <section style="margin-top: 24px;">
+        <h2 class="painel__secao-titulo">Ações de Rádio &amp; CCO</h2>
+        <div class="painel-acoes-motorista">
+          <button type="button" class="btn-painel-acao" id="btn-painel-relatar">
+            <svg width="16" height="16" aria-hidden="true"><use href="#icone-alerta-triangulo"/></svg>
+            <span>Relatar Ocorrência</span>
+          </button>
+          <button type="button" class="btn-painel-acao" id="btn-painel-suporte">
+            <svg width="16" height="16" aria-hidden="true"><use href="#icone-suporte"/></svg>
+            <span>Suporte Garagem</span>
+          </button>
+        </div>
+      </section>
+
+    </aside>
+
+  </div><!-- /dashboard -->
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAIS DE OCORRÊNCIA E SUPORTE TÉCNICO
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- Modal: Relatar um Problema -->
+  <div class="modal-overlay" id="modal-problema" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-problema-titulo">
+      <div class="modal-card__header">
+        <div class="modal-card__icone-topo modal-card__icone-topo--alerta" aria-hidden="true">
+          <svg width="22" height="22"><use href="#icone-alerta-triangulo"/></svg>
+        </div>
+        <div class="modal-card__header-info">
+          <h3 class="modal-card__titulo" id="modal-problema-titulo">Relatar Ocorrência na Linha</h3>
+          <p class="modal-card__subtitulo">Comunicação imediata com o Centro de Controle Operacional (CCO).</p>
+        </div>
+        <button type="button" class="modal-card__btn-fechar" id="btn-fechar-modal-problema" aria-label="Fechar modal">
+          <svg width="18" height="18"><use href="#icone-fechar"/></svg>
+        </button>
+      </div>
+
+      <form id="form-relatar-problema" class="modal-card__corpo">
+        <div class="form-grupo">
+          <label class="form-label" for="select-tipo-problema">Tipo de Ocorrência:</label>
+          <select id="select-tipo-problema" class="form-select" required>
+            <option value="transito">Trânsito Intenso / Congestionamento</option>
+            <option value="pane">Pane Mecânica / Elétrica no Veículo</option>
+            <option value="acidente">Acidente na Via</option>
+            <option value="desvio">Obras / Desvio de Itinerário</option>
+            <option value="lotacao">Excesso de Lotação de Passageiros</option>
+            <option value="outro">Outro Motivo</option>
+          </select>
+        </div>
+
+        <div class="form-grupo" style="margin-top: 14px;">
+          <label class="form-label" for="textarea-detalhes-problema">Detalhes / Localização Aproximada:</label>
+          <textarea id="textarea-detalhes-problema" class="form-textarea" placeholder="Descreva brevemente a situação para suporte da central..." rows="3"></textarea>
+        </div>
+
+        <div class="modal-card__footer">
+          <button type="button" class="btn-modal btn-modal--secundario" id="btn-cancelar-problema">Cancelar</button>
+          <button type="submit" class="btn-modal btn-modal--primario" id="btn-enviar-problema">
+            <span>Enviar Alerta ao CCO</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Suporte Técnico -->
+  <div class="modal-overlay" id="modal-suporte" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-suporte-titulo">
+      <div class="modal-card__header">
+        <div class="modal-card__icone-topo" style="background-color: rgba(37,99,235,0.15); color: var(--cor-marca);" aria-hidden="true">
+          <svg width="22" height="22"><use href="#icone-suporte"/></svg>
+        </div>
+        <div class="modal-card__header-info">
+          <h3 class="modal-card__titulo" id="modal-suporte-titulo">Suporte Técnico &amp; Garagem</h3>
+          <p class="modal-card__subtitulo">Canais rápidos de atendimento e socorro mecânico.</p>
+        </div>
+        <button type="button" class="modal-card__btn-fechar" id="btn-fechar-modal-suporte" aria-label="Fechar modal">
+          <svg width="18" height="18"><use href="#icone-fechar"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-card__corpo">
+        <div class="suporte-acoes-lista">
+          <button type="button" class="suporte-opcao-card" id="btn-chamar-cco">
+            <div class="suporte-opcao-card__icone">📻</div>
+            <div class="suporte-opcao-card__info">
+              <strong>Canal de Rádio CCO (VHF 154.850 MHz)</strong>
+              <span>Solicitar chamada direta com o operador de plantão</span>
+            </div>
+          </button>
+
+          <button type="button" class="suporte-opcao-card" id="btn-ping-telemetria">
+            <div class="suporte-opcao-card__icone">📡</div>
+            <div class="suporte-opcao-card__info">
+              <strong>Diagnóstico de Sinal GPS &amp; Validador</strong>
+              <span>Testar latência e sincronismo dos equipamentos</span>
+            </div>
+          </button>
+
+          <button type="button" class="suporte-opcao-card" id="btn-chamar-manutencao">
+            <div class="suporte-opcao-card__icone">🔧</div>
+            <div class="suporte-opcao-card__info">
+              <strong>Socorro Mecânico / Oficina da Garagem</strong>
+              <span>Acionar equipe móvel de manutenção preventiva</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-card__footer">
+        <button type="button" class="btn-modal btn-modal--secundario" id="btn-fechar-suporte-rodape">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Notificações Toast -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Scripts do Leaflet e Lógica do Motorista -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/motorista.js"></script>
+</body>
+</html>

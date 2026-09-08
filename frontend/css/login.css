@@ -1169,6 +1169,84 @@ body.tema-noite .modal-padrao__texto-legal h4 {
   outline-offset: 2px;
 }
 
+/* Divisor Frota / Motorista */
+.divisor--motorista {
+  margin: 12px 0 10px;
+}
+
+.divisor--motorista .divisor__texto {
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Botão de Acesso do Motorista */
+.botao-motorista {
+  width: 100%;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transicao),
+              border-color var(--transicao),
+              box-shadow var(--transicao),
+              transform var(--transicao);
+}
+
+.botao-motorista:hover {
+  background: #f0fdf4;
+  border-color: #86efac;
+  border-style: solid;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.12);
+}
+
+.botao-motorista:hover .botao-motorista__icone {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.botao-motorista:hover .botao-motorista__titulo {
+  color: #15803d;
+}
+
+.botao-motorista:focus-visible {
+  outline: 2px solid #16a34a;
+  outline-offset: 2px;
+}
+
+.botao-motorista__icone {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+
+.botao-motorista__textos {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.botao-motorista__titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
 /* Rodapé Legal */
 .form-rodape {
   text-align: center;
@@ -1307,6 +1385,64 @@ body.tema-noite .modal-padrao__texto-legal h4 {
 .modal-padrao__icone-topo--cadastro {
   background: #f0fdf4;
   color: #16a34a;
+}
+
+.modal-padrao__icone-topo--motorista {
+  background: #0f172a;
+  color: #38bdf8;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+.modal-linha-dupla {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 480px) {
+  .modal-linha-dupla {
+    grid-template-columns: 1fr;
+  }
+}
+
+.campo__wrapper--select {
+  position: relative;
+}
+
+.campo__wrapper--select::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #64748b;
+  pointer-events: none;
+}
+
+.campo__select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 28px;
+  background-color: #ffffff;
+}
+
+.modal-btn-primario--motorista {
+  background: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+.modal-btn-primario--motorista:hover {
+  background: #1e293b;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
 }
 
 .modal-padrao__titulo {

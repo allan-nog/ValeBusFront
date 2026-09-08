@@ -1,0 +1,478 @@
+/*
+ * motorista.css — Terminal do Motorista ValeBus
+ * ──────────────────────────────────────────────
+ * Utiliza o mesmo sistema de layout, tokens e identidade visual
+ * do dashboard principal (Sidebar + Topbar + Mapa Fullscreen + Painel Lateral).
+ */
+
+/* ── Ajustes do Container do Cockpit no Mapa ──────────────── */
+#mapa-motorista {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.motorista-mapa-pill-loc {
+  position: absolute;
+  top: 14px;
+  left: 54px;
+  background-color: var(--fundo-card);
+  border: 1px solid var(--borda-cor);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 500;
+  backdrop-filter: blur(8px);
+}
+
+.motorista-mapa-pill-loc__icone {
+  color: var(--cor-marca);
+  stroke: var(--cor-marca);
+}
+
+.btn-recenter-mapa-valebus {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background-color: var(--fundo-card);
+  border: 1px solid var(--borda-cor);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 500;
+  transition: all 0.16s ease;
+}
+
+.btn-recenter-mapa-valebus:hover {
+  background-color: var(--fundo-campo);
+  border-color: var(--cor-marca);
+  color: var(--cor-marca);
+  transform: translateY(-1px);
+}
+
+.btn-recenter-mapa-valebus svg {
+  stroke: var(--cor-marca);
+}
+
+/* Banner de Viagem Ativa */
+.motorista-banner-em-rota {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(37, 99, 235, 0.95);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+  z-index: 500;
+  animation: bannerEntrada 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+@keyframes bannerEntrada {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Card Cockpit Flutuante Central do Motorista */
+.motorista-cockpit-overlay-card {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 580px;
+  margin: 0 auto;
+  background-color: var(--fundo-card);
+  border: 1.5px solid var(--borda-cor);
+  border-radius: var(--raio-grande);
+  padding: 16px 20px;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.08);
+  z-index: 500;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .motorista-cockpit-overlay-card {
+  background-color: rgba(19, 28, 49, 0.95);
+  border-color: #24324f;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+}
+
+/* Linha 1: Perfil do Motorista */
+.cockpit-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cockpit-card__perfil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cockpit-avatar-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.cockpit-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cor-marca) 0%, var(--cor-marca-escura) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(26, 111, 212, 0.3);
+}
+
+.cockpit-status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  border: 2px solid var(--fundo-card);
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.cockpit-perfil-dados {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cockpit-perfil-nome {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--texto-principal);
+  line-height: 1.2;
+}
+
+.cockpit-perfil-status {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--texto-secundario);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-bolinha {
+  color: #22c55e;
+  font-size: 9px;
+}
+
+.cockpit-badge-viagens {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+}
+
+.cockpit-badge-viagens__rotulo {
+  color: var(--texto-secundario);
+}
+
+.cockpit-badge-viagens__num {
+  font-weight: 800;
+  color: var(--cor-marca);
+}
+
+/* Linha 2: Rota Atribuída */
+.cockpit-card__rota {
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-medio);
+  padding: 8px 12px;
+}
+
+.cockpit-rota-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.cockpit-rota-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--cor-marca);
+  text-transform: uppercase;
+}
+
+.cockpit-rota-codigo {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--texto-secundario);
+}
+
+.cockpit-rota-nome {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+/* Linha 3: Métricas em 3 Colunas Compactas */
+.cockpit-metricas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 8px;
+}
+
+.cockpit-metrica-item {
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-pequeno);
+  padding: 7px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cockpit-metrica-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--texto-secundario);
+  text-transform: uppercase;
+}
+
+.cockpit-metrica-val {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--texto-principal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cockpit-metrica-val--parada {
+  color: var(--cor-marca);
+}
+
+/* Linha 4: Botão de Ação */
+.cockpit-btn-acao {
+  width: 100%;
+  background: linear-gradient(135deg, var(--cor-marca) 0%, var(--cor-marca-escura) 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--raio-medio);
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(26, 111, 212, 0.35);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cockpit-btn-acao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26, 111, 212, 0.45);
+}
+
+.cockpit-btn-acao--encerrar {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+}
+
+.cockpit-btn-acao--encerrar:hover {
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.45);
+}
+
+/* ── Botão de 3 Pontos de Ações do Motorista na Topbar ── */
+.topbar__btn-acoes-motorista {
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: 9px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.topbar__btn-acoes-motorista:hover,
+.topbar__btn-acoes-motorista[aria-expanded="true"] {
+  background-color: var(--fundo-card);
+  border-color: var(--cor-marca);
+  color: var(--cor-marca);
+  box-shadow: 0 2px 8px rgba(26, 111, 212, 0.2);
+}
+
+.motorista-dropdown {
+  width: 290px;
+}
+
+.motorista-dropdown__itens {
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Modais de Ocorrência & Suporte com Padrão ValeBus ── */
+.suporte-acoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suporte-opcao-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--fundo-campo);
+  border: 1.5px solid var(--borda-cor);
+  border-radius: var(--raio-medio);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.16s ease;
+  width: 100%;
+}
+
+.suporte-opcao-card:hover {
+  background-color: var(--fundo-card);
+  border-color: var(--cor-marca);
+  transform: translateY(-1px);
+}
+
+.suporte-opcao-card__icone {
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: var(--fundo-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--borda-cor);
+}
+
+.suporte-opcao-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.suporte-opcao-card__info strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--texto-principal);
+}
+
+.suporte-opcao-card__info span {
+  font-size: 11.5px;
+  color: var(--texto-secundario);
+}
+
+/* Painel Lateral - Ações Rápidas */
+.painel-acoes-motorista {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn-painel-acao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  background-color: var(--fundo-campo);
+  border: 1px solid var(--borda-cor);
+  border-radius: var(--raio-pequeno);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--texto-principal);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-painel-acao:hover {
+  background-color: var(--fundo-card);
+  border-color: var(--cor-marca);
+  color: var(--cor-marca);
+}
+
+/* Linha Divisória da Sidebar */
+.sidebar__divisor-nav {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.12);
+  margin: 8px 4px;
+}
+
+.nav__item--link-externo {
+  opacity: 0.85;
+}
+
+/* Responsividade do Cockpit */
+@media (max-width: 768px) {
+  .motorista-cockpit-overlay-card {
+    left: 10px;
+    right: 10px;
+    transform: none;
+    width: auto;
+    max-width: none;
+    bottom: 10px;
+    padding: 12px 14px;
+  }
+  .cockpit-metricas-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cockpit-metrica-item--destaque {
+    grid-column: span 2;
+  }
+  .motorista-mapa-pill-loc {
+    display: none;
+  }
+}
