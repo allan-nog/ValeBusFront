@@ -574,21 +574,45 @@
   const overlay = document.getElementById('overlay');
   const painelLateral = document.getElementById('painel-lateral');
   const btnFecharPainel = document.getElementById('btn-fechar-painel');
+  const btnFecharSidebar = document.getElementById('btn-fechar-sidebar');
 
   function abrirSidebarMobile() {
-    if (sidebar) sidebar.classList.add('aberto');
-    if (overlay) overlay.classList.add('ativo');
+    if (sidebar) {
+      sidebar.classList.add('aberta');
+      sidebar.classList.add('aberto');
+    }
+    if (overlay) {
+      overlay.classList.add('ativo');
+    }
+    if (btnMenu) {
+      btnMenu.setAttribute('aria-expanded', 'true');
+    }
+    document.body.style.overflow = 'hidden';
   }
 
   function fecharSidebarMobile() {
-    if (sidebar) sidebar.classList.remove('aberto');
-    if (painelLateral) painelLateral.classList.remove('aberto');
-    if (overlay) overlay.classList.remove('ativo');
+    if (sidebar) {
+      sidebar.classList.remove('aberta');
+      sidebar.classList.remove('aberto');
+    }
+    if (painelLateral) {
+      painelLateral.classList.remove('aberto');
+      painelLateral.classList.remove('aberta');
+    }
+    if (overlay) {
+      overlay.classList.remove('ativo');
+    }
+    if (btnMenu) {
+      btnMenu.setAttribute('aria-expanded', 'false');
+    }
+    document.body.style.overflow = '';
   }
 
   if (btnMenu) {
-    btnMenu.addEventListener('click', () => {
-      if (sidebar && sidebar.classList.contains('aberto')) {
+    btnMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const estaAberto = sidebar && (sidebar.classList.contains('aberta') || sidebar.classList.contains('aberto'));
+      if (estaAberto) {
         fecharSidebarMobile();
       } else {
         abrirSidebarMobile();
@@ -596,8 +620,28 @@
     });
   }
 
-  if (overlay) overlay.addEventListener('click', fecharSidebarMobile);
-  if (btnFecharPainel) btnFecharPainel.addEventListener('click', fecharSidebarMobile);
+  if (btnFecharSidebar) {
+    btnFecharSidebar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fecharSidebarMobile();
+    });
+  }
+
+  if (overlay) {
+    overlay.addEventListener('click', fecharSidebarMobile);
+  }
+
+  if (btnFecharPainel) {
+    btnFecharPainel.addEventListener('click', fecharSidebarMobile);
+  }
+
+  // Tecla Escape fecha drawers e menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      fecharSidebarMobile();
+      fecharTodosDropdowns();
+    }
+  });
 
   /* ──────────────────────────────────────────────────────────
      9. MODAIS DE SUPORTE E OCORRÊNCIAS

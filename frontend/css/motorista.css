@@ -455,6 +455,64 @@
   opacity: 0.85;
 }
 
+/* Botão fechar drawer da Sidebar no mobile */
+.sidebar__fechar-btn {
+  display: none;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--raio-pequeno);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: all var(--transicao);
+}
+
+.sidebar__fechar-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+/* Responsividade Mobile e Drawer da Sidebar */
+@media (max-width: 1099px) {
+  .sidebar__fechar-btn {
+    display: inline-flex;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 280px !important;
+    max-width: calc(100vw - 48px) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    z-index: 950 !important;
+    transform: translateX(-100%) !important;
+    transition: transform var(--transicao) cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: none !important;
+  }
+
+  .sidebar.aberta,
+  .sidebar.aberto {
+    transform: translateX(0) !important;
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .sidebar-overlay {
+    z-index: 900 !important;
+  }
+
+  .sidebar-overlay.ativo {
+    display: block !important;
+    opacity: 1 !important;
+  }
+}
+
 /* Responsividade do Cockpit */
 @media (max-width: 768px) {
   .motorista-cockpit-overlay-card {
@@ -474,5 +532,19 @@
   }
   .motorista-mapa-pill-loc {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar__status {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .usuario-dropdown {
+    width: min(290px, calc(100vw - 20px));
+    right: -4px;
   }
 }
